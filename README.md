@@ -1,12 +1,19 @@
-# Sala de Prova IDIB — Técnico I · Enfermeiro (Araguaína-TO)
+# Sala de Prova IDIB — Araguaína-TO
 
-Simulado de questões no padrão IDIB para o cargo de **Técnico I – Enfermeiro** do
-Concurso Público **001/2026** da Prefeitura Municipal de Araguaína-TO.
+Simulado de questões no padrão IDIB para o Concurso Público **001/2026** da
+Prefeitura Municipal de Araguaína-TO. Na abertura, escolha o cargo:
 
-- Banco curado de questões, restrito ao **Anexo III** do edital.
-- 4 alternativas (A–D), foco em aplicação clínica e de gestão (item 18.5).
-- **Não repete** questões já respondidas (memória salva no navegador).
-- Três modos (misto / específicos+SUS / só específicos), 5 a 20 questões, três níveis.
+- **Assistente Técnico Administrativo** (Nível Médio) — Português, Informática,
+  Raciocínio Lógico e Conhecimentos Específicos (Lei 14.133/21, Administração
+  Geral, Materiais e RH).
+- **Técnico I – Enfermeiro** (Nível Superior) — Português, Informática,
+  Raciocínio Lógico, Legislação do SUS e Conhecimentos Específicos de Enfermagem.
+
+Características:
+
+- Banco curado de questões, 4 alternativas (A–D), com correção comentada.
+- **Não repete** questões já respondidas — a memória é salva **por cargo** no navegador.
+- Modos por cargo (misto / específicos+SUS / só específicos), 5 a 20 questões, três níveis.
 - Funciona **offline** e pode ser **instalado** na tela inicial do celular.
 
 É um site estático (um único `index.html`), então roda direto no **GitHub Pages**, sem servidor.
