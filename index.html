@@ -126,6 +126,10 @@
   .cargo-go{font-size:.82rem;font-weight:700;color:var(--terra);margin-top:4px}
   .badge-bank{font-size:.74rem;color:#4a5a57;margin-top:14px;text-align:center}
   .badge-bank b{color:var(--petrol)}
+  .name-input{width:100%;border:1px solid var(--line);background:rgba(255,255,255,.6);border-radius:12px;padding:13px 15px;font-family:inherit;font-size:.98rem;color:var(--ink)}
+  .name-input:focus{outline:none;border-color:var(--petrol);box-shadow:0 0 0 3px rgba(13,59,58,.12)}
+  .reg-line{font-size:.74rem;color:#4a5a57;margin-top:8px;text-align:center}
+  .reg-line b{color:var(--petrol)}
 </style>
 </head>
 <body>
@@ -176,6 +180,10 @@
   <section id="config" class="hide">
     <div class="card">
       <div class="lead serif">Monte seu simulado</div>
+      <div class="field">
+        <span>Seu nome (para registro)</span>
+        <input id="user-name" class="name-input" type="text" autocomplete="name" placeholder="Digite seu nome completo">
+      </div>
       <div class="field">
         <span>Conteúdo</span>
         <div class="choices" id="mode-choices">
@@ -235,7 +243,8 @@
 
   <footer>
     Simulado no padrão IDIB · Prefeitura de Araguaína-TO (Edital 001/2026)
-    <br><button class="link" onclick="confirmReset()">Zerar progresso deste cargo (liberar todas as questões)</button>
+    <br><button class="link" onclick="exportRegistros()">Exportar registros (CSV)</button> · <button class="link" onclick="confirmReset()">Zerar progresso deste cargo</button>
+    <div class="reg-line" id="reg-line"></div>
   </footer>
 </div>
 
@@ -245,6 +254,7 @@ let curCargo=null;
 function kUsed(){return 'idib:used-ids:'+curCargo;}
 function kStats(){return 'idib:stats:'+curCargo;}
 function kPerf(){return 'idib:perf:'+curCargo;}
+const K_USER='idib:user', K_LOG='idib:log';
 let mem={};
 function loadJSON(key,fb){try{const r=localStorage.getItem(key);return r?JSON.parse(r):fb;}catch(e){return (mem[key]!==undefined?mem[key]:fb);}}
 function saveJSON(key,v){mem[key]=v;try{localStorage.setItem(key,JSON.stringify(v));}catch(e){}}
@@ -577,7 +587,7 @@ function pickCargo(key){
   goHome();
 }
 function goHome(){if(!curCargo){show('select');return;}refreshHome();show('home');}
-function goConfig(){document.getElementById('cfg-note').innerHTML='';buildModeChoices();show('config');}
+function goConfig(){document.getElementById('cfg-note').innerHTML='';buildModeChoices();const u=loadJSON(K_USER,'');if(typeof u==='string'&&u)document.getElementById('user-name').value=u;show('config');}
 function buildModeChoices(){
   const wrap=document.getElementById('mode-choices'); wrap.innerHTML='';
   const modos=CARGOS[curCargo].modos;
@@ -608,9 +618,13 @@ segBind('qty-seg','qty',v=>parseInt(v));
 segBind('diff-seg','diff',v=>v);
 
 function startQuiz(){
+  const note=document.getElementById('cfg-note');
+  const nameEl=document.getElementById('user-name');
+  const nome=(nameEl.value||'').trim();
+  if(nome.length<2){ note.innerHTML='<div class="note">Informe seu nome antes de iniciar o simulado.</div>'; nameEl.focus(); return; }
+  saveJSON(K_USER,nome);
   const plan=montarPlano();
   sessao=selecionar(plan); idx=0; answers=[];
-  const note=document.getElementById('cfg-note');
   if(sessao.length===0){
     note.innerHTML='<div class="note">Você já respondeu todas as questões inéditas deste filtro. Troque o conteúdo ou use <b>Zerar progresso</b> no rodapé para liberar tudo novamente.</div>';
     return;
@@ -618,7 +632,34 @@ function startQuiz(){
   if(sessao.length<cfg.qty){
     note.innerHTML='<div class="note">Restam apenas <b>'+sessao.length+'</b> questões inéditas para este filtro — o simulado seguirá com elas, sem repetir nada já visto.</div>';
   }
+  logStart(nome);
   renderQuestion(); show('quiz');
+}
+
+function logStart(nome){
+  const raw=loadJSON(K_LOG,[]); const arr=Array.isArray(raw)?raw:[];
+  arr.push({nome:nome, cargo:CARGOS[curCargo].nome, modo:cfg.mode, qtd:cfg.qty, inicio:new Date().toISOString()});
+  saveJSON(K_LOG,arr);
+  updateRegLine();
+}
+function updateRegLine(){
+  const el=document.getElementById('reg-line'); if(!el) return;
+  const raw=loadJSON(K_LOG,[]); const n=Array.isArray(raw)?raw.length:0;
+  el.innerHTML = n ? ('Registros neste dispositivo: <b>'+n+'</b>') : '';
+}
+function csvCell(v){ return '"'+(''+v).replace(/"/g,'""')+'"'; }
+function exportRegistros(){
+  const raw=loadJSON(K_LOG,[]); const log=Array.isArray(raw)?raw:[];
+  if(log.length===0){ alert('Ainda não há registros neste dispositivo.'); return; }
+  const rows=[['nome','cargo','modo','qtd_questoes','inicio'].join(',')]
+    .concat(log.map(r=>[r.nome,r.cargo,r.modo,r.qtd,r.inicio].map(csvCell).join(',')));
+  const csv='﻿'+rows.join('\r\n');
+  try{
+    const blob=new Blob([csv],{type:'text/csv;charset=utf-8'});
+    const url=URL.createObjectURL(blob); const a=document.createElement('a');
+    a.href=url; a.download='registros-simulado.csv'; document.body.appendChild(a); a.click();
+    document.body.removeChild(a); setTimeout(()=>URL.revokeObjectURL(url),1500);
+  }catch(e){ window.prompt('Copie os registros (CSV):', csv); }
 }
 
 function renderQuestion(){
@@ -733,7 +774,7 @@ function confirmReset(){
   refreshHome(); alert('Progresso zerado. Todas as questões voltaram a ficar inéditas.');
 }
 
-(function init(){ show('select'); })();
+(function init(){ updateRegLine(); show('select'); })();
 </script>
 </body>
 </html>
