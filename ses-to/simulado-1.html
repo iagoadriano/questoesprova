@@ -1,0 +1,1188 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Simulado SES/TO Enfermeiro</title>
+<style>
+:root{
+  --navy:#0e2340; --navy-2:#173559; --navy-3:#24497a;
+  --gold:#c49a2c; --gold-soft:#f3e7c4;
+  --green:#1d7a4c; --green-soft:#e1f2e8;
+  --red:#b3362f; --red-soft:#f8e3e1;
+  --amber:#c27a12; --amber-soft:#fbefd9;
+  --ink:#1b2430; --muted:#5d6878; --line:#dfe3ea;
+  --bg:#f4f5f8; --card:#ffffff;
+  --radius:12px;
+  --sans: system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --serif: "Iowan Old Style","Palatino Linotype",Palatino,Georgia,"Times New Roman",serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{font-family:var(--sans);color:var(--ink);background:var(--bg);line-height:1.5;-webkit-font-smoothing:antialiased}
+button{font:inherit;cursor:pointer}
+.hidden{display:none!important}
+.wrap{max-width:1180px;margin:0 auto;padding:0 16px}
+
+/* ---------- TOPO INSTITUCIONAL ---------- */
+.brand{background:var(--navy);color:#fff;border-bottom:4px solid var(--gold)}
+.brand .wrap{display:flex;align-items:center;gap:14px;padding-top:14px;padding-bottom:14px}
+.seal{width:42px;height:42px;border-radius:50%;border:2px solid var(--gold);display:grid;place-items:center;font-weight:800;color:var(--gold);font-size:13px;letter-spacing:.5px;flex:none}
+.brand h1{font-size:17px;margin:0;font-weight:700;letter-spacing:.2px}
+.brand p{margin:0;font-size:12.5px;color:#b9c6d8}
+
+/* ---------- TELA 1 ---------- */
+.hero{padding:28px 0 8px}
+.hero h2{font-family:var(--serif);font-size:30px;line-height:1.15;margin:0 0 6px;color:var(--navy)}
+.hero .lead{color:var(--muted);margin:0;max-width:760px}
+.grid-setup{display:grid;grid-template-columns:1.25fr 1fr;gap:20px;margin:22px 0 40px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:20px}
+.card h3{margin:0 0 12px;font-size:15px;text-transform:uppercase;letter-spacing:.8px;color:var(--navy-3)}
+.rules{width:100%;border-collapse:collapse;font-size:14px}
+.rules th,.rules td{padding:8px 6px;border-bottom:1px solid var(--line);text-align:left}
+.rules th{font-size:12px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.5px}
+.rules td.num{text-align:right;font-variant-numeric:tabular-nums}
+.rules tr.mod td{background:#f7f8fb;font-weight:700;color:var(--navy)}
+.rules tr.tot td{font-weight:800;border-bottom:none}
+.facts{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}
+.fact{background:var(--gold-soft);border-radius:10px;padding:10px 12px}
+.fact b{display:block;font-size:20px;color:var(--navy);font-variant-numeric:tabular-nums}
+.fact span{font-size:12px;color:#6b5a26}
+.agents{display:grid;gap:8px;margin-top:4px}
+.agent{display:flex;gap:12px;align-items:flex-start;padding:10px;border:1px solid var(--line);border-radius:10px}
+.agent .av{flex:none;width:34px;height:34px;border-radius:8px;display:grid;place-items:center;color:#fff;font-weight:800;font-size:14px}
+.agent b{font-size:14px;display:block}
+.agent small{color:var(--muted);font-size:12.5px}
+label.fl{display:block;font-size:13px;font-weight:600;margin:14px 0 6px;color:var(--navy)}
+input[type=text],select{width:100%;padding:11px 12px;border:1px solid #c9d0db;border-radius:9px;font:inherit;background:#fff;color:var(--ink)}
+input[type=text]:focus,select:focus{outline:2px solid var(--gold);outline-offset:1px;border-color:var(--gold)}
+.modes{display:grid;gap:10px;margin-top:6px}
+.mode{display:flex;gap:12px;padding:12px;border:2px solid var(--line);border-radius:10px;cursor:pointer;align-items:flex-start}
+.mode input{margin-top:3px;accent-color:var(--navy)}
+.mode.on{border-color:var(--navy);background:#f2f5fa}
+.mode b{display:block;font-size:14.5px}
+.mode small{color:var(--muted);font-size:12.5px}
+.btn{border:none;border-radius:9px;padding:11px 18px;font-weight:700;font-size:14.5px;display:inline-flex;align-items:center;gap:8px;justify-content:center}
+.btn-primary{background:var(--navy);color:#fff}
+.btn-primary:hover{background:var(--navy-2)}
+.btn-gold{background:var(--gold);color:var(--navy)}
+.btn-gold:hover{filter:brightness(1.05)}
+.btn-ghost{background:#fff;color:var(--navy);border:1px solid #c9d0db}
+.btn-ghost:hover{border-color:var(--navy)}
+.btn-danger{background:var(--red);color:#fff}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn-block{width:100%;margin-top:18px;padding:14px}
+.resume{margin-top:12px;padding:12px;border-radius:10px;background:var(--amber-soft);font-size:13.5px;display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+
+/* ---------- TELA 2 ---------- */
+.examhead{position:sticky;top:0;z-index:20;background:var(--navy);color:#fff;border-bottom:3px solid var(--gold)}
+.examhead .wrap{display:flex;align-items:center;gap:14px;padding-top:10px;padding-bottom:10px;flex-wrap:wrap}
+.examhead .who{flex:1;min-width:180px;font-size:13px;color:#c8d3e3;line-height:1.3}
+.examhead .who b{color:#fff;font-size:14px;display:block}
+.timer{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;font-size:24px;font-weight:700;letter-spacing:1px;background:rgba(255,255,255,.08);padding:4px 12px;border-radius:8px;font-variant-numeric:tabular-nums}
+.timer.warn{color:#ffd27a}
+.timer.crit{color:#ff8a80;animation:pulse 1s infinite}
+@keyframes pulse{50%{opacity:.55}}
+.modetag{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;padding:3px 8px;border-radius:20px;background:var(--gold);color:var(--navy)}
+.exam{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:20px;padding-top:20px;padding-bottom:40px}
+.qcard{background:#fff;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}
+.qtop{padding:16px 20px;border-bottom:1px solid var(--line);display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.qnum{font-weight:800;font-size:16px;color:var(--navy);margin-right:6px}
+.badge{font-size:11.5px;font-weight:700;padding:3px 9px;border-radius:20px;white-space:nowrap}
+.b-mod1{background:#e6edf7;color:var(--navy-3)}
+.b-mod2{background:var(--gold-soft);color:#7a5c0e}
+.b-disc{background:#eef0f3;color:#3d4756}
+.b-agent{color:#fff}
+.flagmark{margin-left:auto;color:var(--amber);font-weight:700;font-size:12.5px}
+.qbody{padding:20px}
+.basetext{background:#f8f6ef;border-left:4px solid var(--gold);padding:14px 16px;border-radius:6px;margin-bottom:18px;font-family:var(--serif);font-size:15.5px}
+.basetext h4{font-family:var(--sans);margin:0 0 8px;font-size:12.5px;text-transform:uppercase;letter-spacing:.7px;color:#7a5c0e}
+.basetext p{margin:0 0 10px;text-indent:1.5em}
+.basetext .fonte{font-family:var(--sans);font-size:11.5px;color:var(--muted);text-indent:0;text-align:right;margin:0}
+.enun{font-family:var(--serif);font-size:17px;line-height:1.6;margin:0 0 18px}
+.enun blockquote{margin:12px 0;padding:10px 14px;background:#f5f7fa;border-left:3px solid var(--navy-3);font-size:15.5px}
+.alts{display:grid;gap:10px}
+.alt{display:flex;gap:12px;align-items:flex-start;width:100%;text-align:left;background:#fff;border:1.5px solid var(--line);border-radius:10px;padding:12px 14px;font-family:var(--serif);font-size:16px;line-height:1.5;color:var(--ink);transition:border-color .12s,background .12s}
+.alt:hover:not(:disabled){border-color:var(--navy-3);background:#f7f9fc}
+.alt .L{flex:none;width:30px;height:30px;border-radius:50%;border:1.5px solid #aab3c2;display:grid;place-items:center;font-family:var(--sans);font-weight:800;font-size:13.5px;color:var(--navy)}
+.alt.sel{border-color:var(--navy);background:#eef2f9}
+.alt.sel .L{background:var(--navy);border-color:var(--navy);color:#fff}
+.alt.ok{border-color:var(--green);background:var(--green-soft)}
+.alt.ok .L{background:var(--green);border-color:var(--green);color:#fff}
+.alt.bad{border-color:var(--red);background:var(--red-soft)}
+.alt.bad .L{background:var(--red);border-color:var(--red);color:#fff}
+.alt:disabled{cursor:default}
+.feedback{margin-top:18px;border-radius:10px;padding:14px 16px;font-size:14.5px}
+.feedback.ok{background:var(--green-soft);border:1px solid #a9d8bd}
+.feedback.bad{background:var(--red-soft);border:1px solid #ecb7b2}
+.feedback h5{margin:0 0 6px;font-size:14px}
+.feedback .by{font-size:12px;color:var(--muted);margin-top:8px}
+.qactions{display:flex;gap:8px;flex-wrap:wrap;padding:14px 20px;border-top:1px solid var(--line);background:#fafbfc}
+.qactions .sp{flex:1}
+.kbd{font-size:11.5px;color:var(--muted);padding:0 20px 14px;background:#fafbfc}
+.kbd kbd{font-family:inherit;background:#fff;border:1px solid #cfd5df;border-bottom-width:2px;border-radius:4px;padding:0 5px;font-size:11px}
+
+.side{position:sticky;top:76px;align-self:start;display:grid;gap:14px}
+.side .card{padding:16px}
+.prog{height:8px;background:#e7eaf0;border-radius:8px;overflow:hidden;margin:6px 0 4px}
+.prog i{display:block;height:100%;background:linear-gradient(90deg,var(--green),#2fa86a);width:0;transition:width .25s}
+.progtxt{display:flex;justify-content:space-between;font-size:12.5px;color:var(--muted)}
+.sheet{display:grid;grid-template-columns:repeat(6,1fr);gap:5px;margin-top:10px}
+.cell{aspect-ratio:1;border:1px solid #cfd5df;background:#fff;border-radius:6px;font-size:12px;font-weight:700;color:var(--muted);position:relative;padding:0;font-variant-numeric:tabular-nums}
+.cell.ans{background:var(--navy);border-color:var(--navy);color:#fff}
+.cell.flag::after{content:"";position:absolute;top:2px;right:2px;width:7px;height:7px;border-radius:50%;background:var(--amber)}
+.cell.flag:not(.ans){background:var(--amber-soft);border-color:var(--amber);color:#7a4a05}
+.cell.cur{outline:2px solid var(--gold);outline-offset:1px}
+.cell.r-ok{background:var(--green);border-color:var(--green);color:#fff}
+.cell.r-bad{background:var(--red);border-color:var(--red);color:#fff}
+.sheet .sep{grid-column:1/-1;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--navy-3);margin-top:6px}
+.legend{display:flex;flex-wrap:wrap;gap:10px;font-size:11.5px;color:var(--muted);margin-top:12px}
+.legend span{display:inline-flex;align-items:center;gap:5px}
+.legend i{width:12px;height:12px;border-radius:3px;display:inline-block;border:1px solid #cfd5df}
+
+/* ---------- MODAL ---------- */
+.modal{position:fixed;inset:0;background:rgba(10,20,35,.55);display:grid;place-items:center;z-index:50;padding:16px}
+.modal .box{background:#fff;border-radius:14px;max-width:440px;width:100%;padding:22px}
+.modal h4{margin:0 0 8px;color:var(--navy);font-size:18px}
+.modal p{margin:0 0 6px;color:var(--muted);font-size:14.5px}
+.modal .row{display:flex;gap:8px;justify-content:flex-end;margin-top:18px;flex-wrap:wrap}
+
+/* ---------- TELA 3 ---------- */
+.verdict{border-radius:var(--radius);padding:22px 24px;margin:22px 0 18px;color:#fff;display:flex;gap:18px;align-items:center;flex-wrap:wrap}
+.verdict.pass{background:linear-gradient(120deg,#145c39,var(--green))}
+.verdict.fail{background:linear-gradient(120deg,#7d211c,var(--red))}
+.verdict .ico{font-size:34px;line-height:1;width:58px;height:58px;border-radius:50%;background:rgba(255,255,255,.15);display:grid;place-items:center;flex:none}
+.verdict h2{margin:0;font-size:21px;letter-spacing:.4px}
+.verdict p{margin:4px 0 0;opacity:.92;font-size:14px}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.kpi{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:16px}
+.kpi small{display:block;font-size:12px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);font-weight:600}
+.kpi b{display:block;font-size:30px;color:var(--navy);font-variant-numeric:tabular-nums;line-height:1.2;margin-top:4px}
+.kpi b em{font-style:normal;font-size:15px;color:var(--muted);font-weight:600}
+.kpi .bar{height:6px;background:#e7eaf0;border-radius:6px;margin-top:10px;position:relative;overflow:visible}
+.kpi .bar i{display:block;height:100%;border-radius:6px}
+.kpi .bar .cut{position:absolute;top:-4px;width:2px;height:14px;background:var(--ink)}
+.kpi .note{font-size:12px;color:var(--muted);margin-top:8px}
+.section-t{font-size:15px;text-transform:uppercase;letter-spacing:.8px;color:var(--navy-3);margin:30px 0 10px}
+.tbl{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;font-size:14px}
+.tbl th{background:var(--navy);color:#fff;font-weight:600;font-size:12.5px;text-align:left;padding:10px 12px}
+.tbl td{padding:10px 12px;border-top:1px solid var(--line)}
+.tbl td.n{text-align:right;font-variant-numeric:tabular-nums}
+.tbl tr.sub td{background:#f6f7fa;font-weight:700}
+.pct{display:flex;align-items:center;gap:8px;justify-content:flex-end}
+.pct i{display:inline-block;width:70px;height:6px;border-radius:6px;background:#e7eaf0;overflow:hidden}
+.pct i s{display:block;height:100%;text-decoration:none}
+.filters{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.chip{border:1px solid #c9d0db;background:#fff;border-radius:20px;padding:5px 12px;font-size:13px;font-weight:600;color:var(--navy)}
+.chip.on{background:var(--navy);color:#fff;border-color:var(--navy)}
+.review{display:grid;gap:12px}
+.ritem{background:#fff;border:1px solid var(--line);border-left:5px solid var(--line);border-radius:10px;padding:16px 18px}
+.ritem.ok{border-left-color:var(--green)}
+.ritem.bad{border-left-color:var(--red)}
+.ritem.blank{border-left-color:#9aa3b2}
+.ritem .rh{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:8px}
+.ritem .st{margin-left:auto;font-weight:800;font-size:12.5px}
+.ritem.ok .st{color:var(--green)} .ritem.bad .st{color:var(--red)} .ritem.blank .st{color:#6b7484}
+.ritem .en{font-family:var(--serif);font-size:15.5px;margin:0 0 10px}
+.ritem .en blockquote{margin:8px 0;padding:6px 12px;background:#f5f7fa;border-left:3px solid var(--navy-3)}
+.ritem ol{list-style:none;padding:0;margin:0 0 10px;display:grid;gap:4px}
+.ritem li{font-family:var(--serif);font-size:14.5px;padding:5px 8px;border-radius:6px}
+.ritem li b{font-family:var(--sans);margin-right:6px}
+.ritem li.g{background:var(--green-soft)}
+.ritem li.x{background:var(--red-soft);text-decoration:line-through;text-decoration-color:rgba(179,54,47,.5)}
+.ritem .com{font-size:14px;background:#f6f7fa;border-radius:8px;padding:10px 12px}
+.ritem .com b{color:var(--navy)}
+.endbar{display:flex;gap:10px;flex-wrap:wrap;margin:24px 0 50px}
+.printhead{display:none}
+
+@media (max-width:900px){
+  .grid-setup{grid-template-columns:1fr}
+  .exam{grid-template-columns:1fr}
+  .side{position:static}
+  .kpis{grid-template-columns:repeat(2,1fr)}
+  .sheet{grid-template-columns:repeat(10,1fr)}
+}
+@media (max-width:520px){
+  .hero h2{font-size:24px}
+  .facts{grid-template-columns:1fr 1fr}
+  .timer{font-size:19px}
+  .enun{font-size:16px}
+  .alt{font-size:15px;padding:10px 12px}
+  .qactions .btn{padding:10px 12px;font-size:13.5px}
+  .kpi b{font-size:24px}
+  .tbl{font-size:12.5px}
+  .tbl th,.tbl td{padding:8px 6px}
+  .pct i{display:none}
+  .sheet{grid-template-columns:repeat(6,1fr)}
+}
+@media print{
+  body{background:#fff}
+  .brand,.endbar,.filters,.examhead,#screen-setup,#screen-exam{display:none!important}
+  .printhead{display:block;margin:0 0 10px;font-size:12px;color:#333}
+  .verdict{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .ritem,.kpi,.tbl{break-inside:avoid}
+  .ritem{border:1px solid #bbb}
+  .wrap{max-width:none}
+}
+</style>
+</head>
+<body>
+
+<header class="brand" id="brand">
+  <div class="wrap">
+    <div class="seal">TO</div>
+    <div>
+      <h1>Simulado Preditivo · SES/TO 2026 · Enfermeiro</h1>
+      <p>Edital nº 001/2026 – SECAD/SES/TO · Banca FGV Conhecimento · Nível Superior</p>
+    </div>
+  </div>
+</header>
+
+<!-- ================= TELA 1 ================= -->
+<main id="screen-setup">
+  <div class="wrap">
+    <section class="hero">
+      <h2>60 questões inéditas no padrão FGV, com correção comentada</h2>
+      <p class="lead">Estrutura, pesos, tempo e critério de aprovação reproduzem os itens 11.1.3, 11.6.2, 11.6.3.1 e 11.14 do edital. Quatro alternativas por questão, uma única correta.</p>
+    </section>
+
+    <div class="grid-setup">
+      <div class="card">
+        <h3>Regras do edital</h3>
+        <table class="rules">
+          <thead><tr><th>Disciplina</th><th>Questões</th><th class="num">Peso</th><th class="num">Pontos</th></tr></thead>
+          <tbody>
+            <tr class="mod"><td colspan="4">Módulo I · Conhecimentos Gerais</td></tr>
+            <tr><td>Língua Portuguesa</td><td>01–10</td><td class="num">1,0</td><td class="num">10</td></tr>
+            <tr><td>Raciocínio Lógico e Matemático</td><td>11–18</td><td class="num">1,0</td><td class="num">8</td></tr>
+            <tr><td>História e Geografia do Tocantins</td><td>19–24</td><td class="num">1,0</td><td class="num">6</td></tr>
+            <tr><td>Legislação do SUS</td><td>25–30</td><td class="num">1,0</td><td class="num">6</td></tr>
+            <tr class="mod"><td colspan="4">Módulo II · Conhecimentos Específicos</td></tr>
+            <tr><td>Enfermeiro</td><td>31–60</td><td class="num">2,0</td><td class="num">60</td></tr>
+            <tr class="tot"><td>Total</td><td>60</td><td></td><td class="num">90</td></tr>
+          </tbody>
+        </table>
+        <div class="facts">
+          <div class="fact"><b>04:00:00</b><span>Duração (item 11.1.3)</span></div>
+          <div class="fact"><b>≥ 24 pts</b><span>Mínimo no Módulo II (12 acertos)</span></div>
+          <div class="fact"><b>≥ 36 pts</b><span>Mínimo no total (40% de 90)</span></div>
+        </div>
+
+        <h3 style="margin-top:22px">Agentes especialistas</h3>
+        <div class="agents" id="agentsList"></div>
+      </div>
+
+      <div class="card">
+        <h3>Identificação do candidato</h3>
+        <label class="fl" for="inName">Nome do candidato</label>
+        <input type="text" id="inName" placeholder="Seu nome completo" autocomplete="name">
+
+        <label class="fl" for="inLocal">Localidade de lotação pretendida</label>
+        <select id="inLocal">
+          <option>Araguaína</option><option>Palmas</option><option>Porto Nacional</option>
+          <option>Gurupi</option><option>Augustinópolis</option><option>Guaraí</option>
+          <option>Paraíso do Tocantins</option><option>Dianópolis</option><option>Araguatins</option>
+          <option>Arraias</option><option>Miracema do Tocantins</option><option>Pedro Afonso</option>
+          <option>Tocantinópolis</option><option>Xambioá</option>
+        </select>
+
+        <label class="fl">Modo de realização</label>
+        <div class="modes" id="modes">
+          <label class="mode on"><input type="radio" name="mode" value="real" checked>
+            <div><b>Modo Prova Real</b><small>Sem feedback durante a prova. Gabarito e comentários só após o encerramento, como no dia 1º de novembro.</small></div></label>
+          <label class="mode"><input type="radio" name="mode" value="treino">
+            <div><b>Modo Treino Comentado</b><small>Feedback imediato (verde/vermelho) e comentário do agente assim que você marca a alternativa. A resposta fica travada.</small></div></label>
+        </div>
+
+        <div id="resumeBox" class="resume hidden">
+          <span>Há um simulado em andamento salvo neste navegador.</span>
+          <span style="display:flex;gap:6px">
+            <button class="btn btn-gold" id="btnResume" style="padding:7px 12px">Continuar</button>
+            <button class="btn btn-ghost" id="btnDiscard" style="padding:7px 12px">Descartar</button>
+          </span>
+        </div>
+
+        <button class="btn btn-primary btn-block" id="btnStart">Iniciar simulado · 60 questões</button>
+        <p style="font-size:12px;color:var(--muted);margin:10px 0 0">Atalhos na prova: <b>A–D</b> marcam, <b>←/→</b> navegam e <b>F</b> marca para revisão. O progresso é salvo automaticamente neste navegador.</p>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- ================= TELA 2 ================= -->
+<div id="screen-exam" class="hidden">
+  <div class="examhead">
+    <div class="wrap">
+      <div class="who"><b id="hdName">Candidato</b><span id="hdLocal"></span></div>
+      <span class="modetag" id="hdMode">Prova Real</span>
+      <div class="timer" id="timer" aria-live="off">04:00:00</div>
+      <button class="btn btn-gold" id="btnFinish">Encerrar prova</button>
+    </div>
+  </div>
+  <div class="wrap exam">
+    <div>
+      <article class="qcard">
+        <div class="qtop" id="qtop"></div>
+        <div class="qbody">
+          <div id="qbase"></div>
+          <div class="enun" id="qenun"></div>
+          <div class="alts" id="qalts"></div>
+          <div id="qfeed"></div>
+        </div>
+        <div class="qactions">
+          <button class="btn btn-ghost" id="btnPrev">← Anterior</button>
+          <button class="btn btn-ghost" id="btnFlag">⚑ Marcar p/ revisão</button>
+          <button class="btn btn-ghost" id="btnClear">Limpar resposta</button>
+          <span class="sp"></span>
+          <button class="btn btn-primary" id="btnNext">Próxima →</button>
+        </div>
+        <div class="kbd"><kbd>A</kbd>–<kbd>D</kbd> marcar · <kbd>←</kbd><kbd>→</kbd> navegar · <kbd>F</kbd> revisão</div>
+      </article>
+    </div>
+    <aside class="side">
+      <div class="card">
+        <h3 style="margin-bottom:4px">Cartão de respostas</h3>
+        <div class="prog"><i id="progBar"></i></div>
+        <div class="progtxt"><span id="progTxt">0 de 60 respondidas</span><span id="progPct">0%</span></div>
+        <label class="fl" for="jump" style="margin-top:12px">Ir para disciplina</label>
+        <select id="jump"></select>
+        <div class="sheet" id="sheet"></div>
+        <div class="legend">
+          <span><i style="background:var(--navy);border-color:var(--navy)"></i>Respondida</span>
+          <span><i style="background:var(--amber-soft);border-color:var(--amber)"></i>Revisão</span>
+          <span><i></i>Em branco</span>
+        </div>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<!-- ================= TELA 3 ================= -->
+<main id="screen-result" class="hidden">
+  <div class="wrap">
+    <div class="printhead" id="printHead"></div>
+    <div class="verdict" id="verdict"></div>
+    <div class="kpis" id="kpis"></div>
+
+    <h3 class="section-t">Desempenho por disciplina e agente</h3>
+    <div style="overflow-x:auto"><table class="tbl" id="perfTbl"></table></div>
+
+    <h3 class="section-t">Correção comentada · 60 questões</h3>
+    <div class="filters" id="filters"></div>
+    <div class="review" id="review"></div>
+
+    <div class="endbar">
+      <button class="btn btn-primary" id="btnPrint">Imprimir / salvar em PDF</button>
+      <button class="btn btn-ghost" id="btnRestart">Reiniciar simulado</button>
+    </div>
+  </div>
+</main>
+
+<div class="modal hidden" id="modal"><div class="box">
+  <h4 id="mTitle"></h4><div id="mBody"></div>
+  <div class="row" id="mRow"></div>
+</div></div>
+
+<script>
+const TEXTOS = {
+  T1: {
+    titulo: "Texto I — A porta e a casa",
+    corpo: "<p>A atenção primária costuma ser descrita como a “porta de entrada” do sistema de saúde, mas a metáfora, embora consagrada, é incompleta. Uma porta é atravessada uma única vez; a atenção primária, ao contrário, acompanha o usuário ao longo da vida, coordena o cuidado que ele recebe em outros pontos da rede e, sobretudo, responde pela maior parte dos problemas de saúde da população. Reduzi-la a uma triagem é desconhecer sua função ordenadora.</p><p>Isso não significa que os hospitais tenham perdido importância. Significa apenas que eles funcionam melhor quando a rede que os cerca também funciona: um paciente diabético bem acompanhado na unidade básica dificilmente chegará à emergência com uma complicação evitável. Quando chega, é sinal de que algo falhou antes — e esse algo raramente está dentro do hospital.</p><p class='fonte'>Texto elaborado para este simulado.</p>"
+  }
+};
+
+const QUESTOES = [
+/* ============ LÍNGUA PORTUGUESA (Agente 1) ============ */
+{n:1,d:"LP",t:"T1",
+e:"Assinale a opção que expressa corretamente a tese defendida no Texto I.",
+o:["A metáfora da “porta de entrada” é inadequada porque a atenção primária deve limitar-se à triagem dos casos que seguem para os hospitais.",
+"Os hospitais perderam centralidade no sistema de saúde, que passou a ser organizado exclusivamente a partir das unidades básicas.",
+"A imagem da “porta de entrada” é insuficiente, pois a atenção primária exerce papel contínuo e coordenador do cuidado, e não apenas de acesso inicial.",
+"As complicações evitáveis que chegam à emergência decorrem, em regra, de falhas na gestão interna dos próprios hospitais."],
+g:2,
+c:"A tese está no 1º parágrafo: a metáfora “é incompleta” porque a atenção primária “acompanha o usuário ao longo da vida” e “coordena o cuidado”. (A) inverte o texto, que critica justamente reduzir a APS a triagem. (B) é desmentida por “Isso não significa que os hospitais tenham perdido importância”. (D) contraria o fecho: a falha “raramente está dentro do hospital”. Típico da FGV: distratores que extrapolam ou invertem o texto."},
+
+{n:2,d:"LP",t:"T1",
+e:"Sobre os mecanismos de coesão referencial do Texto I, assinale a afirmativa correta.",
+o:["Em “Reduzi-la a uma triagem”, o pronome oblíquo retoma o termo “a metáfora”.",
+"Em “eles funcionam melhor”, o pronome retoma “os hospitais”, em processo anafórico.",
+"Em “a rede que os cerca”, o pronome “os” retoma “pacientes diabéticos”.",
+"Em “Isso não significa”, o pronome “Isso” antecipa uma informação ainda não apresentada, caracterizando catáfora."],
+g:1,
+c:"“Eles” retoma “os hospitais”, mencionados antes: anáfora. (A) “-la” retoma “a atenção primária”, e não a metáfora: o que se “reduz a uma triagem” é o serviço. (C) “os” também se refere aos hospitais (a rede que cerca os hospitais). (D) “Isso” retoma o conteúdo do parágrafo anterior: é anafórico. Catáfora seria antecipar algo que ainda vai ser dito."},
+
+{n:3,d:"LP",t:"T1",
+e:"No trecho “mas a metáfora, <u>embora consagrada</u>, é incompleta”, o segmento sublinhado pode ser substituído, mantendo-se o sentido original e a correção gramatical, por",
+o:["porquanto consagrada.","conquanto consagrada.","visto que consagrada.","contanto que consagrada."],
+g:1,
+c:"“Embora” é conjunção concessiva, assim como “conquanto”, “ainda que” e “se bem que”. (A) “porquanto” e (C) “visto que” são causais e mudam o sentido (a metáfora seria incompleta POR SER consagrada). (D) “contanto que” é condicional. A FGV cobra muito essa troca de conectivos em que só a relação lógica muda."},
+
+{n:4,d:"LP",
+e:"Leia o fragmento abaixo, retirado de um protocolo assistencial.<blockquote>“Antes de iniciar o procedimento, higienize as mãos com preparação alcoólica. Em seguida, confirme a identidade do paciente com, no mínimo, dois identificadores e verifique a prescrição. Nunca reencape agulhas após o uso.”</blockquote>Quanto à tipologia textual, o fragmento é predominantemente",
+o:["narrativo, pois apresenta ações em sequência cronológica realizadas por um personagem.",
+"descritivo, pois caracteriza os objetos e o ambiente em que o procedimento ocorre.",
+"dissertativo-argumentativo, pois defende uma tese sobre a segurança do paciente.",
+"injuntivo, pois orienta o comportamento do leitor por meio de verbos predominantemente no imperativo."],
+g:3,
+c:"O texto injuntivo (instrucional) orienta o leitor a agir: “higienize”, “confirme”, “verifique”, “nunca reencape”. Haver uma sequência temporal (“Antes”, “Em seguida”) não o torna narrativo (A), porque não há personagem nem fato ocorrido: há ordens a cumprir. Também não há caracterização de seres (B) nem tese sustentada por argumentos (C)."},
+
+{n:5,d:"LP",
+e:"Assinale a frase em que o emprego do acento indicativo de crase está correto.",
+o:["O enfermeiro referiu-se à paciente do leito 4 durante a passagem de plantão.",
+"O relatório foi entregue à ela no fim do expediente.",
+"A vacinação ocorrerá de segunda à sexta-feira.",
+"A equipe começou à revisar os prontuários pela manhã."],
+g:0,
+c:"“Referir-se a” + “a paciente” (artigo feminino) = “à”. (B) Não há crase antes de pronome pessoal. (C) Na estrutura “de… a…”, sem artigo no primeiro termo, não há artigo no segundo: “de segunda a sexta”. Haveria crase em “da segunda à sexta”. (D) Não há crase antes de verbo."},
+
+{n:6,d:"LP",
+e:"Assinale a frase que está de acordo com a norma-padrão quanto à concordância verbal.",
+o:["Fazem dois anos que a unidade não recebe reforma estrutural.",
+"Houveram falhas no registro das doses aplicadas na campanha.",
+"Devem haver leitos disponíveis na ala pediátrica até sexta-feira.",
+"Faltam ainda três técnicos para completar a escala de domingo."],
+g:3,
+c:"“Faltar” é pessoal e concorda com o sujeito posposto “três técnicos”: “Faltam”. (A) “Fazer” indicando tempo decorrido é impessoal: “Faz dois anos”. (B) “Haver” no sentido de existir é impessoal: “Houve falhas”. (C) O auxiliar de “haver” impessoal também fica no singular: “Deve haver leitos”."},
+
+{n:7,d:"LP",
+e:"Considerando a colocação pronominal segundo a norma-padrão, assinale a frase correta.",
+o:["Informar-lhe-emos o resultado do exame assim que for liberado.",
+"Me informaram que o plantão de sábado foi remanejado.",
+"Quem avisou-lhe sobre a mudança na escala de férias?",
+"O coordenador não comunicou-nos a alteração do protocolo."],
+g:0,
+c:"Verbo no futuro do presente, no início da oração e sem palavra atrativa: a norma-padrão pede mesóclise (“Informar-lhe-emos”). (B) A norma culta não admite iniciar oração com pronome oblíquo átono. (C) O pronome interrogativo “Quem” atrai o pronome: “Quem lhe avisou”. (D) O advérbio “não” atrai o pronome: “não nos comunicou”."},
+
+{n:8,d:"LP",
+e:"Assinale a frase em que o vocábulo destacado foi empregado de forma adequada ao sentido do contexto.",
+o:["O médico <b>retificou</b> o diagnóstico inicial, mantendo-o integralmente.",
+"A proposta veio <b>de encontro aos</b> anseios da equipe, que a aprovou por unanimidade.",
+"O conselho <b>ratificou</b> a decisão da diretoria, confirmando-a em todos os seus termos.",
+"O servidor foi <b>descriminado</b> pela comissão por sua atuação exemplar na campanha de vacinação."],
+g:2,
+c:"“Ratificar” = confirmar; o contexto (“confirmando-a”) é coerente. (A) “Retificar” = corrigir, o que contradiz “mantendo-o integralmente”. (B) “De encontro a” indica oposição; para concordância com os anseios, o certo é “ao encontro dos”. (D) “Descriminar” = inocentar, descriminalizar; para “distinguir”, o termo é “discriminar”. Os parônimos são clássicos da FGV."},
+
+{n:9,d:"LP",
+e:"A frase “A equipe de vigilância notificou os casos suspeitos ao município” foi reescrita na voz passiva. Assinale a opção que mantém o sentido e o tempo verbal originais.",
+o:["Os casos suspeitos eram notificados pela equipe de vigilância ao município.",
+"Os casos suspeitos foram notificados ao município pela equipe de vigilância.",
+"Os casos suspeitos tinham sido notificados ao município pela equipe de vigilância.",
+"Notificou-se ao município pela equipe de vigilância os casos suspeitos."],
+g:1,
+c:"Pretérito perfeito ativo (“notificou”) vira “foram notificados”: auxiliar “ser” no mesmo tempo + particípio. (A) usa o pretérito imperfeito e (C) o mais-que-perfeito composto, ambos alterando o tempo. (D) erra na concordância (“Notificaram-se… os casos”), e a passiva sintética não deve explicitar o agente."},
+
+{n:10,d:"LP",
+e:"De acordo com o Manual de Redação da Presidência da República (3ª edição), assinale o trecho adequado para um expediente oficial dirigido a um Secretário de Estado.",
+o:["“Ilustríssimo Senhor Secretário, venho por meio deste solicitar a Vossa Senhoria a liberação dos recursos.”",
+"“Solicito que Vossa Excelência encaminhe vosso parecer até o dia 30, conforme vossa disponibilidade.”",
+"“Solicito a Vossa Excelência que encaminhe seu parecer sobre a proposta até o dia 30. Respeitosamente,”",
+"“Acredito sinceramente que esta é, sem sombra de dúvida, a melhor proposta já apresentada a esta Secretaria.”"],
+g:2,
+c:"Secretário de Estado recebe “Vossa Excelência”, e os pronomes e verbos concordam na 3ª pessoa (“seu parecer”). O fecho “Respeitosamente” é para autoridades de hierarquia superior. (A) O Manual aboliu “Ilustríssimo” e “Digníssimo”, e o tratamento correto é Excelência. (B) “vosso” fere a concordância com pronome de tratamento. (D) fere a impessoalidade e a objetividade da comunicação oficial."},
+
+/* ============ RACIOCÍNIO LÓGICO E MATEMÁTICO (Agente 2) ============ */
+{n:11,d:"RLM",
+e:"Na Central de Abastecimento Farmacêutico, 6 técnicos montam 240 kits de curativo em 4 horas. Mantido o mesmo ritmo de trabalho, o número de técnicos necessários para montar 360 kits em 3 horas é",
+o:["8.","9.","10.","12."],
+g:3,
+c:"Técnicos são diretamente proporcionais aos kits e inversamente proporcionais ao tempo: x = 6 × (360/240) × (4/3) = 6 × 1,5 × 1,333… = 12. Armadilha comum: tratar o tempo como grandeza direta, o que daria 6 × 1,5 × 0,75 = 6,75."},
+
+{n:12,d:"RLM",
+e:"A farmácia dispõe de 700 mL de solução de álcool etílico a 90% (v/v) e precisa diluí-la para obter álcool a 70% (v/v), concentração indicada para antissepsia. O volume de água destilada a ser acrescentado é de",
+o:["200 mL.","140 mL.","180 mL.","250 mL."],
+g:0,
+c:"O soluto não muda: 0,90 × 700 = 630 mL de álcool. O volume final V deve satisfazer 630 = 0,70 × V, logo V = 900 mL. A água a acrescentar é 900 − 700 = 200 mL. Errar fazendo 20% de 700 = 140 mL (B) é a pegadinha clássica."},
+
+{n:13,d:"RLM",
+e:"Um fornecedor de insumos hospitalares financiou R$ 20.000,00 por 2 meses à taxa de 5% ao mês. A diferença entre o montante obtido no regime de juros compostos e o obtido no regime de juros simples é de",
+o:["R$ 25,00.","R$ 50,00.","R$ 100,00.","R$ 2.050,00."],
+g:1,
+c:"Simples: M = 20.000 × (1 + 0,05 × 2) = 22.000. Compostos: M = 20.000 × 1,05² = 20.000 × 1,1025 = 22.050. Diferença: R$ 50,00, que são os juros sobre os juros do 1º mês (5% de 1.000). (D) é o juro composto total, e não a diferença."},
+
+{n:14,d:"RLM",
+e:"Um setor dispõe de 8 enfermeiros. Para o plantão noturno, será formada uma equipe de 3 enfermeiros, um dos quais será designado coordenador. O número de maneiras distintas de formar essa equipe é",
+o:["56.","112.","168.","336."],
+g:2,
+c:"Escolhe-se o grupo, C(8,3) = 56, e depois o coordenador entre os 3: 56 × 3 = 168. Outro caminho: escolher o coordenador (8) e os outros 2 entre 7, C(7,2) = 21, o que dá 8 × 21 = 168. (D) 336 = A(8,3) trataria as três funções como distintas."},
+
+{n:15,d:"RLM",
+e:"Em um lote de 5 frascos de soro, 2 apresentam defeito no lacre. Retirando-se ao acaso 2 frascos, sucessivamente e sem reposição, a probabilidade de que pelo menos um deles apresente defeito é",
+o:["7/10.","3/10.","2/5.","3/5."],
+g:0,
+c:"Use o complementar: P(nenhum defeituoso) = 3/5 × 2/4 = 6/20 = 3/10. Logo P(pelo menos um) = 1 − 3/10 = 7/10. (B) é a probabilidade do evento complementar, armadilha típica da FGV."},
+
+{n:16,d:"RLM",
+e:"Uma unidade hospitalar tinha 30 servidores com média de idade de 40 anos. Foram admitidos 10 novos servidores, cuja média de idade é 28 anos. A nova média de idade do conjunto de servidores passou a ser",
+o:["34 anos.","35 anos.","36 anos.","37 anos."],
+g:3,
+c:"Média ponderada: (30 × 40 + 10 × 28) / 40 = (1.200 + 280) / 40 = 1.480 / 40 = 37. A média simples das duas médias, (40 + 28)/2 = 34 (A), ignora que os grupos têm tamanhos diferentes."},
+
+{n:17,d:"RLM",
+e:"Considere a proposição: “Todos os pacientes da ala A receberam alta e nenhum leito ficou vago.” Assinale a opção que apresenta uma negação lógica dessa proposição.",
+o:["Nenhum paciente da ala A recebeu alta e algum leito ficou vago.",
+"Algum paciente da ala A não recebeu alta ou algum leito ficou vago.",
+"Algum paciente da ala A não recebeu alta e todos os leitos ficaram vagos.",
+"Todos os pacientes da ala A não receberam alta ou nenhum leito ficou ocupado."],
+g:1,
+c:"Pela Lei de De Morgan, ~(p ∧ q) ≡ ~p ∨ ~q: o “e” vira “ou”. A negação de “Todos… receberam” é “Algum (pelo menos um)… não recebeu”, e a de “Nenhum leito ficou vago” é “Algum leito ficou vago”. (A) e (C) mantêm o “e”, e (D) nega os quantificadores errado."},
+
+{n:18,d:"RLM",
+e:"Assinale a opção logicamente equivalente à proposição: “Se o paciente apresenta febre, então o enfermeiro aplica o protocolo de sepse.”",
+o:["Se o enfermeiro aplica o protocolo de sepse, então o paciente apresenta febre.",
+"Se o paciente não apresenta febre, então o enfermeiro não aplica o protocolo de sepse.",
+"Se o enfermeiro não aplica o protocolo de sepse, então o paciente não apresenta febre.",
+"O paciente apresenta febre e o enfermeiro aplica o protocolo de sepse."],
+g:2,
+c:"A contrapositiva é equivalente: p → q ≡ ~q → ~p. A outra equivalência possível seria “O paciente não apresenta febre ou o enfermeiro aplica o protocolo” (~p ∨ q). (A) é a recíproca e (B) a inversa; nenhuma das duas é equivalente. (D) é uma conjunção, que exige p e q verdadeiras."},
+
+/* ============ HISTÓRIA E GEOGRAFIA DO TOCANTINS (Agente 3) ============ */
+{n:19,d:"HGTO",
+e:"Sobre o processo de criação do Estado do Tocantins, assinale a afirmativa correta.",
+o:["O Estado foi criado pelo art. 13 do Ato das Disposições Constitucionais Transitórias da Constituição promulgada em 5 de outubro de 1988 e instalado em 1º de janeiro de 1989, com Miracema do Tocantins como capital provisória.",
+"O Estado foi criado por lei complementar federal aprovada em 1989 e instalado em 1990, já com Palmas como capital definitiva desde o primeiro dia.",
+"A criação e a instalação do Estado ocorreram na mesma data, 5 de outubro de 1988, e Araguaína foi escolhida como capital provisória.",
+"O movimento liderado por Joaquim Teotônio Segurado entre 1821 e 1823 resultou na criação imediata da província do Tocantins, desmembrada de Goiás ainda no período imperial."],
+g:0,
+c:"Distinga criação jurídica (5/10/1988, art. 13 do ADCT da CF/88) de instalação (1º/1/1989, com posse do governo). Miracema do Tocantins foi a capital provisória até a transferência para Palmas, fundada em 20/5/1989. (D) O movimento de Teotônio Segurado (1821–1823) foi um precursor do separatismo na Comarca do Norte de Goiás, mas não criou província alguma."},
+
+{n:20,d:"HGTO",
+e:"Segundo a Divisão Regional do Brasil adotada pelo IBGE em 2017, o Estado do Tocantins está organizado em",
+o:["2 Regiões Geográficas Intermediárias (Palmas e Araguaína) e 8 Regiões Geográficas Imediatas.",
+"3 Regiões Geográficas Intermediárias (Palmas, Porto Nacional e Gurupi) e 11 Regiões Geográficas Imediatas.",
+"8 Regiões Geográficas Intermediárias, coincidentes com as regiões de planejamento definidas pelo governo estadual.",
+"3 Regiões Geográficas Intermediárias (Palmas, Araguaína e Gurupi), que agrupam 11 Regiões Geográficas Imediatas."],
+g:3,
+c:"Desde 2017, o IBGE substituiu meso e microrregiões por Regiões Intermediárias e Imediatas. O Tocantins tem 3 intermediárias, polarizadas por Palmas, Araguaína e Gurupi, e 11 imediatas. A pegadinha de (C) é confundir com a regionalização de planejamento do governo estadual, que segue critério próprio."},
+
+{n:21,d:"HGTO",
+e:"O Estado do Tocantins faz divisa com seis unidades da Federação. Assinale a opção que as relaciona corretamente.",
+o:["Maranhão, Piauí, Bahia, Goiás, Mato Grosso do Sul e Pará.",
+"Maranhão, Piauí, Bahia, Goiás, Mato Grosso e Pará.",
+"Maranhão, Piauí, Minas Gerais, Goiás, Mato Grosso e Pará.",
+"Maranhão, Ceará, Bahia, Goiás, Mato Grosso e Amazonas."],
+g:1,
+c:"Ao norte e a leste: Maranhão. A leste: Piauí e Bahia. Ao sul: Goiás. A oeste: Mato Grosso e Pará. O Tocantins não faz divisa com MS, MG, CE nem AM. Lembre que o Bico do Papagaio, no extremo norte, fica entre o MA e o PA."},
+
+{n:22,d:"HGTO",
+e:"Sobre os povos indígenas e as comunidades tradicionais do Tocantins, assinale a afirmativa correta.",
+o:["Os Krahô habitam a Ilha do Bananal, formada pela confluência dos rios Tocantins e Araguaia.",
+"Os Xerente vivem no extremo norte do Estado, na região do Bico do Papagaio, junto à foz do Araguaia.",
+"A Ilha do Bananal, delimitada pelo rio Araguaia e por seu braço, o rio Javaés, abriga aldeias dos povos Karajá e Javaé.",
+"As comunidades quilombolas do Estado concentram-se exclusivamente na região de Palmas, sem registros na região do Jalapão."],
+g:2,
+c:"A Ilha do Bananal, maior ilha fluvial do mundo, fica entre o Araguaia e o Javaés e é território tradicional de Karajá, Javaé e Avá-Canoeiro. (A) Os Krahô vivem no nordeste do Estado (Itacajá/Goiatins). (B) Os Xerente vivem na região de Tocantínia, no centro; no Bico do Papagaio estão os Apinajé. (D) Há quilombos no Jalapão, como o Mumbuca (Mateiros), conhecido pelo artesanato de capim-dourado, e no sudeste, como o Kalunga do Mimoso."},
+
+{n:23,d:"HGTO",
+e:"A matriz elétrica do Tocantins tem forte participação de usinas hidrelétricas instaladas no rio Tocantins. Assinale a opção que apresenta apenas usinas localizadas nesse rio, em território tocantinense.",
+o:["Luís Eduardo Magalhães (Lajeado), Peixe Angical e São Salvador.",
+"Tucuruí, Lajeado e Belo Monte.",
+"Serra da Mesa, Estreito e Itaipu.",
+"Peixe Angical, Tucuruí e Sobradinho."],
+g:0,
+c:"Lajeado (UHE Luís Eduardo Magalhães), Peixe Angical e São Salvador ficam no Tocantins; Estreito fica na divisa TO/MA. Tucuruí (PA) e Serra da Mesa (GO) estão no rio Tocantins, mas fora do Estado. Belo Monte (rio Xingu, PA), Sobradinho (rio São Francisco, BA) e Itaipu (rio Paraná) estão em outras bacias."},
+
+{n:24,d:"HGTO",
+e:"Acerca dos aspectos ambientais e econômicos do Tocantins, assinale a afirmativa correta.",
+o:["O Parque Estadual do Cantão localiza-se no sudeste do Estado, no Jalapão, em área de transição entre o Cerrado e a Caatinga.",
+"O acrônimo MATOPIBA designa a fronteira agrícola formada por Mato Grosso, Tocantins, Piauí e Bahia.",
+"A Ferrovia Norte-Sul atravessa o Estado no sentido leste-oeste, ligando-o diretamente aos portos do Pacífico.",
+"O Cerrado é o bioma predominante no Estado, que apresenta áreas de transição com a Amazônia, como a região do Cantão, e integra a fronteira agrícola do MATOPIBA."],
+g:3,
+c:"O Cerrado cobre a maior parte do Estado, e o Cantão (Pium/Caseara), na porção centro-oeste, é um ecótono entre Cerrado, Amazônia e áreas alagáveis. MATOPIBA = MAranhão, TOcantins, PIauí e BAhia; o “MA” não é de Mato Grosso (B). A Ferrovia Norte-Sul e a BR-153 cortam o Estado no sentido norte-sul (C)."},
+
+/* ============ LEGISLAÇÃO DO SUS (Agente 4) ============ */
+{n:25,d:"SUS",
+e:"De acordo com a Constituição Federal de 1988 (arts. 196 a 200), assinale a afirmativa correta.",
+o:["A assistência à saúde é livre à iniciativa privada, sendo permitida a destinação de recursos públicos para auxílios ou subvenções a instituições privadas com fins lucrativos.",
+"As instituições privadas poderão participar de forma complementar do SUS, segundo suas diretrizes, mediante contrato de direito público ou convênio, tendo preferência as entidades filantrópicas e as sem fins lucrativos.",
+"É livre a participação direta ou indireta de empresas ou capitais estrangeiros na assistência à saúde no País, independentemente de previsão legal.",
+"As ações e os serviços públicos de saúde integram rede regionalizada e hierarquizada, com direção única na esfera federal."],
+g:1,
+c:"É o texto do art. 199, § 1º. (A) O § 2º veda recursos públicos para auxílios ou subvenções a instituições privadas com fins lucrativos. (C) O § 3º veda a participação de capital estrangeiro, salvo nos casos previstos em lei. (D) O art. 198, I, prevê descentralização com direção única EM CADA esfera de governo."},
+
+{n:26,d:"SUS",
+e:"A Lei nº 14.847/2024 acrescentou dispositivo à Lei nº 8.080/1990 relativo ao atendimento de mulheres vítimas de violência no SUS. Segundo essa alteração,",
+o:["as mulheres vítimas de qualquer tipo de violência têm o direito de ser acolhidas e atendidas, na rede própria ou conveniada do SUS, em local e ambiente que garantam sua privacidade e restrição do acesso de terceiros não autorizados pela paciente, em especial o do agressor.",
+"o direito ao atendimento em ambiente privativo restringe-se aos serviços da rede própria do SUS, excluída a rede conveniada.",
+"o atendimento em ambiente reservado fica condicionado à apresentação prévia de boletim de ocorrência policial.",
+"é obrigatória a presença de um familiar durante todo o atendimento, ainda que a paciente não o autorize."],
+g:0,
+c:"A Lei 14.847/2024 incluiu parágrafo no art. 7º da Lei 8.080, vinculado ao inciso XIV (atendimento específico a mulheres vítimas de violência): acolhimento em local que garanta privacidade e restrição de acesso de terceiros não autorizados, “em especial o do agressor”, na rede própria OU conveniada. Não há exigência de boletim de ocorrência, e a vontade da paciente prevalece sobre o acesso de terceiros."},
+
+{n:27,d:"SUS",
+e:"Com base na Lei nº 8.142/1990, assinale a afirmativa correta.",
+o:["A Conferência de Saúde reunir-se-á a cada dois anos, convocada exclusivamente pelo Conselho de Saúde.",
+"O Conselho de Saúde, em caráter temporário e consultivo, é composto apenas por representantes do governo e dos prestadores de serviço.",
+"A representação dos usuários nos Conselhos de Saúde e nas Conferências será paritária em relação ao conjunto dos demais segmentos.",
+"Para receber recursos do Fundo Nacional de Saúde, os Municípios estão dispensados de apresentar relatório de gestão, bastando a existência do Fundo de Saúde."],
+g:2,
+c:"Art. 1º, § 4º: os usuários têm 50% das vagas, ou seja, paridade com o conjunto dos demais segmentos (governo, prestadores e trabalhadores). (A) A Conferência ocorre a cada 4 anos, convocada pelo Poder Executivo ou, extraordinariamente, por ela própria ou pelo Conselho. (B) O Conselho é permanente e deliberativo. (D) O art. 4º exige Fundo, Conselho, plano de saúde, relatório de gestão, contrapartida e comissão de PCCS."},
+
+{n:28,d:"SUS",
+e:"Nos termos do Decreto nº 7.508/2011, são Portas de Entrada às ações e aos serviços de saúde nas Redes de Atenção à Saúde os serviços de",
+o:["atenção primária, atenção ambulatorial especializada e atenção hospitalar eletiva.",
+"atenção primária, vigilância em saúde e assistência farmacêutica.",
+"urgência e emergência, atenção hospitalar de alta complexidade e regulação.",
+"atenção primária, atenção de urgência e emergência, atenção psicossocial e especiais de acesso aberto."],
+g:3,
+c:"Art. 9º do Decreto 7.508/2011. Não confunda com o art. 5º, que lista o conteúdo mínimo de uma Região de Saúde: atenção primária, urgência e emergência, atenção psicossocial, atenção ambulatorial especializada e hospitalar, e vigilância em saúde. A atenção ambulatorial especializada e a hospitalar são acessadas de forma referenciada, a partir das Portas de Entrada."},
+
+{n:29,d:"SUS",
+e:"São princípios da Política Nacional de Humanização (HumanizaSUS):",
+o:["hierarquização, centralização da gestão e padronização dos protocolos assistenciais.",
+"transversalidade; indissociabilidade entre atenção e gestão; e protagonismo, corresponsabilidade e autonomia dos sujeitos e coletivos.",
+"universalidade, gratuidade e territorialização das ações de humanização.",
+"acolhimento, ambiência e clínica ampliada."],
+g:1,
+c:"Os três princípios da PNH são transversalidade, indissociabilidade entre atenção e gestão, e protagonismo/corresponsabilidade/autonomia. (D) é a pegadinha mais frequente: acolhimento, ambiência, clínica ampliada, cogestão, valorização do trabalhador e defesa dos direitos dos usuários são DIRETRIZES (dispositivos) da PNH, não princípios."},
+
+{n:30,d:"SUS",
+e:"A Política Nacional de Saúde do Trabalhador e da Trabalhadora (PNSTT) tem como sujeitos",
+o:["todos os trabalhadores, homens e mulheres, independentemente de sua localização, urbana ou rural, de sua forma de inserção no mercado de trabalho, formal ou informal, e de seu vínculo empregatício, incluídos aposentados e desempregados.",
+"exclusivamente os trabalhadores com vínculo formal regido pela CLT, segurados do Regime Geral de Previdência Social.",
+"apenas os servidores públicos estatutários das três esferas de governo.",
+"os trabalhadores urbanos da indústria e do comércio, excluídos os trabalhadores rurais, que têm política específica."],
+g:0,
+c:"A PNSTT (Portaria GM/MS nº 1.823/2012, hoje consolidada) é universal: alcança trabalhadores formais e informais, urbanos e rurais, públicos e privados, autônomos, avulsos, temporários, cooperativados, aprendizes, estagiários, domésticos, aposentados e desempregados. Restringir aos celetistas (B) é confundir com a lógica previdenciária."},
+
+/* ============ CONHECIMENTOS ESPECÍFICOS — ENFERMEIRO (Agente 5) ============ */
+{n:31,d:"ENF",
+e:"De acordo com a Resolução Cofen nº 736/2024, o Processo de Enfermagem organiza-se em cinco etapas inter-relacionadas, interdependentes, recorrentes e cíclicas, que são:",
+o:["Histórico de Enfermagem, Diagnóstico de Enfermagem, Planejamento de Enfermagem, Implementação e Avaliação de Enfermagem.",
+"Coleta de dados, Diagnóstico de Enfermagem, Prescrição de Enfermagem, Evolução e Anotação de Enfermagem.",
+"Avaliação de Enfermagem, Diagnóstico de Enfermagem, Planejamento de Enfermagem, Implementação de Enfermagem e Evolução de Enfermagem.",
+"Anamnese, Exame Físico, Diagnóstico de Enfermagem, Prescrição de Enfermagem e Alta de Enfermagem."],
+g:2,
+c:"A Resolução 736/2024 revogou a 358/2009 e renomeou etapas: a 1ª passou a ser AVALIAÇÃO de Enfermagem (antes Coleta de dados/Histórico), e a última passou a ser EVOLUÇÃO de Enfermagem (antes Avaliação). (A) reproduz a nomenclatura antiga, armadilha certa em prova de 2026. O Diagnóstico e a Prescrição continuam privativos do enfermeiro."},
+
+{n:32,d:"ENF",
+e:"Ao elaborar o plano de cuidados de um paciente com diagnóstico de enfermagem de Mobilidade física prejudicada, o enfermeiro utiliza as taxonomias NANDA-I, NOC e NIC. Sobre o uso integrado dessas classificações, é correto afirmar que",
+o:["a NANDA-I descreve as intervenções que o enfermeiro deve prescrever para cada diagnóstico.",
+"a NIC descreve resultados mensuráveis do paciente, avaliados por indicadores em escala Likert.",
+"a NOC é a taxonomia de diagnósticos, estruturada em características definidoras e fatores relacionados.",
+"na etapa de Planejamento, o enfermeiro seleciona resultados da NOC, cujos indicadores são mensurados em escala Likert de cinco pontos, o que permite comparar o estado do paciente ao longo do tempo."],
+g:3,
+c:"NANDA-I = diagnósticos (com características definidoras, fatores relacionados e de risco). NOC = resultados esperados, com indicadores em escala Likert de 1 a 5, definidos no Planejamento e reavaliados na Evolução. NIC = intervenções e atividades. As alternativas (A), (B) e (C) trocam as funções das taxonomias."},
+
+{n:33,d:"ENF",
+e:"Um homem de 34 anos, em crise psicótica com risco para terceiros, é internado em hospital geral a pedido da irmã, sem o seu consentimento. À luz da Lei nº 10.216/2001, trata-se de internação",
+o:["involuntária, que deve ser comunicada ao Ministério Público Estadual pelo responsável técnico do estabelecimento no prazo de 72 horas, procedimento que também deve ser adotado por ocasião da alta.",
+"compulsória, que pode ser determinada pelo médico assistente e deve ser comunicada ao Ministério Público em até 7 dias.",
+"voluntária, uma vez que houve solicitação de familiar, e seu término dependerá exclusivamente de determinação judicial.",
+"involuntária, que dispensa laudo médico circunstanciado quando solicitada por familiar de primeiro grau."],
+g:0,
+c:"Art. 6º: involuntária = sem consentimento do usuário e a pedido de terceiro; compulsória = determinada pela Justiça; voluntária = com consentimento. Art. 8º, § 1º: a involuntária é comunicada ao MP Estadual em 72 h pelo responsável técnico, e o mesmo vale na alta. Qualquer modalidade exige laudo médico circunstanciado (D). A internação só é indicada quando os recursos extra-hospitalares (CAPS e demais pontos da RAPS) se mostrarem insuficientes."},
+
+{n:34,d:"ENF",
+e:"Paciente de 68 anos, com história de colelitíase, apresenta febre com calafrios, icterícia e dor em hipocôndrio direito, evoluindo nas últimas horas com hipotensão arterial e confusão mental. Esse quadro configura",
+o:["a Tríade de Charcot, indicativa de colecistite aguda não complicada.",
+"a Pêntade de Reynolds, sugestiva de colangite aguda grave.",
+"o sinal de Murphy, característico de apendicite aguda.",
+"a Tríade de Beck, sugestiva de tamponamento cardíaco."],
+g:1,
+c:"A Tríade de Charcot (febre, icterícia e dor em QSD) indica colangite. Somada a hipotensão/choque e alteração do estado mental, forma a Pêntade de Reynolds: colangite grave (supurativa), que exige suporte hemodinâmico e drenagem biliar de urgência. Murphy é sinal de colecistite. A Tríade de Beck (hipotensão, turgência jugular e abafamento de bulhas) indica tamponamento."},
+
+{n:35,d:"ENF",
+e:"Assinale a opção que associa corretamente o sinal semiológico à condição clínica.",
+o:["Sinal de Blumberg (dor à descompressão brusca da fossa ilíaca direita) — colecistite aguda.",
+"Sinal de Giordano (dor à punho-percussão lombar) — meningite bacteriana.",
+"Sinais de Kernig e Brudzinski — irritação meníngea; sinal de Murphy (interrupção da inspiração à palpação do ponto cístico) — colecistite aguda.",
+"Sinal de Murphy — apendicite aguda; sinal de Blumberg — pielonefrite."],
+g:2,
+c:"Kernig e Brudzinski indicam irritação meníngea. Murphy indica colecistite aguda. Blumberg indica irritação peritoneal, classicamente na apendicite. Giordano sugere pielonefrite ou litíase renal. As demais alternativas embaralham os pares."},
+
+{n:36,d:"ENF",
+e:"Paciente com DPOC exacerbada, sonolento, apresenta gasometria arterial: pH = 7,26; PaCO₂ = 60 mmHg; HCO₃⁻ = 25 mEq/L; PaO₂ = 58 mmHg. A interpretação correta é",
+o:["acidose respiratória aguda, sem compensação metabólica significativa.",
+"acidose metabólica com compensação respiratória adequada.",
+"alcalose respiratória parcialmente compensada.",
+"acidose mista, respiratória e metabólica."],
+g:0,
+c:"pH < 7,35 = acidemia. PaCO₂ > 45 mmHg explica a acidose, logo é respiratória. HCO₃⁻ normal (22–26) indica que os rins ainda não compensaram, o que caracteriza quadro agudo. Na acidose mista, o HCO₃⁻ estaria baixo, e na compensação crônica estaria elevado. Hipercapnia com sonolência sugere narcose por CO₂ e pode indicar ventilação não invasiva."},
+
+{n:37,d:"ENF",
+e:"Em paciente com Síndrome do Desconforto Respiratório Agudo (SDRA) sob ventilação mecânica invasiva, a estratégia ventilatória protetora recomendada inclui",
+o:["volume corrente de 10 a 12 mL/kg de peso real, para assegurar a normocapnia.",
+"FiO₂ de 100% mantida continuamente, com meta de SpO₂ de 100%.",
+"PEEP igual a zero, para reduzir o risco de barotrauma.",
+"volume corrente de cerca de 6 mL/kg de peso predito e pressão de platô igual ou inferior a 30 cmH₂O, com PEEP ajustada à oxigenação."],
+g:3,
+c:"Ventilação protetora: VC de 4–8 mL/kg (alvo de 6 mL/kg) calculado pelo PESO PREDITO (pela altura e pelo sexo), platô ≤ 30 cmH₂O e driving pressure ≤ 15 cmH₂O. A hipercapnia permissiva é tolerada. FiO₂ elevada por longo tempo é tóxica, e a PEEP é essencial para manter os alvéolos abertos. Cabe ao enfermeiro checar os alarmes, a posição do tubo, a cabeceira a 30–45° e o pacote de prevenção de PAV."},
+
+{n:38,d:"ENF",
+e:"Vítima de trauma cranioencefálico abre os olhos somente à pressão, pronuncia palavras inapropriadas e localiza o estímulo doloroso. À avaliação pupilar, uma pupila não reage à luz. Pela Escala de Coma de Glasgow com resposta pupilar (ECG-P), a pontuação é",
+o:["10.","9.","8.","11."],
+g:1,
+c:"Abertura ocular à pressão = 2; resposta verbal com palavras = 3; resposta motora que localiza = 5. ECG = 10. Na ECG-P subtrai-se a reatividade pupilar: nenhuma pupila arreativa = 0; uma = 1; ambas = 2. Logo, 10 − 1 = 9. A ECG-P varia de 1 a 15. (A) esquece a subtração pupilar."},
+
+{n:39,d:"ENF",
+e:"Paciente com sepse de foco pulmonar apresenta PA de 84 × 45 mmHg, mesmo após a reposição volêmica inicial com cristaloide. Quanto à pressão arterial média (PAM) e à conduta, é correto afirmar que",
+o:["a PAM é de aproximadamente 64,5 mmHg, valor considerado adequado para a perfusão tecidual.",
+"a PAM é de aproximadamente 58 mmHg, valor adequado por estar acima de 50 mmHg.",
+"a PAM é de aproximadamente 58 mmHg, abaixo da meta de 65 mmHg; persistindo a hipotensão após a reposição volêmica, está indicado vasopressor, sendo a noradrenalina a droga de primeira escolha.",
+"a PAM é de aproximadamente 71 mmHg, dentro da meta, sem necessidade de intervenção."],
+g:2,
+c:"PAM = (PAS + 2 × PAD) / 3 = (84 + 90) / 3 = 58 mmHg. A meta na sepse é PAM ≥ 65 mmHg; hipotensão refratária a volume caracteriza choque séptico e exige noradrenalina, de preferência em acesso central e com bomba de infusão. (A) usa a média aritmética simples (84 + 45)/2, que superestima a PAM."},
+
+{n:40,d:"ENF",
+e:"Motociclista vítima de trauma raquimedular cervical apresenta PA de 80 × 50 mmHg, FC de 48 bpm e pele quente e seca nos membros inferiores. O tipo de choque mais provável é",
+o:["neurogênico, decorrente da perda do tônus simpático, com vasodilatação periférica e bradicardia.",
+"hipovolêmico, caracterizado por bradicardia compensatória e pele quente.",
+"cardiogênico, causado por falência primária da bomba, com pele quente e bradicardia.",
+"séptico, na fase hiperdinâmica, com vasodilatação e bradicardia por resposta vagal."],
+g:0,
+c:"A lesão medular alta (acima de T6) interrompe o simpático. O resultado é vasodilatação (pele quente e seca) com bradicardia por tônus vagal sem oposição, a assinatura do choque neurogênico. No hipovolêmico e no cardiogênico há taquicardia e pele fria e pegajosa. No politrauma, exclua sempre a hemorragia antes de atribuir a hipotensão ao choque neurogênico."},
+
+{n:41,d:"ENF",
+e:"No Suporte Básico de Vida a um adulto em parada cardiorrespiratória, a ressuscitação cardiopulmonar de alta qualidade compreende",
+o:["compressões na frequência de 80 a 100 por minuto, com profundidade de aproximadamente 4 cm.",
+"compressões na frequência de 100 a 120 por minuto, com profundidade de 5 a 6 cm, permitindo o retorno total do tórax e minimizando as interrupções.",
+"relação de 15 compressões para 2 ventilações quando houver apenas um socorrista.",
+"checagem de pulso a cada 30 segundos de compressão, para identificar precocemente o retorno da circulação."],
+g:1,
+c:"Diretrizes AHA: 100–120 compressões/min, profundidade de 5–6 cm no adulto, retorno total do tórax, interrupções menores que 10 s e sem hiperventilação. A relação em adulto é 30:2 com um ou dois socorristas; 15:2 vale para criança e lactente com dois socorristas. O ritmo e o pulso são checados a cada 2 minutos (5 ciclos), e não a cada 30 s."},
+
+{n:42,d:"ENF",
+e:"Lactente de 8 meses, consciente, apresenta obstrução grave de vias aéreas por corpo estranho (OVACE): não consegue chorar nem tossir. A conduta correta é",
+o:["realizar compressões abdominais subdiafragmáticas (manobra de Heimlich) até a desobstrução.",
+"fazer varredura digital às cegas da cavidade oral para remover o corpo estranho.",
+"suspender o lactente pelos pés e sacudi-lo, para que a gravidade auxilie a expulsão.",
+"aplicar 5 golpes no dorso, entre as escápulas, seguidos de 5 compressões torácicas, alternando-os até a desobstrução ou a perda de consciência."],
+g:3,
+c:"No lactente (< 1 ano) não se fazem compressões abdominais, pelo risco de lesão hepática. Aplicam-se 5 golpes no dorso, com o lactente em decúbito ventral apoiado no antebraço e a cabeça mais baixa, e depois 5 compressões torácicas com dois dedos no esterno. Se ele perder a consciência, inicia-se a RCP, olhando a boca antes das ventilações. A varredura às cegas é contraindicada porque pode empurrar o objeto."},
+
+{n:43,d:"ENF",
+e:"Assinale a opção que relaciona corretamente o agente tóxico ao seu antídoto específico.",
+o:["Benzodiazepínicos — naloxona; opioides — flumazenil; paracetamol — atropina.",
+"Paracetamol — atropina; organofosforados — N-acetilcisteína; opioides — naloxona.",
+"Benzodiazepínicos — flumazenil; opioides — naloxona; paracetamol — N-acetilcisteína.",
+"Opioides — N-acetilcisteína; benzodiazepínicos — atropina; organofosforados — flumazenil."],
+g:2,
+c:"Flumazenil reverte benzodiazepínicos (cuidado com usuários crônicos e coingestão de tricíclicos, pelo risco de convulsão). Naloxona reverte opioides (miose, bradipneia, depressão do SNC). N-acetilcisteína é o antídoto do paracetamol, e quanto mais precoce, melhor. A atropina, associada à pralidoxima, é usada nos organofosforados e carbamatos (síndrome colinérgica)."},
+
+{n:44,d:"ENF",
+e:"Ao avaliar um paciente queimado, o enfermeiro observa lesão de aspecto branco-nacarado, seca, inelástica, sem flictenas e indolor à palpação. Essa lesão é classificada como queimadura de",
+o:["terceiro grau (espessura total), e a ausência de dor decorre da destruição das terminações nervosas.",
+"primeiro grau, por não apresentar flictenas.",
+"segundo grau superficial, por apresentar coloração esbranquiçada.",
+"segundo grau profundo, que se caracteriza por dor intensa e bolhas íntegras."],
+g:0,
+c:"1º grau: só epiderme, eritema e dor, sem bolhas. 2º grau superficial: flictenas, leito rosado e úmido, muito doloroso. 2º grau profundo: leito pálido e menos dor. 3º grau: destrói toda a derme, com aspecto branco-nacarado ou acastanhado, inelástico e indolor, e exige enxertia. Atenção: queimaduras circunferenciais de 3º grau podem exigir escarotomia."},
+
+{n:45,d:"ENF",
+e:"Mulher de 56 anos, na pós-menopausa, relata ressecamento vaginal, dispareunia e ardência miccional, sem fogachos ou outros sintomas vasomotores. Considerando o manejo da síndrome geniturinária da menopausa, a abordagem terapêutica hormonal preferencial é",
+o:["terapia hormonal sistêmica combinada (estrogênio e progestágeno) por via oral, obrigatoriamente.",
+"estrogenioterapia local (via vaginal) em baixa dose.",
+"contraindicação absoluta de qualquer forma de estrogênio após os 50 anos.",
+"progestágeno isolado por via tópica vaginal."],
+g:1,
+c:"Com sintomas exclusivamente geniturinários, a escolha é o estrogênio tópico vaginal em baixa dose (além de lubrificantes e hidratantes), que tem absorção sistêmica mínima. A terapia sistêmica fica para os sintomas vasomotores moderados a intensos, e o progestágeno é associado nela para proteger o endométrio da mulher com útero. A idade não é contraindicação absoluta; o que pesa é o tempo de menopausa e o risco individual."},
+
+{n:46,d:"ENF",
+e:"Segundo as Diretrizes Nacionais de Assistência ao Parto Normal (Ministério da Saúde), durante a fase ativa do primeiro período do trabalho de parto, recomenda-se",
+o:["realizar toque vaginal de hora em hora, para detectar precocemente distócias.",
+"realizar amniotomia de rotina, para acelerar a progressão do trabalho de parto.",
+"manter jejum absoluto durante todo o trabalho de parto, inclusive para líquidos claros.",
+"oferecer toque vaginal a cada 4 horas, ou antes se houver preocupação com a progressão ou a pedido da mulher, e encorajá-la a adotar as posições que considerar mais confortáveis."],
+g:3,
+c:"A diretriz recomenda toque vaginal a cada 4 h na fase ativa (ou antes, se houver indicação), liberdade de posição e de movimentação, oferta de líquidos e dieta leve às mulheres de baixo risco, e uso do partograma. A amniotomia e a ocitocina não devem ser rotineiras em trabalho de parto com progresso normal. Toques excessivos aumentam o risco de infecção e o desconforto."},
+
+{n:47,d:"ENF",
+e:"Gestante de 22 semanas, tipagem sanguínea O Rh negativo, com parceiro Rh positivo. Quanto à prevenção da aloimunização Rh, a conduta correta é",
+o:["solicitar Coombs direto materno mensalmente, a partir do primeiro trimestre.",
+"administrar imunoglobulina anti-D somente se o Coombs indireto materno for positivo.",
+"solicitar Coombs indireto; sendo negativo, repeti-lo periodicamente e, após o parto de recém-nascido Rh positivo, administrar imunoglobulina anti-D em até 72 horas.",
+"contraindicar a imunoglobulina anti-D em casos de abortamento, gravidez ectópica ou sangramento na gestação."],
+g:2,
+c:"Na gestante Rh−, o rastreio de anticorpos anti-D é feito pelo Coombs INDIRETO, já que os anticorpos circulam no soro materno; o Coombs DIRETO é feito no RN. A imunoglobulina anti-D serve para quem ainda NÃO está sensibilizada (Coombs indireto negativo): se já for positivo, a profilaxia não adianta (B). Ela é indicada até 72 h após parto de RN Rh+, abortamento, ectópica, sangramento ou procedimentos invasivos, e também por volta de 28 semanas quando houver disponibilidade."},
+
+{n:48,d:"ENF",
+e:"Sobre a assistência ao recém-nascido na sala de parto, segundo as diretrizes de reanimação neonatal da Sociedade Brasileira de Pediatria, assinale a afirmativa correta.",
+o:["No RN com idade gestacional ≥ 34 semanas e boa vitalidade, recomenda-se o clampeamento do cordão após pelo menos 60 segundos; se o RN não respirar ou estiver hipotônico, clampeia-se o cordão imediatamente, e a ventilação com pressão positiva deve ser iniciada dentro do primeiro minuto de vida (o “Minuto de Ouro”).",
+"Em todo RN apneico, deve-se iniciar a massagem cardíaca antes da ventilação com pressão positiva.",
+"A aspiração de boca e narinas deve ser realizada rotineiramente em todos os recém-nascidos, inclusive nos vigorosos.",
+"A ventilação com pressão positiva deve ser iniciada apenas após 3 minutos de vida, caso persista a apneia."],
+g:0,
+c:"O passo mais importante da reanimação neonatal é ventilar de forma eficaz, iniciando a VPP nos primeiros 60 segundos. A massagem só entra se a FC continuar < 60 bpm após 30 s de VPP com técnica adequada. A aspiração NÃO é rotineira, apenas quando há obstrução. No RN vigoroso, o clampeamento tardio (≥ 60 s) melhora as reservas de ferro."},
+
+{n:49,d:"ENF",
+e:"Pesquisadores selecionaram 120 pacientes com diagnóstico de infecção de corrente sanguínea e 240 pacientes internados sem a infecção, e investigaram retrospectivamente, nos prontuários, o tempo de permanência do cateter venoso central nos dois grupos. Esse delineamento corresponde a um estudo",
+o:["de coorte prospectivo, cuja medida de associação típica é o risco relativo.",
+"de caso-controle, cuja medida de associação típica é a razão de chances (odds ratio).",
+"de intervenção (ensaio clínico), cuja medida típica é a redução absoluta do risco.",
+"transversal, que permite calcular diretamente a incidência da infecção."],
+g:1,
+c:"O caso-controle parte do DESFECHO (casos com a doença × controles sem ela) e investiga a EXPOSIÇÃO no passado; como não permite calcular incidência, usa-se a odds ratio. A coorte parte da EXPOSIÇÃO e acompanha o surgimento do desfecho, o que permite calcular incidência e risco relativo. O estudo transversal mede prevalência, não incidência."},
+
+{n:50,d:"ENF",
+e:"Diante de um caso suspeito de sarampo em uma escola, o enfermeiro organiza as ações de vigilância e imunização. Assinale a conduta correta.",
+o:["A vacinação de bloqueio pode ser realizada em até 15 dias após o contato com o caso suspeito.",
+"As vacinas devem ser armazenadas na sala de vacinação entre −2 °C e +2 °C, para maior estabilidade.",
+"A vacina tríplice viral é indicada para gestantes contatos suscetíveis, como medida de bloqueio.",
+"A vacinação de bloqueio deve ser realizada em até 72 horas após o contato, e os imunobiológicos devem ser conservados na sala de vacinação entre +2 °C e +8 °C."],
+g:3,
+c:"Bloqueio vacinal: até 72 h após a exposição, para os contatos suscetíveis. Gestantes, imunodeprimidos e menores de 6 meses não recebem vacina de vírus vivo; para eles, a imunoglobulina humana pode ser usada em até 6 dias. Na sala de vacinação, a temperatura vai de +2 °C a +8 °C (ideal +5 °C), e o congelamento inativa várias vacinas. A notificação do caso suspeito é imediata (em até 24 h)."},
+
+{n:51,d:"ENF",
+e:"Sobre a busca ativa de casos de tuberculose e o manejo da infecção latente pelo M. tuberculosis (ILTB), segundo o Ministério da Saúde, assinale a afirmativa correta.",
+o:["Na população geral, considera-se sintomático respiratório a pessoa com tosse por 8 semanas ou mais.",
+"A ILTB deve ser tratada com o esquema básico RIPE (rifampicina, isoniazida, pirazinamida e etambutol) por 6 meses.",
+"Na população geral, considera-se sintomático respiratório a pessoa com tosse por 3 semanas ou mais; em pessoas vivendo com HIV e em situação de rua, investiga-se a tosse de qualquer duração.",
+"A busca ativa de sintomáticos respiratórios é restrita aos serviços hospitalares, não cabendo à Atenção Primária."],
+g:2,
+c:"O critério de sintomático respiratório na população geral é tosse ≥ 3 semanas. Em populações vulneráveis, como PVHIV, população em situação de rua e indígenas, a tosse de qualquer duração deve ser investigada, e para privados de liberdade o critério é diferenciado. A ILTB é tratada com esquemas específicos, como isoniazida (6–9 meses), rifampicina (4 meses) ou rifapentina + isoniazida (3HP), e não com RIPE, que trata a doença ativa. A busca ativa é atribuição central da APS."},
+
+{n:52,d:"ENF",
+e:"Quanto ao tratamento da hanseníase no Brasil, com a adoção da Poliquimioterapia Única (PQT-U), é correto afirmar que",
+o:["os casos paucibacilares e multibacilares passam a ser tratados com a mesma associação de rifampicina, dapsona e clofazimina, variando a duração: 6 doses para paucibacilares e 12 doses para multibacilares.",
+"os casos paucibacilares mantêm o esquema com apenas rifampicina e dapsona, em 6 doses.",
+"os casos multibacilares devem receber 24 doses supervisionadas, em até 36 meses.",
+"o tratamento deve ser interrompido sempre que surgir reação hansênica tipo 1 ou tipo 2."],
+g:0,
+c:"Desde 2021, o Brasil adota a PQT-U para todos os casos: rifampicina + dapsona + clofazimina, com 6 doses mensais supervisionadas para PB e 12 para MB. As reações hansênicas são tratadas (corticoide, talidomida no tipo 2 fora da idade fértil, etc.) SEM suspender a PQT. Lembre também: a avaliação dos contatos e a aplicação de BCG fazem parte do controle."},
+
+{n:53,d:"ENF",
+e:"Paciente com dengue no 5º dia de doença, em fase de defervescência, apresenta dor abdominal intensa e contínua, vômitos persistentes e hepatomegalia dolorosa, sem hipotensão nem sinais de choque. Segundo o Ministério da Saúde, esse paciente é classificado no grupo",
+o:["A, com hidratação oral e acompanhamento ambulatorial.",
+"B, por apresentar prova do laço positiva, devendo permanecer em observação até o resultado do hemograma.",
+"D, devendo receber expansão volêmica rápida com 20 mL/kg em 20 minutos.",
+"C, por apresentar sinais de alarme, com indicação de reposição volêmica venosa imediata (10 mL/kg de soro fisiológico na primeira hora) em leito de internação e reavaliação clínica frequente."],
+g:3,
+c:"Sinais de alarme: dor abdominal intensa e contínua, vômitos persistentes, acúmulo de líquidos, hipotensão postural/lipotimia, hepatomegalia > 2 cm, sangramento de mucosa, letargia/irritabilidade e aumento progressivo do hematócrito. Qualquer um deles define o Grupo C. O Grupo D tem sinais de choque ou disfunção grave de órgão. A fase crítica costuma coincidir com a defervescência (3º ao 7º dia)."},
+
+{n:54,d:"ENF",
+e:"Quanto às manifestações clínicas da sífilis adquirida, assinale a afirmativa correta.",
+o:["Na sífilis primária, surgem lesões eritematosas em palmas das mãos e plantas dos pés, acompanhadas de linfadenopatia generalizada.",
+"A sífilis primária caracteriza-se pelo cancro duro, úlcera geralmente única, indolor, de base endurecida, no local de inoculação; a secundária pode cursar com roséola, lesões palmoplantares e condiloma plano.",
+"O cancro duro é a manifestação típica da sífilis terciária, surgindo anos após a infecção.",
+"A sífilis secundária é sempre assintomática, sendo diagnosticada apenas por testes sorológicos."],
+g:1,
+c:"Primária: cancro duro (indolor, base endurecida) com adenopatia regional, de 10 a 90 dias após o contato. Secundária: lesões cutaneomucosas não pruriginosas (roséola, sifílides palmoplantares, condiloma plano, alopecia), entre 6 semanas e 6 meses. Latente: assintomática. Terciária: gomas, aortite, neurossífilis. A primária e a secundária são as fases mais transmissíveis."},
+
+{n:55,d:"ENF",
+e:"Paciente renal crônico em hemodiálise possui fístula arteriovenosa (FAV) no membro superior esquerdo. Sobre os cuidados de enfermagem com os acessos para hemodiálise, é correto afirmar que",
+o:["a pressão arterial deve ser aferida preferencialmente no membro da FAV, para monitorar o fluxo sanguíneo.",
+"a ausência de frêmito à palpação da FAV é um achado esperado após a maturação.",
+"deve-se avaliar diariamente o frêmito e o sopro da FAV e evitar, no membro da fístula, aferição de PA, garroteamento, punções para coleta ou medicação e compressão prolongada.",
+"o cateter Permcath é um cateter de curta permanência, não tunelizado, indicado apenas para hemodiálise de urgência."],
+g:2,
+c:"A FAV funcionante tem frêmito palpável e sopro audível, e a ausência deles sugere trombose, exigindo comunicação imediata. O membro da FAV deve ser preservado: sem PA, sem garrote, sem punções alheias à diálise, sem relógio ou roupas apertadas e sem dormir sobre ele. O Permcath é cateter TUNELIZADO, com cuff, de longa permanência; os de curta permanência são os não tunelizados (duplo-lúmen)."},
+
+{n:56,d:"ENF",
+e:"Em relação ao processamento de produtos para a saúde, considerando a classificação de Spaulding e a RDC Anvisa nº 15/2012, assinale a afirmativa correta.",
+o:["Produtos críticos, que entram em contato com tecidos estéreis ou com o sistema vascular, devem ser esterilizados, e o monitoramento com indicador biológico deve ser realizado também em toda carga que contenha produto implantável.",
+"Produtos semicríticos, que entram em contato com mucosa íntegra, devem obrigatoriamente ser esterilizados, sendo vedada a desinfecção.",
+"Produtos não críticos, que entram em contato apenas com pele íntegra, exigem esterilização a vapor antes de cada uso.",
+"A termodesinfectadora é um equipamento de esterilização, podendo substituir a autoclave para os produtos críticos."],
+g:0,
+c:"Spaulding: críticos exigem esterilização; semicríticos exigem, no mínimo, desinfecção de alto nível (ou esterilização); não críticos exigem limpeza e desinfecção de nível baixo ou intermediário. A RDC 15/2012 exige monitoramento do ciclo, e cargas com produtos implantáveis devem ser monitoradas com indicador biológico e só liberadas após o resultado. A termodesinfectadora faz limpeza + desinfecção térmica, e não esterilização."},
+
+{n:57,d:"ENF",
+e:"Assinale a opção que apresenta corretamente as precauções baseadas na transmissão indicadas para os agravos relacionados.",
+o:["Meningite meningocócica — precaução para aerossóis durante toda a internação.",
+"Tuberculose pulmonar bacilífera — precaução para gotículas, com uso de máscara cirúrgica pelo profissional.",
+"Varicela — apenas precaução-padrão, por se tratar de doença exantemática benigna.",
+"Meningite meningocócica — precaução para gotículas até completar 24 horas de antibioticoterapia eficaz; tuberculose pulmonar — precaução para aerossóis, com uso de respirador PFF2/N95 pelo profissional."],
+g:3,
+c:"Gotículas (máscara cirúrgica e quarto privativo ou coorte): meningococo e H. influenzae até 24 h de antibiótico eficaz, influenza, coqueluche, caxumba, rubéola. Aerossóis (PFF2/N95 e quarto com pressão negativa ou bem ventilado, porta fechada): TB, sarampo, varicela/herpes-zóster disseminado; na varicela, somam-se as precauções de contato. A máscara cirúrgica vai no PACIENTE com TB durante o transporte, e não no profissional."},
+
+{n:58,d:"ENF",
+e:"Segundo a RDC Anvisa nº 222/2018, que regulamenta as boas práticas de gerenciamento dos resíduos de serviços de saúde, assinale a afirmativa correta.",
+o:["O Grupo D compreende os resíduos químicos, como medicamentos vencidos e reagentes de laboratório.",
+"O Grupo E compreende os materiais perfurocortantes, que devem ser descartados em recipientes rígidos, resistentes à punctura, ruptura e vazamento, com tampa, e a segregação deve ocorrer no momento e no local de geração.",
+"O Grupo C compreende os resíduos com possível presença de agentes biológicos.",
+"O Grupo A compreende os resíduos comuns, equiparados aos domiciliares, passíveis de reciclagem."],
+g:1,
+c:"A = infectantes (risco biológico); B = químicos; C = rejeitos radioativos; D = comuns (equiparados aos domiciliares); E = perfurocortantes. A segregação é feita na origem, no momento da geração. O recipiente de perfurocortante não deve ultrapassar o limite de enchimento (3/4 ou a marca do fabricante), e é proibido reencapar ou desconectar agulhas manualmente."},
+
+{n:59,d:"ENF",
+e:"De acordo com o Código de Ética dos Profissionais de Enfermagem (Resolução Cofen nº 564/2017) e a Lei nº 5.905/1973, as penalidades aplicáveis aos profissionais de enfermagem são",
+o:["advertência verbal, multa, censura e suspensão, todas de competência exclusiva do Conselho Federal de Enfermagem.",
+"advertência escrita, demissão a bem do serviço público e cassação do registro, aplicadas pela chefia imediata.",
+"advertência verbal, multa, censura, suspensão do exercício profissional e cassação do direito ao exercício profissional, sendo esta última aplicada pelo Cofen, ouvido o Conselho Regional interessado.",
+"censura, multa e advertência verbal, sendo a censura a penalidade mais grave prevista."],
+g:2,
+c:"O art. 108 da Res. 564/2017 lista cinco penalidades, em ordem crescente de gravidade: advertência verbal, multa, censura, suspensão do exercício profissional e cassação do direito ao exercício profissional. Pela Lei 5.905/73, art. 18, as quatro primeiras cabem aos Conselhos Regionais, e a cassação cabe ao Cofen, ouvido o Coren. “Demissão” é penalidade administrativa do vínculo de trabalho, e não ético-profissional."},
+
+{n:60,d:"ENF",
+e:"Conforme a RDC Anvisa nº 36/2013, que institui ações para a segurança do paciente em serviços de saúde, assinale a afirmativa correta.",
+o:["A constituição do Núcleo de Segurança do Paciente é facultativa nos serviços de saúde privados.",
+"Os eventos adversos devem ser notificados ao Sistema Nacional de Vigilância Sanitária apenas anualmente, por meio de relatório consolidado.",
+"Os eventos adversos que evoluírem para óbito devem ser notificados até o 15º dia útil do mês subsequente ao mês de vigilância.",
+"Os eventos adversos que evoluírem para óbito devem ser notificados em até 72 horas a partir do ocorrido, e os demais, até o 15º dia útil do mês subsequente ao mês de vigilância."],
+g:3,
+c:"Art. 10 da RDC 36/2013: notificação mensal até o 15º dia útil do mês seguinte, salvo óbitos por evento adverso, notificados em até 72 h. O NSP é obrigatório em serviços públicos, privados, filantrópicos, civis ou militares, e cabe a ele elaborar o Plano de Segurança do Paciente (PSP), que implementa os protocolos básicos (identificação, cirurgia segura, higiene das mãos, quedas, lesão por pressão, medicamentos)."}
+];
+
+
+/* ===================== CONFIGURAÇÃO ===================== */
+const AGENTES = {
+  1:{nome:"Agente 1 · Língua Portuguesa",cor:"#24497a",desc:"Interpretação, coesão, conectivos, crase, concordância, colocação, parônimos, vozes verbais e Redação Oficial."},
+  2:{nome:"Agente 2 · Raciocínio Lógico-Matemático",cor:"#6a3d9a",desc:"Regra de três, diluições, juros, combinatória, probabilidade, média ponderada, De Morgan e contrapositiva."},
+  3:{nome:"Agente 3 · História e Geografia do TO",cor:"#9a6b0e",desc:"Criação do Estado, regiões IBGE, limites, povos indígenas e quilombolas, Cerrado, MATOPIBA e UHEs."},
+  4:{nome:"Agente 4 · Legislação do SUS",cor:"#1d7a4c",desc:"CF/88 arts. 196–200, Leis 8.080 e 8.142, Decreto 7.508, PNH e PNSTT."},
+  5:{nome:"Agente 5 · Enfermeiro (Específicas)",cor:"#b3362f",desc:"PE (Cofen 736/2024), saúde mental, semiologia, paciente crítico, obstetrícia, vigilância, CME, IRAS, ética e segurança."}
+};
+const DISC = {
+  LP:{nome:"Língua Portuguesa",mod:1,peso:1,ag:1},
+  RLM:{nome:"Raciocínio Lógico e Matemático",mod:1,peso:1,ag:2},
+  HGTO:{nome:"História e Geografia do Tocantins",mod:1,peso:1,ag:3},
+  SUS:{nome:"Legislação do SUS",mod:1,peso:1,ag:4},
+  ENF:{nome:"Conhecimentos Específicos – Enfermeiro",mod:2,peso:2,ag:5}
+};
+const DISC_ORDER = ["LP","RLM","HGTO","SUS","ENF"];
+const LET = ["A","B","C","D"];
+const DURACAO = 4*3600;
+const KEY = "simulado_sesto_enf_v1";
+
+/* ===================== ESTADO ===================== */
+let S = null; // {name, local, mode, answers[60], flags[60], cur, startedAt, remaining, finished, elapsed}
+let tick = null;
+
+const $ = id => document.getElementById(id);
+const store = {
+  get(){ try{ const r = localStorage.getItem(KEY); return r ? JSON.parse(r) : null; }catch(e){ return null; } },
+  set(v){ try{ localStorage.setItem(KEY, JSON.stringify(v)); }catch(e){} },
+  del(){ try{ localStorage.removeItem(KEY); }catch(e){} }
+};
+function save(){ if(S) store.set(S); }
+function esc(s){ return String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
+function fmt(sec){ sec=Math.max(0,Math.round(sec)); const h=Math.floor(sec/3600), m=Math.floor(sec%3600/60), s=sec%60; return [h,m,s].map(x=>String(x).padStart(2,"0")).join(":"); }
+function num(n){ return String(n).padStart(2,"0"); }
+function ptsBR(n){ return n.toLocaleString("pt-BR",{minimumFractionDigits:0,maximumFractionDigits:1}); }
+
+/* ===================== TELA 1 ===================== */
+function renderAgents(){
+  $("agentsList").innerHTML = Object.entries(AGENTES).map(([k,a]) => {
+    const qs = QUESTOES.filter(q=>DISC[q.d].ag==k);
+    return `<div class="agent"><div class="av" style="background:${a.cor}">${k}</div><div><b>${esc(a.nome)} <span style="color:var(--muted);font-weight:500">· Q${num(qs[0].n)}–${num(qs[qs.length-1].n)}</span></b><small>${esc(a.desc)}</small></div></div>`;
+  }).join("");
+}
+document.querySelectorAll('#modes input').forEach(r => r.addEventListener('change', () => {
+  document.querySelectorAll('#modes .mode').forEach(m => m.classList.toggle('on', m.querySelector('input').checked));
+}));
+function checkResume(){
+  const prev = store.get();
+  if(prev && !prev.finished){
+    $("resumeBox").classList.remove("hidden");
+    $("btnResume").onclick = () => { S = prev; startExam(true); };
+    $("btnDiscard").onclick = () => { store.del(); $("resumeBox").classList.add("hidden"); };
+  }
+}
+$("btnStart").onclick = () => {
+  const name = $("inName").value.trim() || "Candidato(a)";
+  S = {
+    name, local: $("inLocal").value,
+    mode: document.querySelector('#modes input:checked').value,
+    answers: Array(60).fill(null), flags: Array(60).fill(false),
+    cur: 0, remaining: DURACAO, finished: false, elapsed: 0
+  };
+  save(); startExam(false);
+};
+
+/* ===================== TELA 2 ===================== */
+function show(id){
+  ["screen-setup","screen-exam","screen-result"].forEach(s => $(s).classList.toggle("hidden", s!==id));
+  $("brand").classList.toggle("hidden", id==="screen-exam");
+  window.scrollTo(0,0);
+}
+function startExam(){
+  show("screen-exam");
+  $("hdName").textContent = S.name;
+  $("hdLocal").textContent = "Lotação: " + S.local;
+  $("hdMode").textContent = S.mode==="treino" ? "Treino Comentado" : "Prova Real";
+  // seletor de disciplina
+  $("jump").innerHTML = DISC_ORDER.map(k => {
+    const qs = QUESTOES.filter(q=>q.d===k);
+    return `<option value="${qs[0].n-1}">${DISC[k].nome} (${num(qs[0].n)}–${num(qs[qs.length-1].n)})</option>`;
+  }).join("");
+  $("jump").onchange = e => go(+e.target.value);
+  buildSheet();
+  render();
+  startTimer();
+}
+function startTimer(){
+  clearInterval(tick);
+  let last = Date.now();
+  const paint = () => {
+    const t = $("timer");
+    t.textContent = fmt(S.remaining);
+    t.classList.toggle("warn", S.remaining<=1800 && S.remaining>600);
+    t.classList.toggle("crit", S.remaining<=600);
+  };
+  paint();
+  tick = setInterval(() => {
+    const now = Date.now(); const dt = (now-last)/1000; last = now;
+    S.remaining -= dt; S.elapsed += dt;
+    if(S.remaining <= 0){ S.remaining = 0; paint(); finish(true); return; }
+    paint();
+    if(Math.floor(S.elapsed)%5===0) save();
+  }, 1000);
+}
+function buildSheet(){
+  let html = "", lastMod = 0;
+  QUESTOES.forEach((q,i) => {
+    const m = DISC[q.d].mod;
+    if(m!==lastMod){ html += `<div class="sep">Módulo ${m===1?"I":"II"}</div>`; lastMod = m; }
+    html += `<button class="cell" data-i="${i}" title="Questão ${num(q.n)} · ${DISC[q.d].nome}">${num(q.n)}</button>`;
+  });
+  $("sheet").innerHTML = html;
+  $("sheet").onclick = e => { const b = e.target.closest(".cell"); if(b) go(+b.dataset.i); };
+}
+function paintSheet(){
+  const treino = S.mode==="treino";
+  document.querySelectorAll("#sheet .cell").forEach(c => {
+    const i = +c.dataset.i, a = S.answers[i];
+    c.className = "cell";
+    if(a!==null){
+      if(treino) c.classList.add(a===QUESTOES[i].g ? "r-ok" : "r-bad");
+      else c.classList.add("ans");
+    }
+    if(S.flags[i]) c.classList.add("flag");
+    if(i===S.cur) c.classList.add("cur");
+  });
+  const done = S.answers.filter(a=>a!==null).length, p = Math.round(done/60*100);
+  $("progBar").style.width = p+"%";
+  $("progTxt").textContent = `${done} de 60 respondidas`;
+  $("progPct").textContent = p+"%";
+}
+function render(){
+  const q = QUESTOES[S.cur], d = DISC[q.d], ag = AGENTES[d.ag];
+  const a = S.answers[S.cur], treino = S.mode==="treino", locked = treino && a!==null;
+  $("qtop").innerHTML =
+    `<span class="qnum">Questão ${num(q.n)} de 60</span>`+
+    `<span class="badge ${d.mod===1?"b-mod1":"b-mod2"}">Módulo ${d.mod===1?"I":"II"} · Peso ${d.peso},0</span>`+
+    `<span class="badge b-disc">${esc(d.nome)}</span>`+
+    `<span class="badge b-agent" style="background:${ag.cor}">${esc(ag.nome)}</span>`+
+    (S.flags[S.cur] ? `<span class="flagmark">⚑ Revisar</span>` : "");
+  $("qbase").innerHTML = q.t ? `<div class="basetext"><h4>${TEXTOS[q.t].titulo}</h4>${TEXTOS[q.t].corpo}</div>` : "";
+  $("qenun").innerHTML = q.e;
+  $("qalts").innerHTML = q.o.map((txt,i) => {
+    let cls = "alt";
+    if(locked){ if(i===q.g) cls+=" ok"; else if(i===a) cls+=" bad"; }
+    else if(i===a) cls+=" sel";
+    return `<button class="${cls}" data-i="${i}" ${locked?"disabled":""}><span class="L">${LET[i]}</span><span>${txt}</span></button>`;
+  }).join("");
+  $("qalts").onclick = e => { const b = e.target.closest(".alt"); if(b && !b.disabled) answer(+b.dataset.i); };
+  $("qfeed").innerHTML = locked ?
+    `<div class="feedback ${a===q.g?"ok":"bad"}"><h5>${a===q.g?"✓ Correto!":"✗ Incorreto. Gabarito: "+LET[q.g]}</h5>${q.c}<div class="by">Comentário · ${esc(ag.nome)}</div></div>` : "";
+  $("btnPrev").disabled = S.cur===0;
+  $("btnNext").textContent = S.cur===59 ? "Revisar e encerrar" : "Próxima →";
+  $("btnFlag").textContent = S.flags[S.cur] ? "⚑ Desmarcar revisão" : "⚑ Marcar p/ revisão";
+  $("btnClear").disabled = a===null || locked;
+  $("jump").value = String(QUESTOES.findIndex(x=>x.d===q.d));
+  paintSheet();
+}
+function answer(i){ S.answers[S.cur] = i; save(); render(); }
+function go(i){ if(i<0||i>59) return; S.cur = i; save(); render(); window.scrollTo({top:0,behavior:"smooth"}); }
+$("btnPrev").onclick = () => go(S.cur-1);
+$("btnNext").onclick = () => S.cur===59 ? askFinish() : go(S.cur+1);
+$("btnFlag").onclick = () => { S.flags[S.cur] = !S.flags[S.cur]; save(); render(); };
+$("btnClear").onclick = () => { S.answers[S.cur] = null; save(); render(); };
+$("btnFinish").onclick = askFinish;
+document.addEventListener("keydown", e => {
+  if($("screen-exam").classList.contains("hidden") || !$("modal").classList.contains("hidden")) return;
+  if(e.target.matches("input,select,textarea")) return;
+  const k = e.key.toUpperCase();
+  if(["A","B","C","D"].includes(k)){
+    const locked = S.mode==="treino" && S.answers[S.cur]!==null;
+    if(!locked) answer(LET.indexOf(k));
+  } else if(e.key==="ArrowRight") go(S.cur+1);
+  else if(e.key==="ArrowLeft") go(S.cur-1);
+  else if(k==="F"){ S.flags[S.cur] = !S.flags[S.cur]; save(); render(); }
+});
+
+/* ===================== MODAL ===================== */
+function modal(title, body, buttons){
+  $("mTitle").textContent = title; $("mBody").innerHTML = body;
+  $("mRow").innerHTML = "";
+  buttons.forEach(b => { const el = document.createElement("button"); el.className = "btn "+b.cls; el.textContent = b.t; el.onclick = () => { $("modal").classList.add("hidden"); b.fn && b.fn(); }; $("mRow").appendChild(el); });
+  $("modal").classList.remove("hidden");
+}
+function askFinish(){
+  const blank = S.answers.filter(a=>a===null).length, fl = S.flags.filter(Boolean).length;
+  modal("Encerrar a prova?",
+    `<p>Você deixou <b>${blank}</b> questão(ões) em branco${fl?` e há <b>${fl}</b> marcada(s) para revisão`:""}.</p><p>Tempo restante: <b>${fmt(S.remaining)}</b>. Depois de encerrar, não será possível alterar respostas.</p>`,
+    [{t:"Voltar à prova",cls:"btn-ghost"},{t:"Encerrar e corrigir",cls:"btn-danger",fn:()=>finish(false)}]);
+}
+
+/* ===================== TELA 3 ===================== */
+function score(){
+  const by = {}; DISC_ORDER.forEach(k => by[k] = {q:0,ok:0,pts:0,max:0});
+  let m1=0, m2=0, ok=0, blank=0;
+  QUESTOES.forEach((q,i) => {
+    const d = DISC[q.d], a = S.answers[i], hit = a===q.g;
+    by[q.d].q++; by[q.d].max += d.peso;
+    if(a===null) blank++;
+    if(hit){ ok++; by[q.d].ok++; by[q.d].pts += d.peso; if(d.mod===1) m1 += d.peso; else m2 += d.peso; }
+  });
+  return {by, m1, m2, total:m1+m2, ok, blank, wrong:60-ok-blank};
+}
+function finish(timeout){
+  clearInterval(tick);
+  S.finished = true; save();
+  const r = score();
+  const pass = r.m2>=24 && r.total>=36;
+  show("screen-result");
+  $("printHead").innerHTML = `<b>Simulado SES/TO 2026 · Enfermeiro</b> · ${esc(S.name)} · Lotação: ${esc(S.local)} · ${new Date().toLocaleString("pt-BR")}`;
+
+  const motivos = [];
+  if(r.m2<24) motivos.push(`Módulo II com ${r.m2} pts (mínimo 24)`);
+  if(r.total<36) motivos.push(`total de ${r.total} pts (mínimo 36)`);
+  $("verdict").className = "verdict " + (pass?"pass":"fail");
+  $("verdict").innerHTML = `<div class="ico">${pass?"✓":"✗"}</div><div><h2>${pass?"APROVADO NOS CRITÉRIOS DO EDITAL":"ELIMINADO PELO CORTE MÍNIMO"}</h2><p>${esc(S.name)} · ${esc(S.local)} · ${S.mode==="treino"?"Modo Treino Comentado":"Modo Prova Real"}${timeout?" · tempo esgotado":""}</p><p>${pass?"Item 11.14 atendido: Módulo II ≥ 24 pts e total ≥ 36 pts.":"Item 11.14 não atendido: "+motivos.join(" e ")+"."}</p></div>`;
+
+  const bar = (v,max,cut,color) => `<div class="bar"><i style="width:${v/max*100}%;background:${color}"></i>${cut!=null?`<span class="cut" style="left:${cut/max*100}%" title="Corte"></span>`:""}</div>`;
+  $("kpis").innerHTML =
+    `<div class="kpi"><small>Nota final</small><b>${ptsBR(r.total)} <em>/ 90</em></b>${bar(r.total,90,36,pass?"var(--green)":"var(--red)")}<div class="note">Corte: 36 pts · ${Math.round(r.total/90*100)}%</div></div>`+
+    `<div class="kpi"><small>Módulo I · Gerais</small><b>${ptsBR(r.m1)} <em>/ 30</em></b>${bar(r.m1,30,null,"var(--navy-3)")}<div class="note">${r.m1} acertos de 30 · peso 1,0</div></div>`+
+    `<div class="kpi"><small>Módulo II · Específicos</small><b>${ptsBR(r.m2)} <em>/ 60</em></b>${bar(r.m2,60,24,r.m2>=24?"var(--green)":"var(--red)")}<div class="note">${r.m2/2} acertos de 30 · corte 24 pts</div></div>`+
+    `<div class="kpi"><small>Acertos · Tempo</small><b>${r.ok} <em>/ 60</em></b><div class="note" style="margin-top:12px">${r.wrong} erro(s) · ${r.blank} em branco<br>Tempo gasto: <b>${fmt(S.elapsed)}</b></div></div>`;
+
+  const pctCell = (p) => { const c = p>=70?"var(--green)":p>=40?"var(--amber)":"var(--red)"; return `<span class="pct"><i><s style="width:${p}%;background:${c}"></s></i>${p}%</span>`; };
+  let rows = "";
+  [1,2].forEach(m => {
+    const ks = DISC_ORDER.filter(k=>DISC[k].mod===m);
+    let tq=0,tok=0,tp=0,tm=0;
+    ks.forEach(k => { const b = r.by[k], d = DISC[k]; tq+=b.q; tok+=b.ok; tp+=b.pts; tm+=b.max;
+      rows += `<tr><td>${esc(d.nome)}</td><td>${esc(AGENTES[d.ag].nome)}</td><td class="n">${b.q}</td><td class="n">${b.ok}</td><td class="n">${ptsBR(b.pts)} / ${b.max}</td><td class="n">${pctCell(Math.round(b.ok/b.q*100))}</td></tr>`; });
+    rows += `<tr class="sub"><td colspan="2">Subtotal Módulo ${m===1?"I":"II"}</td><td class="n">${tq}</td><td class="n">${tok}</td><td class="n">${ptsBR(tp)} / ${tm}</td><td class="n">${pctCell(Math.round(tok/tq*100))}</td></tr>`;
+  });
+  $("perfTbl").innerHTML = `<thead><tr><th>Disciplina</th><th>Agente especialista</th><th style="text-align:right">Questões</th><th style="text-align:right">Acertos</th><th style="text-align:right">Pontos</th><th style="text-align:right">Aproveitamento</th></tr></thead><tbody>${rows}<tr class="sub"><td colspan="2">TOTAL GERAL</td><td class="n">60</td><td class="n">${r.ok}</td><td class="n">${ptsBR(r.total)} / 90</td><td class="n">${pctCell(Math.round(r.total/90*100))}</td></tr></tbody>`;
+
+  const F = [["all","Todas (60)"],["bad",`Erradas (${r.wrong})`],["blank",`Em branco (${r.blank})`],["ok",`Certas (${r.ok})`],["flag","Marcadas p/ revisão"]]
+    .concat(DISC_ORDER.map(k=>[k,DISC[k].nome]));
+  $("filters").innerHTML = F.map(([k,t],i)=>`<button class="chip ${i===0?"on":""}" data-f="${k}">${t}</button>`).join("");
+  $("filters").onclick = e => { const b = e.target.closest(".chip"); if(!b) return;
+    document.querySelectorAll("#filters .chip").forEach(c=>c.classList.toggle("on",c===b)); renderReview(b.dataset.f); };
+  renderReview("all");
+}
+function renderReview(f){
+  $("review").innerHTML = QUESTOES.map((q,i) => {
+    const a = S.answers[i], st = a===null?"blank":(a===q.g?"ok":"bad"), d = DISC[q.d], ag = AGENTES[d.ag];
+    if(f==="ok"||f==="bad"||f==="blank"){ if(st!==f) return ""; }
+    else if(f==="flag"){ if(!S.flags[i]) return ""; }
+    else if(f!=="all" && q.d!==f) return "";
+    const lis = q.o.map((t,j)=>`<li class="${j===q.g?"g":(j===a?"x":"")}"><b>${LET[j]}</b>${t}</li>`).join("");
+    const base = q.t ? `<details style="margin-bottom:8px"><summary style="cursor:pointer;font-size:13px;color:var(--navy-3);font-weight:600">${TEXTOS[q.t].titulo}</summary><div class="basetext" style="margin-top:8px">${TEXTOS[q.t].corpo}</div></details>` : "";
+    return `<div class="ritem ${st}"><div class="rh"><span class="qnum">Questão ${num(q.n)}</span><span class="badge ${d.mod===1?"b-mod1":"b-mod2"}">Módulo ${d.mod===1?"I":"II"} · Peso ${d.peso},0</span><span class="badge b-disc">${esc(d.nome)}</span>${S.flags[i]?'<span class="badge" style="background:var(--amber-soft);color:#7a4a05">⚑ Revisão</span>':""}<span class="st">${st==="ok"?"✓ ACERTOU · +"+d.peso+" pt"+(d.peso>1?"s":""):st==="bad"?"✗ ERROU":"— EM BRANCO"}</span></div>
+      ${base}<div class="en">${q.e}</div><ol>${lis}</ol>
+      <div style="font-size:13px;margin-bottom:8px">Sua resposta: <b>${a===null?"—":LET[a]}</b> · Gabarito oficial: <b style="color:var(--green)">${LET[q.g]}</b></div>
+      <div class="com"><b>${esc(ag.nome)}:</b> ${q.c}</div></div>`;
+  }).join("") || `<p style="color:var(--muted)">Nenhuma questão neste filtro.</p>`;
+}
+$("btnPrint").onclick = () => window.print();
+$("btnRestart").onclick = () => modal("Reiniciar simulado?","<p>O resultado atual será descartado deste navegador.</p>",
+  [{t:"Cancelar",cls:"btn-ghost"},{t:"Reiniciar",cls:"btn-primary",fn:()=>{ store.del(); S=null; $("resumeBox").classList.add("hidden"); show("screen-setup"); }}]);
+
+/* ===================== INICIALIZAÇÃO ===================== */
+(function init(){
+  if(QUESTOES.length!==60) console.error("Esperadas 60 questões, encontradas", QUESTOES.length);
+  renderAgents();
+  const prev = store.get();
+  if(prev && prev.finished){ S = prev; finish(false); }
+  else checkResume();
+})();
+</script>
+</body>
+</html>

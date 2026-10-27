@@ -78,3 +78,17 @@ Depois ative o **GitHub Pages** em **Settings → Pages** (branch `main`, pasta 
   (sem repetição compartilhada entre dispositivos), é necessária uma versão com
   back-end e banco de dados — por exemplo na plataforma Base44, usando a função
   `InvokeLLM` e uma entidade para registrar as questões já usadas.
+
+---
+
+## Simulados SES/TO 2026 · Enfermeiro (pasta `ses-to/`)
+
+Dois simulados de 60 questões para o cargo de **Enfermeiro**, Concurso SES/TO, Edital 001/2026 (banca FGV):
+
+| Arquivo | Conteúdo |
+|---|---|
+| `ses-to/index.html` | Página inicial com os dois simulados |
+| `ses-to/simulado-1.html` | Simulado 1: 60 questões comentadas |
+| `ses-to/simulado-2.html` | Simulado 2: 60 questões, cada uma com o item do Anexo I |
+
+Link público: https://iagoadriano.github.io/questoesprova/ses-to/

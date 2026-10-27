@@ -1,0 +1,1541 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Simulado 2 SES/TO</title>
+<style>
+:root{
+  --navy:#0e2340; --navy-2:#173559; --navy-3:#24497a;
+  --gold:#c49a2c; --gold-soft:#f3e7c4;
+  --green:#1d7a4c; --green-soft:#e1f2e8;
+  --red:#b3362f; --red-soft:#f8e3e1;
+  --amber:#c27a12; --amber-soft:#fbefd9;
+  --ink:#1b2430; --muted:#5d6878; --line:#dfe3ea;
+  --bg:#f4f5f8; --card:#ffffff;
+  --radius:12px;
+  --sans: system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --serif: "Iowan Old Style","Palatino Linotype",Palatino,Georgia,"Times New Roman",serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{font-family:var(--sans);color:var(--ink);background:var(--bg);line-height:1.5;-webkit-font-smoothing:antialiased}
+button{font:inherit;cursor:pointer}
+.hidden{display:none!important}
+.wrap{max-width:1180px;margin:0 auto;padding:0 16px}
+
+/* ---------- TOPO INSTITUCIONAL ---------- */
+.brand{background:var(--navy);color:#fff;border-bottom:4px solid var(--gold)}
+.brand .wrap{display:flex;align-items:center;gap:14px;padding-top:14px;padding-bottom:14px}
+.seal{width:42px;height:42px;border-radius:50%;border:2px solid var(--gold);display:grid;place-items:center;font-weight:800;color:var(--gold);font-size:13px;letter-spacing:.5px;flex:none}
+.brand h1{font-size:17px;margin:0;font-weight:700;letter-spacing:.2px}
+.brand p{margin:0;font-size:12.5px;color:#b9c6d8}
+
+/* ---------- TELA 1 ---------- */
+.hero{padding:28px 0 8px}
+.hero h2{font-family:var(--serif);font-size:30px;line-height:1.15;margin:0 0 6px;color:var(--navy)}
+.hero .lead{color:var(--muted);margin:0;max-width:760px}
+.grid-setup{display:grid;grid-template-columns:1.25fr 1fr;gap:20px;margin:22px 0 40px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:20px}
+.card h3{margin:0 0 12px;font-size:15px;text-transform:uppercase;letter-spacing:.8px;color:var(--navy-3)}
+.rules{width:100%;border-collapse:collapse;font-size:14px}
+.rules th,.rules td{padding:8px 6px;border-bottom:1px solid var(--line);text-align:left}
+.rules th{font-size:12px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.5px}
+.rules td.num{text-align:right;font-variant-numeric:tabular-nums}
+.rules tr.mod td{background:#f7f8fb;font-weight:700;color:var(--navy)}
+.rules tr.tot td{font-weight:800;border-bottom:none}
+.facts{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}
+.fact{background:var(--gold-soft);border-radius:10px;padding:10px 12px}
+.fact b{display:block;font-size:20px;color:var(--navy);font-variant-numeric:tabular-nums}
+.fact span{font-size:12px;color:#6b5a26}
+.agents{display:grid;gap:8px;margin-top:4px}
+.agent{display:flex;gap:12px;align-items:flex-start;padding:10px;border:1px solid var(--line);border-radius:10px}
+.agent .av{flex:none;width:34px;height:34px;border-radius:8px;display:grid;place-items:center;color:#fff;font-weight:800;font-size:14px}
+.agent b{font-size:14px;display:block}
+.agent small{color:var(--muted);font-size:12.5px}
+label.fl{display:block;font-size:13px;font-weight:600;margin:14px 0 6px;color:var(--navy)}
+input[type=text],select{width:100%;padding:11px 12px;border:1px solid #c9d0db;border-radius:9px;font:inherit;background:#fff;color:var(--ink)}
+input[type=text]:focus,select:focus{outline:2px solid var(--gold);outline-offset:1px;border-color:var(--gold)}
+.modes{display:grid;gap:10px;margin-top:6px}
+.mode{display:flex;gap:12px;padding:12px;border:2px solid var(--line);border-radius:10px;cursor:pointer;align-items:flex-start}
+.mode input{margin-top:3px;accent-color:var(--navy)}
+.mode.on{border-color:var(--navy);background:#f2f5fa}
+.mode b{display:block;font-size:14.5px}
+.mode small{color:var(--muted);font-size:12.5px}
+.btn{border:none;border-radius:9px;padding:11px 18px;font-weight:700;font-size:14.5px;display:inline-flex;align-items:center;gap:8px;justify-content:center}
+.btn-primary{background:var(--navy);color:#fff}
+.btn-primary:hover{background:var(--navy-2)}
+.btn-gold{background:var(--gold);color:var(--navy)}
+.btn-gold:hover{filter:brightness(1.05)}
+.btn-ghost{background:#fff;color:var(--navy);border:1px solid #c9d0db}
+.btn-ghost:hover{border-color:var(--navy)}
+.btn-danger{background:var(--red);color:#fff}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn-block{width:100%;margin-top:18px;padding:14px}
+.resume{margin-top:12px;padding:12px;border-radius:10px;background:var(--amber-soft);font-size:13.5px;display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+
+/* ---------- TELA 2 ---------- */
+.examhead{position:sticky;top:0;z-index:20;background:var(--navy);color:#fff;border-bottom:3px solid var(--gold)}
+.examhead .wrap{display:flex;align-items:center;gap:14px;padding-top:10px;padding-bottom:10px;flex-wrap:wrap}
+.examhead .who{flex:1;min-width:180px;font-size:13px;color:#c8d3e3;line-height:1.3}
+.examhead .who b{color:#fff;font-size:14px;display:block}
+.timer{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;font-size:24px;font-weight:700;letter-spacing:1px;background:rgba(255,255,255,.08);padding:4px 12px;border-radius:8px;font-variant-numeric:tabular-nums}
+.timer.warn{color:#ffd27a}
+.timer.crit{color:#ff8a80;animation:pulse 1s infinite}
+@keyframes pulse{50%{opacity:.55}}
+.modetag{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;padding:3px 8px;border-radius:20px;background:var(--gold);color:var(--navy)}
+.exam{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:20px;padding-top:20px;padding-bottom:40px}
+.qcard{background:#fff;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}
+.qtop{padding:16px 20px;border-bottom:1px solid var(--line);display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.qnum{font-weight:800;font-size:16px;color:var(--navy);margin-right:6px}
+.badge{font-size:11.5px;font-weight:700;padding:3px 9px;border-radius:20px;white-space:nowrap}
+.b-mod1{background:#e6edf7;color:var(--navy-3)}
+.b-mod2{background:var(--gold-soft);color:#7a5c0e}
+.b-disc{background:#eef0f3;color:#3d4756}
+.b-agent{color:#fff}
+.flagmark{margin-left:auto;color:var(--amber);font-weight:700;font-size:12.5px}
+.qbody{padding:20px}
+.basetext{background:#f8f6ef;border-left:4px solid var(--gold);padding:14px 16px;border-radius:6px;margin-bottom:18px;font-family:var(--serif);font-size:15.5px}
+.basetext h4{font-family:var(--sans);margin:0 0 8px;font-size:12.5px;text-transform:uppercase;letter-spacing:.7px;color:#7a5c0e}
+.basetext p{margin:0 0 10px;text-indent:1.5em}
+.basetext .fonte{font-family:var(--sans);font-size:11.5px;color:var(--muted);text-indent:0;text-align:right;margin:0}
+.enun{font-family:var(--serif);font-size:17px;line-height:1.6;margin:0 0 18px}
+.enun blockquote{margin:12px 0;padding:10px 14px;background:#f5f7fa;border-left:3px solid var(--navy-3);font-size:15.5px}
+.alts{display:grid;gap:10px}
+.alt{display:flex;gap:12px;align-items:flex-start;width:100%;text-align:left;background:#fff;border:1.5px solid var(--line);border-radius:10px;padding:12px 14px;font-family:var(--serif);font-size:16px;line-height:1.5;color:var(--ink);transition:border-color .12s,background .12s}
+.alt:hover:not(:disabled){border-color:var(--navy-3);background:#f7f9fc}
+.alt .L{flex:none;width:30px;height:30px;border-radius:50%;border:1.5px solid #aab3c2;display:grid;place-items:center;font-family:var(--sans);font-weight:800;font-size:13.5px;color:var(--navy)}
+.alt.sel{border-color:var(--navy);background:#eef2f9}
+.alt.sel .L{background:var(--navy);border-color:var(--navy);color:#fff}
+.alt.ok{border-color:var(--green);background:var(--green-soft)}
+.alt.ok .L{background:var(--green);border-color:var(--green);color:#fff}
+.alt.bad{border-color:var(--red);background:var(--red-soft)}
+.alt.bad .L{background:var(--red);border-color:var(--red);color:#fff}
+.alt:disabled{cursor:default}
+.feedback{margin-top:18px;border-radius:10px;padding:14px 16px;font-size:14.5px}
+.feedback.ok{background:var(--green-soft);border:1px solid #a9d8bd}
+.feedback.bad{background:var(--red-soft);border:1px solid #ecb7b2}
+.feedback h5{margin:0 0 6px;font-size:14px}
+.feedback .by{font-size:12px;color:var(--muted);margin-top:8px}
+.qactions{display:flex;gap:8px;flex-wrap:wrap;padding:14px 20px;border-top:1px solid var(--line);background:#fafbfc}
+.qactions .sp{flex:1}
+.kbd{font-size:11.5px;color:var(--muted);padding:0 20px 14px;background:#fafbfc}
+.kbd kbd{font-family:inherit;background:#fff;border:1px solid #cfd5df;border-bottom-width:2px;border-radius:4px;padding:0 5px;font-size:11px}
+
+.side{position:sticky;top:76px;align-self:start;display:grid;gap:14px}
+.side .card{padding:16px}
+.prog{height:8px;background:#e7eaf0;border-radius:8px;overflow:hidden;margin:6px 0 4px}
+.prog i{display:block;height:100%;background:linear-gradient(90deg,var(--green),#2fa86a);width:0;transition:width .25s}
+.progtxt{display:flex;justify-content:space-between;font-size:12.5px;color:var(--muted)}
+.sheet{display:grid;grid-template-columns:repeat(6,1fr);gap:5px;margin-top:10px}
+.cell{aspect-ratio:1;border:1px solid #cfd5df;background:#fff;border-radius:6px;font-size:12px;font-weight:700;color:var(--muted);position:relative;padding:0;font-variant-numeric:tabular-nums}
+.cell.ans{background:var(--navy);border-color:var(--navy);color:#fff}
+.cell.flag::after{content:"";position:absolute;top:2px;right:2px;width:7px;height:7px;border-radius:50%;background:var(--amber)}
+.cell.flag:not(.ans){background:var(--amber-soft);border-color:var(--amber);color:#7a4a05}
+.cell.cur{outline:2px solid var(--gold);outline-offset:1px}
+.cell.r-ok{background:var(--green);border-color:var(--green);color:#fff}
+.cell.r-bad{background:var(--red);border-color:var(--red);color:#fff}
+.sheet .sep{grid-column:1/-1;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--navy-3);margin-top:6px}
+.legend{display:flex;flex-wrap:wrap;gap:10px;font-size:11.5px;color:var(--muted);margin-top:12px}
+.legend span{display:inline-flex;align-items:center;gap:5px}
+.legend i{width:12px;height:12px;border-radius:3px;display:inline-block;border:1px solid #cfd5df}
+
+/* ---------- MODAL ---------- */
+.modal{position:fixed;inset:0;background:rgba(10,20,35,.55);display:grid;place-items:center;z-index:50;padding:16px}
+.modal .box{background:#fff;border-radius:14px;max-width:440px;width:100%;padding:22px}
+.modal h4{margin:0 0 8px;color:var(--navy);font-size:18px}
+.modal p{margin:0 0 6px;color:var(--muted);font-size:14.5px}
+.modal .row{display:flex;gap:8px;justify-content:flex-end;margin-top:18px;flex-wrap:wrap}
+
+/* ---------- TELA 3 ---------- */
+.verdict{border-radius:var(--radius);padding:22px 24px;margin:22px 0 18px;color:#fff;display:flex;gap:18px;align-items:center;flex-wrap:wrap}
+.verdict.pass{background:linear-gradient(120deg,#145c39,var(--green))}
+.verdict.fail{background:linear-gradient(120deg,#7d211c,var(--red))}
+.verdict .ico{font-size:34px;line-height:1;width:58px;height:58px;border-radius:50%;background:rgba(255,255,255,.15);display:grid;place-items:center;flex:none}
+.verdict h2{margin:0;font-size:21px;letter-spacing:.4px}
+.verdict p{margin:4px 0 0;opacity:.92;font-size:14px}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.kpi{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:16px}
+.kpi small{display:block;font-size:12px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);font-weight:600}
+.kpi b{display:block;font-size:30px;color:var(--navy);font-variant-numeric:tabular-nums;line-height:1.2;margin-top:4px}
+.kpi b em{font-style:normal;font-size:15px;color:var(--muted);font-weight:600}
+.kpi .bar{height:6px;background:#e7eaf0;border-radius:6px;margin-top:10px;position:relative;overflow:visible}
+.kpi .bar i{display:block;height:100%;border-radius:6px}
+.kpi .bar .cut{position:absolute;top:-4px;width:2px;height:14px;background:var(--ink)}
+.kpi .note{font-size:12px;color:var(--muted);margin-top:8px}
+.section-t{font-size:15px;text-transform:uppercase;letter-spacing:.8px;color:var(--navy-3);margin:30px 0 10px}
+.tbl{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;font-size:14px}
+.tbl th{background:var(--navy);color:#fff;font-weight:600;font-size:12.5px;text-align:left;padding:10px 12px}
+.tbl td{padding:10px 12px;border-top:1px solid var(--line)}
+.tbl td.n{text-align:right;font-variant-numeric:tabular-nums}
+.tbl tr.sub td{background:#f6f7fa;font-weight:700}
+.pct{display:flex;align-items:center;gap:8px;justify-content:flex-end}
+.pct i{display:inline-block;width:70px;height:6px;border-radius:6px;background:#e7eaf0;overflow:hidden}
+.pct i s{display:block;height:100%;text-decoration:none}
+.filters{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.chip{border:1px solid #c9d0db;background:#fff;border-radius:20px;padding:5px 12px;font-size:13px;font-weight:600;color:var(--navy)}
+.chip.on{background:var(--navy);color:#fff;border-color:var(--navy)}
+.review{display:grid;gap:12px}
+.ritem{background:#fff;border:1px solid var(--line);border-left:5px solid var(--line);border-radius:10px;padding:16px 18px}
+.ritem.ok{border-left-color:var(--green)}
+.ritem.bad{border-left-color:var(--red)}
+.ritem.blank{border-left-color:#9aa3b2}
+.ritem .rh{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:8px}
+.ritem .st{margin-left:auto;font-weight:800;font-size:12.5px}
+.ritem.ok .st{color:var(--green)} .ritem.bad .st{color:var(--red)} .ritem.blank .st{color:#6b7484}
+.ritem .en{font-family:var(--serif);font-size:15.5px;margin:0 0 10px}
+.ritem .en blockquote{margin:8px 0;padding:6px 12px;background:#f5f7fa;border-left:3px solid var(--navy-3)}
+.ritem ol{list-style:none;padding:0;margin:0 0 10px;display:grid;gap:4px}
+.ritem li{font-family:var(--serif);font-size:14.5px;padding:5px 8px;border-radius:6px}
+.ritem li b{font-family:var(--sans);margin-right:6px}
+.ritem li.g{background:var(--green-soft)}
+.ritem li.x{background:var(--red-soft);text-decoration:line-through;text-decoration-color:rgba(179,54,47,.5)}
+.ritem .com{font-size:14px;background:#f6f7fa;border-radius:8px;padding:10px 12px}
+.ritem .com b{color:var(--navy)}
+.endbar{display:flex;gap:10px;flex-wrap:wrap;margin:24px 0 50px}
+.printhead{display:none}
+.edital-it{font-family:var(--sans);font-size:12px;color:#6b5a26;background:var(--gold-soft);display:table;padding:3px 9px;border-radius:6px;margin-bottom:12px;line-height:1.4}
+
+@media (max-width:900px){
+  .grid-setup{grid-template-columns:1fr}
+  .exam{grid-template-columns:1fr}
+  .side{position:static}
+  .kpis{grid-template-columns:repeat(2,1fr)}
+  .sheet{grid-template-columns:repeat(10,1fr)}
+}
+@media (max-width:520px){
+  .hero h2{font-size:24px}
+  .facts{grid-template-columns:1fr 1fr}
+  .timer{font-size:19px}
+  .enun{font-size:16px}
+  .alt{font-size:15px;padding:10px 12px}
+  .qactions .btn{padding:10px 12px;font-size:13.5px}
+  .kpi b{font-size:24px}
+  .tbl{font-size:12.5px}
+  .tbl th,.tbl td{padding:8px 6px}
+  .pct i{display:none}
+  .sheet{grid-template-columns:repeat(6,1fr)}
+}
+@media print{
+  body{background:#fff}
+  .brand,.endbar,.filters,.examhead,#screen-setup,#screen-exam{display:none!important}
+  .printhead{display:block;margin:0 0 10px;font-size:12px;color:#333}
+  .verdict{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .ritem,.kpi,.tbl{break-inside:avoid}
+  .ritem{border:1px solid #bbb}
+  .wrap{max-width:none}
+}
+</style>
+</head>
+<body>
+
+<header class="brand" id="brand">
+  <div class="wrap">
+    <div class="seal">TO</div>
+    <div>
+      <h1>Simulado 2 · Preditivo SES/TO 2026 · Enfermeiro</h1>
+      <p>Edital nº 001/2026 – SECAD/SES/TO · Banca FGV Conhecimento · Nível Superior</p>
+    </div>
+  </div>
+</header>
+
+<!-- ================= TELA 1 ================= -->
+<main id="screen-setup">
+  <div class="wrap">
+    <section class="hero">
+      <h2>Simulado 2: 60 questões inéditas amarradas ao Anexo I do edital</h2>
+      <p class="lead">Estrutura, pesos, tempo e critério de aprovação reproduzem os itens 11.1.3, 11.6.2, 11.6.3.1 e 11.14 do edital. Quatro alternativas por questão, uma única correta. Cada questão indica o item do Anexo I que ela cobre.</p>
+    </section>
+
+    <div class="grid-setup">
+      <div class="card">
+        <h3>Regras do edital</h3>
+        <table class="rules">
+          <thead><tr><th>Disciplina</th><th>Questões</th><th class="num">Peso</th><th class="num">Pontos</th></tr></thead>
+          <tbody>
+            <tr class="mod"><td colspan="4">Módulo I · Conhecimentos Gerais</td></tr>
+            <tr><td>Língua Portuguesa</td><td>01–10</td><td class="num">1,0</td><td class="num">10</td></tr>
+            <tr><td>Raciocínio Lógico e Matemático</td><td>11–18</td><td class="num">1,0</td><td class="num">8</td></tr>
+            <tr><td>História e Geografia do Tocantins</td><td>19–24</td><td class="num">1,0</td><td class="num">6</td></tr>
+            <tr><td>Legislação do SUS</td><td>25–30</td><td class="num">1,0</td><td class="num">6</td></tr>
+            <tr class="mod"><td colspan="4">Módulo II · Conhecimentos Específicos</td></tr>
+            <tr><td>Enfermeiro</td><td>31–60</td><td class="num">2,0</td><td class="num">60</td></tr>
+            <tr class="tot"><td>Total</td><td>60</td><td></td><td class="num">90</td></tr>
+          </tbody>
+        </table>
+        <div class="facts">
+          <div class="fact"><b>04:00:00</b><span>Duração (item 11.1.3)</span></div>
+          <div class="fact"><b>≥ 24 pts</b><span>Mínimo no Módulo II (12 acertos)</span></div>
+          <div class="fact"><b>≥ 36 pts</b><span>Mínimo no total (40% de 90)</span></div>
+        </div>
+
+        <h3 style="margin-top:22px">Agentes especialistas</h3>
+        <div class="agents" id="agentsList"></div>
+      </div>
+
+      <div class="card">
+        <h3>Identificação do candidato</h3>
+        <label class="fl" for="inName">Nome do candidato</label>
+        <input type="text" id="inName" placeholder="Seu nome completo" autocomplete="name">
+
+        <label class="fl" for="inLocal">Localidade de lotação pretendida</label>
+        <select id="inLocal">
+          <option>Araguaína</option><option>Palmas</option><option>Porto Nacional</option>
+          <option>Gurupi</option><option>Augustinópolis</option><option>Guaraí</option>
+          <option>Paraíso do Tocantins</option><option>Dianópolis</option><option>Araguatins</option>
+          <option>Arraias</option><option>Miracema do Tocantins</option><option>Pedro Afonso</option>
+          <option>Tocantinópolis</option><option>Xambioá</option>
+        </select>
+
+        <label class="fl">Modo de realização</label>
+        <div class="modes" id="modes">
+          <label class="mode on"><input type="radio" name="mode" value="real" checked>
+            <div><b>Modo Prova Real</b><small>Sem feedback durante a prova. Gabarito e comentários só após o encerramento, como no dia 1º de novembro.</small></div></label>
+          <label class="mode"><input type="radio" name="mode" value="treino">
+            <div><b>Modo Treino Comentado</b><small>Feedback imediato (verde/vermelho) e comentário do agente assim que você marca a alternativa. A resposta fica travada.</small></div></label>
+        </div>
+
+        <div id="resumeBox" class="resume hidden">
+          <span>Há um simulado em andamento salvo neste navegador.</span>
+          <span style="display:flex;gap:6px">
+            <button class="btn btn-gold" id="btnResume" style="padding:7px 12px">Continuar</button>
+            <button class="btn btn-ghost" id="btnDiscard" style="padding:7px 12px">Descartar</button>
+          </span>
+        </div>
+
+        <button class="btn btn-primary btn-block" id="btnStart">Iniciar simulado · 60 questões</button>
+        <p style="font-size:12px;color:var(--muted);margin:10px 0 0">Atalhos na prova: <b>A–D</b> marcam, <b>←/→</b> navegam e <b>F</b> marca para revisão. O progresso é salvo automaticamente neste navegador.</p>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- ================= TELA 2 ================= -->
+<div id="screen-exam" class="hidden">
+  <div class="examhead">
+    <div class="wrap">
+      <div class="who"><b id="hdName">Candidato</b><span id="hdLocal"></span></div>
+      <span class="modetag" id="hdMode">Prova Real</span>
+      <div class="timer" id="timer" aria-live="off">04:00:00</div>
+      <button class="btn btn-gold" id="btnFinish">Encerrar prova</button>
+    </div>
+  </div>
+  <div class="wrap exam">
+    <div>
+      <article class="qcard">
+        <div class="qtop" id="qtop"></div>
+        <div class="qbody">
+          <div id="qbase"></div>
+          <div class="enun" id="qenun"></div>
+          <div class="alts" id="qalts"></div>
+          <div id="qfeed"></div>
+        </div>
+        <div class="qactions">
+          <button class="btn btn-ghost" id="btnPrev">← Anterior</button>
+          <button class="btn btn-ghost" id="btnFlag">⚑ Marcar p/ revisão</button>
+          <button class="btn btn-ghost" id="btnClear">Limpar resposta</button>
+          <span class="sp"></span>
+          <button class="btn btn-primary" id="btnNext">Próxima →</button>
+        </div>
+        <div class="kbd"><kbd>A</kbd>–<kbd>D</kbd> marcar · <kbd>←</kbd><kbd>→</kbd> navegar · <kbd>F</kbd> revisão</div>
+      </article>
+    </div>
+    <aside class="side">
+      <div class="card">
+        <h3 style="margin-bottom:4px">Cartão de respostas</h3>
+        <div class="prog"><i id="progBar"></i></div>
+        <div class="progtxt"><span id="progTxt">0 de 60 respondidas</span><span id="progPct">0%</span></div>
+        <label class="fl" for="jump" style="margin-top:12px">Ir para disciplina</label>
+        <select id="jump"></select>
+        <div class="sheet" id="sheet"></div>
+        <div class="legend">
+          <span><i style="background:var(--navy);border-color:var(--navy)"></i>Respondida</span>
+          <span><i style="background:var(--amber-soft);border-color:var(--amber)"></i>Revisão</span>
+          <span><i></i>Em branco</span>
+        </div>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<!-- ================= TELA 3 ================= -->
+<main id="screen-result" class="hidden">
+  <div class="wrap">
+    <div class="printhead" id="printHead"></div>
+    <div class="verdict" id="verdict"></div>
+    <div class="kpis" id="kpis"></div>
+
+    <h3 class="section-t">Desempenho por disciplina e agente</h3>
+    <div style="overflow-x:auto"><table class="tbl" id="perfTbl"></table></div>
+
+    <h3 class="section-t">Correção comentada · 60 questões</h3>
+    <div class="filters" id="filters"></div>
+    <div class="review" id="review"></div>
+
+    <div class="endbar">
+      <button class="btn btn-primary" id="btnPrint">Imprimir / salvar em PDF</button>
+      <button class="btn btn-ghost" id="btnRestart">Reiniciar simulado</button>
+    </div>
+  </div>
+</main>
+
+<div class="modal hidden" id="modal"><div class="box">
+  <h4 id="mTitle"></h4><div id="mBody"></div>
+  <div class="row" id="mRow"></div>
+</div></div>
+
+<script>
+const TEXTOS = {"T2": {"titulo": "Texto I — Quem cuida de quem cuida", "corpo": "<p>O Brasil envelhece mais depressa do que aprendeu a cuidar. Em poucas décadas, a proporção de pessoas com sessenta anos ou mais deixou de ser um dado de rodapé para se tornar o centro de qualquer planejamento sério em saúde. O problema é que o cuidado, no país, continua sendo tratado como assunto doméstico, que se resolve na cozinha de casa, quase sempre pelas mãos de uma filha, de uma neta ou de uma vizinha que já não tem tempo para si.</p><p>Essa invisibilidade cobra seu preço. A cuidadora familiar, que raramente recebe orientação, adoece em silêncio: dorme mal, abandona o emprego, adia as próprias consultas. Infelizmente, quando ela enfim chega à unidade de saúde, chega como paciente, e não como parceira da equipe. Os profissionais que atendem idosos dependentes sabem que o plano terapêutico mais bem desenhado fracassa se ninguém, em casa, consegue executá-lo.</p><p>Não se trata, portanto, de transferir às famílias uma tarefa que é também do Estado, mas de reconhecer que o cuidado é trabalho, e trabalho exige preparo, apoio e descanso. Se as equipes de Saúde da Família incluíssem o cuidador em seu planejamento, o envelhecimento deixaria de ser vivido como desamparo. Envelhecer com dignidade não é privilégio de quem pode pagar; é um direito que depende de escolhas públicas.</p><p class='fonte'>Texto elaborado para fins didáticos (artigo de opinião).</p>"}, "T3": {"titulo": "Texto II — O plantão e a tela", "corpo": "<p>Às três da manhã, o pronto-socorro tem um silêncio que engana. Dona Rita, enfermeira há vinte e dois anos, aprendeu a desconfiar dele como se desconfia de criança quieta demais. Agora, porém, há uma novidade sobre o balcão: o prontuário eletrônico, que a direção instalou no mês passado e que, segundo o folheto, “veio para facilitar a vida de todos”.</p><p>Ela não tem nada contra a máquina. Reconhece que a letra ilegível dos antigos relatórios já causou mais de um susto e que a prescrição digitada evita confusões que a caneta permitia. O que a incomoda é outra coisa: a tela pede atenção como um paciente a mais. Enquanto o sistema carrega, o senhor do leito 4 se vira na maca e pergunta se já pode beber água. Rita olha para o cursor que pisca, olha para o homem, e escolhe o homem.</p><p>Quando o dia amanhece, os registros estão completos: ela nunca deixou um plantão sem fechar. Mas fica-lhe a impressão de que a tecnologia, como certos remédios, precisa de dose certa. Em excesso, rouba do enfermeiro justamente aquilo que nenhum sistema registra: o tempo de olhar nos olhos.</p><p class='fonte'>Texto elaborado para fins didáticos (crônica).</p>"}};
+const QUESTOES = [
+{
+"n": 1,
+"d": "LP",
+"t": "T2",
+"it": "Anexo I · Língua Portuguesa · item 1 — Leitura, compreensão e interpretação de textos de diferentes gêneros",
+"e": "Considerando o Texto I em seu conjunto, infere-se corretamente que o autor",
+"o": [
+"defende que a responsabilidade pelo cuidado ao idoso seja transferida integralmente ao Estado, dispensando a participação das famílias.",
+"entende que a eficácia do cuidado ao idoso dependente pressupõe apoio e preparo a quem o executa no domicílio.",
+"atribui ao envelhecimento populacional a causa principal do adoecimento dos profissionais das equipes de saúde.",
+"considera que o cuidado familiar se torna dispensável quando a equipe elabora um plano terapêutico bem desenhado."
+],
+"g": 1,
+"c": "A inferência correta (B) decorre da articulação entre o 2º parágrafo (“o plano terapêutico mais bem desenhado fracassa se ninguém, em casa, consegue executá-lo”) e o 3º (“o cuidado é trabalho, e trabalho exige preparo, apoio e descanso”). Em (A), extrapola-se o texto: o autor afirma que a tarefa é “também do Estado”, ou seja, compartilhada, e não que deva ser integralmente transferida. Em (C), troca-se o sujeito do adoecimento: quem “adoece em silêncio” é a cuidadora familiar, não o profissional de saúde. Em (D), inverte-se a ideia central, pois o texto afirma justamente que o plano fracassa sem quem o execute em casa."
+},
+{
+"n": 2,
+"d": "LP",
+"t": "T3",
+"it": "Anexo I · Língua Portuguesa · item 2 — Tipologia e gêneros textuais",
+"e": "O Texto II pode ser classificado como crônica, sobretudo porque",
+"o": [
+"apresenta tese explícita, sustentada por dados estatísticos e por argumentos de autoridade, com vistas a persuadir o leitor.",
+"orienta o leitor, por meio de verbos no imperativo e em sequência de passos, sobre o uso correto do prontuário eletrônico.",
+"relata um fato verídico e recente com objetividade e imparcialidade, identificando fontes, local e data do acontecimento.",
+"parte de um episódio do cotidiano, narrado em linguagem leve e expressiva, para propor uma reflexão sobre o tema."
+],
+"g": 3,
+"c": "A crônica (D) é gênero de base narrativa que toma um flagrante do cotidiano (a madrugada no pronto-socorro, a escolha de Rita entre o cursor e o paciente) e, em linguagem leve e por vezes figurada, conduz a uma reflexão, explicitada no fecho sobre a “dose certa” de tecnologia. A opção (A) descreve o artigo de opinião ou o texto dissertativo-argumentativo; o Texto II não traz dados estatísticos nem argumentos de autoridade. A opção (B) caracteriza o tipo injuntivo (manuais, bulas, protocolos), ausente no texto. A opção (C) descreve a notícia, cuja marca é a impessoalidade, incompatível com as escolhas expressivas da crônica (“um silêncio que engana”)."
+},
+{
+"n": 3,
+"d": "LP",
+"t": "T2",
+"it": "Anexo I · Língua Portuguesa · item 7 — Estrutura e formação de palavras",
+"e": "Assinale a opção em que o processo de formação da palavra extraída dos textos está corretamente identificado.",
+"o": [
+"“envelhecer” (Texto I) — derivação parassintética, pois prefixo e sufixo foram acrescidos simultaneamente ao radical, já que não existem “envelho” nem “velhecer”.",
+"“infelizmente” (Texto I) — derivação parassintética, pois não é possível retirar o prefixo ou o sufixo sem que reste forma inexistente na língua.",
+"“planejamento” (Texto I) — derivação prefixal, pois o elemento inicial da palavra modifica o sentido do radical a que se agrega.",
+"“pronto-socorro” (Texto II) — composição por aglutinação, pois os radicais se fundem num só vocábulo, com perda de elementos fonéticos."
+],
+"g": 0,
+"c": "Em (A), a análise está correta: “envelhecer” forma-se por parassíntese (en- + velh- + -ecer), com prefixo e sufixo acrescidos ao mesmo tempo, o que se comprova pela inexistência de “envelho” e de “velhecer”. Em (B), há erro: existem “infeliz” e “felizmente”, logo “infelizmente” resulta de derivação prefixal e sufixal, e não de parassíntese. Em (C), “planejamento” provém de “planejar” + sufixo -mento, sendo derivação sufixal. Em (D), “pronto-socorro” é composição por justaposição, pois os radicais mantêm sua integridade fonética (diferente de “planalto” ou “pernalta”, casos de aglutinação)."
+},
+{
+"n": 4,
+"d": "LP",
+"t": "T2",
+"it": "Anexo I · Língua Portuguesa · item 16 — Correspondência entre tempos e modos verbais",
+"e": "No 3º parágrafo do Texto I, lê-se: “Se as equipes de Saúde da Família <u>incluíssem</u> o cuidador em seu planejamento, o envelhecimento <u>deixaria</u> de ser vivido como desamparo.”<br>Caso a forma “incluíssem” seja substituída por “incluírem”, a forma verbal da oração principal que preserva a correlação temporal exigida pela norma-padrão é",
+"o": [
+"deixaria.",
+"deixava.",
+"deixará.",
+"deixasse."
+],
+"g": 2,
+"c": "Com o futuro do subjuntivo na oração condicional (“Se as equipes incluírem”), a hipótese passa a ser apresentada como realizável, e a oração principal deve vir no futuro do presente do indicativo: “deixará” (C). A forma “deixaria” (A), futuro do pretérito, correlaciona-se com o pretérito imperfeito do subjuntivo (“incluíssem”), que é a construção original, e não com o futuro do subjuntivo. “Deixava” (B), pretérito imperfeito do indicativo, só se admite em registro coloquial como substituto do futuro do pretérito, sem correspondência com “incluírem”. “Deixasse” (D) é subjuntivo e não pode ocupar o núcleo da oração principal nesse período hipotético."
+},
+{
+"n": 5,
+"d": "LP",
+"t": "T3",
+"it": "Anexo I · Língua Portuguesa · item 6 — Classes de palavras e suas flexões",
+"e": "Considerando o Texto II, assinale a afirmativa correta quanto ao valor morfossintático da palavra destacada.",
+"o": [
+"Em “o pronto-socorro tem um silêncio <b>que</b> engana”, “que” é conjunção integrante, pois introduz oração que completa o sentido do verbo “ter”.",
+"Em “pergunta <b>se</b> já pode beber água”, “se” é conjunção subordinativa condicional, equivalente a “caso”.",
+"Em “como <b>se</b> desconfia de criança quieta demais”, “se” é índice de indeterminação do sujeito, pois acompanha verbo transitivo indireto.",
+"Em “o senhor do leito 4 <b>se</b> vira na maca”, “se” é partícula apassivadora, pois o sujeito sofre a ação expressa pelo verbo."
+],
+"g": 2,
+"c": "Em (C), “desconfiar” é transitivo indireto (desconfia-se “de criança”), e o “se” junto a verbo sem objeto direto, na 3ª pessoa do singular, indetermina o sujeito: é índice de indeterminação do sujeito. Em (A), “que” retoma “silêncio” e pode ser substituído por “o qual”, sendo pronome relativo, não conjunção integrante. Em (B), “se” introduz oração subordinada substantiva objetiva direta de “pergunta” (pergunta isto: se pode beber água), sendo conjunção integrante, e não condicional. Em (D), “virar-se” é verbo pronominal com valor reflexivo (o senhor vira a si mesmo); não há voz passiva, que exigiria verbo transitivo direto com sujeito paciente."
+},
+{
+"n": 6,
+"d": "LP",
+"t": "T2",
+"it": "Anexo I · Língua Portuguesa · item 5 — Emprego da pontuação",
+"e": "No 2º parágrafo do Texto I, lê-se: “A cuidadora familiar<b>,</b> que raramente recebe orientação<b>,</b> adoece em silêncio”.<br>Sobre o emprego das vírgulas nesse trecho, é correto afirmar que",
+"o": [
+"a sua supressão transformaria a oração adjetiva explicativa em restritiva, sugerindo que apenas parte das cuidadoras familiares adoece em silêncio.",
+"são facultativas, pois isolam adjunto adverbial de pequena extensão deslocado para o interior da oração principal.",
+"isolam um vocativo, e a sua supressão provocaria erro de concordância entre o sujeito e o verbo “adoece”.",
+"isolam oração subordinada substantiva apositiva, e poderiam ser substituídas por dois-pontos sem alteração de sentido."
+],
+"g": 0,
+"c": "A oração “que raramente recebe orientação” é subordinada adjetiva explicativa: entre vírgulas, atribui a característica a todas as cuidadoras familiares; sem vírgulas, passaria a restritiva, delimitando um subgrupo (apenas as que raramente recebem orientação), o que altera o sentido (A). Em (B), não se trata de adjunto adverbial, mas de oração adjetiva iniciada por pronome relativo, e as vírgulas, aqui, não são facultativas, pois determinam o sentido. Em (C), não há vocativo, já que ninguém está sendo interpelado; e a pontuação não interfere na concordância. Em (D), a oração introduzida por pronome relativo é adjetiva, não substantiva apositiva, e os dois-pontos não cumpririam essa função."
+},
+{
+"n": 7,
+"d": "LP",
+"it": "Anexo I · Língua Portuguesa · item 9 — Regência verbal e nominal",
+"e": "Em um hospital regional do Tocantins, a coordenação de enfermagem redigiu frases para o boletim interno. Assinale a opção em que a regência verbal está plenamente de acordo com a norma-padrão.",
+"o": [
+"A equipe do turno noturno preferiu mais o novo protocolo de higiene das mãos do que o antigo.",
+"Muitos técnicos de enfermagem aspiravam o cargo de supervisão da unidade de terapia intensiva.",
+"A mudança na escala de plantões implicará em sobrecarga para os profissionais do turno noturno.",
+"Os residentes assistiram à palestra sobre segurança do paciente, e a enfermeira assistiu os pacientes dos leitos 4 a 8."
+],
+"g": 3,
+"c": "Em (D), há dois sentidos de “assistir”, ambos com regência correta: no sentido de “ver, presenciar”, é transitivo indireto (“assistiram à palestra”); no sentido de “prestar assistência”, admite-se como transitivo direto (“assistiu os pacientes”). Em (A), “preferir” é transitivo direto e indireto, regendo a preposição “a” e rejeitando intensificadores: o correto é “preferiu o novo protocolo ao antigo”. Em (B), “aspirar” no sentido de “almejar” é transitivo indireto: “aspiravam ao cargo”. Em (C), “implicar” no sentido de “acarretar” é transitivo direto: “implicará sobrecarga”, sem a preposição “em”."
+},
+{
+"n": 8,
+"d": "LP",
+"t": "T3",
+"it": "Anexo I · Língua Portuguesa · item 12 — Sintaxe da oração e do período",
+"e": "Assinale a opção em que a oração extraída do Texto II está corretamente classificada.",
+"o": [
+"“Enquanto o sistema carrega” — oração subordinada adverbial proporcional.",
+"“que a letra ilegível dos antigos relatórios já causou mais de um susto” — oração subordinada substantiva objetiva direta.",
+"“que a direção instalou no mês passado” — oração subordinada substantiva completiva nominal.",
+"“Quando o dia amanhece” — oração subordinada adverbial condicional."
+],
+"g": 1,
+"c": "Em (B), a oração completa o sentido do verbo transitivo direto “reconhece” (Rita reconhece isto), sendo introduzida pela conjunção integrante “que”: é subordinada substantiva objetiva direta. Em (A), “enquanto” expressa simultaneidade no tempo, e a oração é adverbial temporal; a proporcional exigiria nexos como “à medida que” ou “à proporção que”. Em (C), “que” é pronome relativo, retoma “prontuário eletrônico” e introduz oração adjetiva (explicativa, porque vem após vírgula), não completiva nominal. Em (D), “quando” marca circunstância de tempo, e a oração é adverbial temporal, não condicional."
+},
+{
+"n": 9,
+"d": "LP",
+"t": "T3",
+"it": "Anexo I · Língua Portuguesa · item 14 — Significação das palavras",
+"e": "Quanto à significação das palavras no Texto II, assinale a afirmativa correta.",
+"o": [
+"Em “a tecnologia, como certos remédios, precisa de dose certa”, “dose” tem sentido conotativo, transferindo para a tecnologia uma noção própria da farmacologia.",
+"Em “o pronto-socorro tem um silêncio que engana”, o verbo “enganar” tem sentido denotativo, pois o silêncio é agente literal de uma fraude.",
+"Em “a tela pede atenção como um paciente a mais”, o verbo “pedir” está em sentido denotativo, já que o sistema formula um pedido verbal.",
+"Em “ela nunca deixou um plantão sem fechar”, o verbo “fechar” tem sentido denotativo de “trancar fisicamente a porta do setor”."
+],
+"g": 0,
+"c": "Em (A), “dose” é usada em sentido figurado (conotativo): o termo, próprio do campo dos medicamentos, é transposto para a tecnologia, cuja quantidade adequada evita o “excesso” mencionado em seguida; a comparação com “certos remédios” reforça essa transposição. Em (B), o silêncio não pratica literalmente a ação de enganar; há personificação, logo sentido conotativo. Em (C), “pedir atenção” também é personificação da tela, não um pedido verbal literal. Em (D), “fechar um plantão” significa concluir os registros e as passagens do turno, como o contexto confirma (“os registros estão completos”), e não trancar portas; trata-se de sentido polissêmico ligado à rotina de trabalho."
+},
+{
+"n": 10,
+"d": "LP",
+"t": "T3",
+"it": "Anexo I · Língua Portuguesa · item 13 — Coesão e coerência textual",
+"e": "No 2º parágrafo do Texto II, lê-se: “Rita olha para o cursor que pisca, olha para o homem, e escolhe o homem.”<br>Considerando a organização do texto, essa passagem",
+"o": [
+"evidencia que Rita rejeita o prontuário eletrônico, posição anunciada no início do mesmo parágrafo.",
+"indica que os registros daquele plantão ficaram incompletos, em razão da prioridade dada ao paciente.",
+"contradiz o reconhecimento das vantagens do sistema, o que compromete a coerência do texto.",
+"antecipa, por meio de uma cena concreta, a reflexão final sobre o risco de a tecnologia subtrair o tempo do contato humano."
+],
+"g": 3,
+"c": "A cena funciona como ilustração concreta (D) da ideia desenvolvida no último parágrafo: a tecnologia em excesso “rouba do enfermeiro” o “tempo de olhar nos olhos”; a escolha de Rita pelo paciente encena esse conflito antes de ele ser formulado como reflexão. Em (A), há contradição com o texto, que afirma: “Ela não tem nada contra a máquina”. Em (B), o 3º parágrafo desmente a hipótese: “os registros estão completos”. Em (C), não há incoerência: a cronista reconhece as vantagens do sistema e, ao mesmo tempo, critica seu excesso, nuance marcada pelo conector “Mas” e pela expressão “dose certa”."
+},
+{
+"n": 11,
+"d": "RLM",
+"it": "Anexo I · Raciocínio Lógico e Matemático · item 7 — Funções",
+"e": "Em um protocolo de farmacovigilância de um hospital regional do Tocantins, a quantidade de determinado fármaco remanescente no organismo de um paciente, em miligramas, é modelada pela função<br><br><b>Q(t) = Q<sub>0</sub> · 2<sup>−t/k</sup></b>,<br><br>em que t é o tempo, em horas, contado a partir da administração e k é uma constante positiva. Sabe-se que, imediatamente após a administração, havia 640 mg do fármaco no organismo e que, 4 horas depois, restavam 160 mg.<br><br>Segundo esse modelo, a quantidade do fármaco remanescente 10 horas após a administração é igual a",
+"o": [
+"10 mg.",
+"40 mg.",
+"20 mg.",
+"80 mg."
+],
+"g": 2,
+"c": "De Q(0) = 640 obtém-se Q<sub>0</sub> = 640. Como Q(4) = 160, vem 2<sup>−4/k</sup> = 1/4 = 2<sup>−2</sup>, logo k = 2: a quantidade cai pela metade a cada 2 horas (meia-vida de 2 h). Assim, Q(10) = 640 · 2<sup>−5</sup> = 640/32 = 20 mg (C). Em (A), aplicou-se uma divisão por 2 a mais (seis meias-vidas). Em (B), o candidato raciocinou em blocos de 4 horas com fator 1/4 e considerou apenas dois blocos completos (640/16), desprezando as 2 horas restantes. Em (D), foram contadas só três meias-vidas (640/8), erro típico de quem toma o tempo a partir de t = 4 h e esquece de partir de 160 mg."
+},
+{
+"n": 12,
+"d": "RLM",
+"it": "Anexo I · Raciocínio Lógico e Matemático · item 8 — Sequências",
+"e": "Na campanha de busca ativa de hipertensos em uma UBS de Araguaína, foram realizadas 18 aferições de pressão arterial no primeiro dia. A partir daí, a equipe ampliou o atendimento de modo que, a cada dia, eram feitas exatamente 3 aferições a mais do que no dia anterior.<br><br>Mantido esse padrão, o número total de aferições realizadas nos 20 primeiros dias da campanha foi",
+"o": [
+"960.",
+"930.",
+"1.500.",
+"1.860."
+],
+"g": 1,
+"c": "Trata-se de uma progressão aritmética com a<sub>1</sub> = 18 e razão r = 3. O 20º termo é a<sub>20</sub> = a<sub>1</sub> + 19r = 18 + 57 = 75, e a soma é S<sub>20</sub> = (a<sub>1</sub> + a<sub>20</sub>) · 20/2 = 93 · 10 = 930 (B). Em (A), usou-se a<sub>20</sub> = a<sub>1</sub> + 20r = 78, erro clássico no termo geral (o correto é n − 1 razões), gerando (18 + 78) · 10 = 960. Em (C), multiplicou-se o último termo pelo número de dias (75 · 20), como se todos os dias tivessem 75 aferições. Em (D), esqueceu-se de dividir por 2 na fórmula da soma: (18 + 75) · 20 = 1.860."
+},
+{
+"n": 13,
+"d": "RLM",
+"it": "Anexo I · Raciocínio Lógico e Matemático · item 9 — Matrizes e determinantes",
+"e": "Em uma planilha de controle de insumos da Central de Abastecimento Farmacêutico, os dados de dois setores foram organizados nas matrizes<br><br><b>A = [ 2 1 ; 3 4 ]</b> &nbsp;e&nbsp; <b>B = [ 1 2 ; 0 3 ]</b>,<br><br>em que o ponto e vírgula separa a primeira linha da segunda. Para um teste de consistência do sistema, o analista precisa calcular o determinante da matriz <b>2A · B</b>.<br><br>O valor desse determinante é",
+"o": [
+"15.",
+"30.",
+"120.",
+"60."
+],
+"g": 3,
+"c": "Têm-se det A = 2 · 4 − 1 · 3 = 5 e det B = 1 · 3 − 2 · 0 = 3. Pelo Teorema de Binet, det(2A · B) = det(2A) · det B, e, para matriz de ordem n, det(kA) = k<sup>n</sup> · det A; com n = 2, det(2A) = 4 · 5 = 20, logo det(2A · B) = 20 · 3 = 60 (D). Conferindo diretamente: 2A = [4 2; 6 8], cujo determinante é 32 − 12 = 20. Em (A), ignorou-se o escalar 2 (5 · 3). Em (B), multiplicou-se o determinante por 2, e não por 2<sup>2</sup> (2 · 5 · 3), o erro mais frequente nesse tipo de questão. Em (C), usou-se 2<sup>3</sup>, como se a matriz fosse de ordem 3."
+},
+{
+"n": 14,
+"d": "RLM",
+"it": "Anexo I · Raciocínio Lógico e Matemático · item 6 — Equações, inequações e sistemas de equações",
+"e": "Para o atendimento domiciliar de pacientes com DPOC, a Secretaria de Saúde analisa duas propostas de locação de concentradores de oxigênio, ambas por equipamento:<br><br>• Proposta X: taxa única de instalação de R$ 1.200,00, mais R$ 35,00 por dia de uso;<br>• Proposta Y: sem taxa de instalação, com diária de R$ 50,00.<br><br>Considerando apenas esses custos, o menor número inteiro de dias de uso a partir do qual a Proposta X passa a ser <u>estritamente</u> mais vantajosa que a Proposta Y é",
+"o": [
+"81.",
+"80.",
+"35.",
+"24."
+],
+"g": 0,
+"c": "X é estritamente mais barata quando 1.200 + 35d &lt; 50d, ou seja, 15d &gt; 1.200 e d &gt; 80; o menor inteiro que satisfaz a inequação é 81 (A). Em (B), há o erro de tratar a inequação estrita como igualdade: com 80 dias, os custos se igualam (R$ 4.000,00 em ambas), e X ainda não é estritamente mais vantajosa. Em (C), dividiu-se a taxa fixa pela diária de X (1.200/35 ≈ 34,3), e em (D), pela diária de Y (1.200/50 = 24). Nos dois casos, desconsiderou-se que o que amortiza a taxa é a <em>diferença</em> entre as diárias (R$ 15,00)."
+},
+{
+"n": 15,
+"d": "RLM",
+"it": "Anexo I · Raciocínio Lógico e Matemático · item 12 — Estatística descritiva",
+"e": "No acolhimento com classificação de risco de uma UPA, foram registrados os tempos de espera, em minutos, de dez pacientes classificados como “verde”, na ordem de chegada:<br><br><b>12 – 35 – 18 – 40 – 22 – 15 – 60 – 22 – 30 – 26</b><br><br>Com base nesses dados, é correto afirmar que",
+"o": [
+"a mediana é 22 minutos, coincidente com a moda.",
+"a mediana é 18,5 minutos, inferior à moda.",
+"a mediana é 24 minutos, inferior à média.",
+"a mediana é 28 minutos, igual à média."
+],
+"g": 2,
+"c": "Ordenando o rol: 12, 15, 18, 22, 22, 26, 30, 35, 40, 60. Como n = 10 é par, a mediana é a média dos dois termos centrais (5º e 6º): (22 + 26)/2 = 24 min; a média é 280/10 = 28 min, e a moda é 22 min, de modo que a alternativa (C) está correta. O valor extremo de 60 min puxa a média para cima, o que explica a média ser maior que a mediana. Em (A), tomou-se apenas o 5º termo do rol, esquecendo que, com n par, há dois termos centrais. Em (B), calculou-se a média do 5º e do 6º valores na ordem de chegada (22 e 15), sem ordenar os dados. Em (D), confundiu-se a mediana com a média aritmética."
+},
+{
+"n": 16,
+"d": "RLM",
+"it": "Anexo I · Raciocínio Lógico e Matemático · itens 1 e 18 — Conjuntos numéricos; Diagramas lógicos",
+"e": "O levantamento de qualificação do quadro de enfermagem de um hospital estadual em Gurupi apontou que, dos 80 enfermeiros lotados na unidade:<br><br>• 45 possuem especialização em Terapia Intensiva;<br>• 30 possuem especialização em Urgência e Emergência;<br>• 18 possuem ambas as especializações.<br><br>O número de enfermeiros dessa unidade que não possuem nenhuma dessas duas especializações é",
+"o": [
+"5.",
+"23.",
+"41.",
+"39."
+],
+"g": 1,
+"c": "Pelo princípio da inclusão-exclusão, n(TI ∪ UE) = 45 + 30 − 18 = 57 enfermeiros com pelo menos uma das especializações; logo, 80 − 57 = 23 não possuem nenhuma (B). No diagrama de Venn: 27 só em TI, 12 só em UE, 18 na interseção e 23 fora dos conjuntos. Em (A), somou-se 45 + 30 sem descontar a interseção, contando duas vezes os 18. Em (C), a interseção foi subtraída duas vezes (45 + 30 − 36 = 39, e 80 − 39 = 41). Em (D), 39 é o número de enfermeiros com <em>exatamente uma</em> especialização (27 + 12), e não com nenhuma."
+},
+{
+"n": 17,
+"d": "RLM",
+"it": "Anexo I · Raciocínio Lógico e Matemático · itens 14 e 15 — Conectivos; Tabelas-verdade",
+"e": "O protocolo de vigilância de uma unidade sentinela contém a seguinte regra:<br><br><blockquote>“Se o paciente está febril e não foi vacinado, então ele será isolado ou o caso será notificado.”</blockquote><br>Assinale a opção que descreve uma situação na qual essa proposição composta é <b>falsa</b>.",
+"o": [
+"O paciente está febril, não foi vacinado, não foi isolado e o caso não foi notificado.",
+"O paciente está febril, foi vacinado, não foi isolado e o caso não foi notificado.",
+"O paciente não está febril, não foi vacinado, não foi isolado e o caso não foi notificado.",
+"O paciente está febril, não foi vacinado, foi isolado e o caso não foi notificado."
+],
+"g": 0,
+"c": "A proposição tem a forma (p ∧ ~q) → (r ∨ s), e uma condicional só é falsa quando o antecedente é verdadeiro e o consequente é falso (V → F). O antecedente é verdadeiro somente se o paciente está febril <em>e</em> não foi vacinado. O consequente (disjunção) é falso somente se ele não foi isolado <em>e</em> o caso não foi notificado, exatamente a situação descrita em (A). Em (B), o paciente foi vacinado, e, em (C), não está febril; nos dois casos, a conjunção do antecedente é falsa, e a condicional é verdadeira. Em (D), o isolamento torna a disjunção verdadeira, e a condicional também é verdadeira. Das 2<sup>4</sup> = 16 linhas da tabela-verdade, apenas uma torna a proposição falsa."
+},
+{
+"n": 18,
+"d": "RLM",
+"it": "Anexo I · Raciocínio Lógico e Matemático · itens 17 e 19 — Argumentação lógica; Resolução de problemas envolvendo raciocínio lógico-matemático",
+"e": "Na conferência do plantão noturno de uma enfermaria, a enfermeira supervisora constatou que uma dose de antibiótico foi administrada, mas não foi registrada no prontuário. Apenas um dos quatro técnicos de enfermagem do plantão (Ana, Bruno, Carla e Dalva) deixou de fazer o registro. Questionados, eles declararam:<br><br>• Ana: “Foi o Bruno.”<br>• Bruno: “Foi a Dalva.”<br>• Carla: “Não fui eu.”<br>• Dalva: “O Bruno está mentindo.”<br><br>Sabendo que <b>exatamente um</b> deles disse a verdade, quem deixou de registrar a dose foi",
+"o": [
+"Ana.",
+"Bruno.",
+"Dalva.",
+"Carla."
+],
+"g": 3,
+"c": "As falas de Bruno e Dalva são contraditórias (Dalva nega exatamente o que Bruno afirma), de modo que uma delas é verdadeira e a outra é falsa. Como só há uma verdade, Ana e Carla mentem. Se Carla mente ao dizer “não fui eu”, foi Carla (D). Conferindo: Ana mente (não foi Bruno), Bruno mente (não foi Dalva) e Dalva diz a verdade; há uma única verdade, como exigido. Testando as demais hipóteses, se tivesse sido Ana (A), Carla e Dalva diriam a verdade (duas verdades). Se tivesse sido Bruno (B), Ana, Carla e Dalva diriam a verdade (três verdades). Se tivesse sido Dalva (C), Bruno e Carla diriam a verdade (duas verdades)."
+},
+{
+"n": 19,
+"d": "HGTO",
+"it": "Anexo I · História e Geografia do Estado do Tocantins · item 7 — Clima",
+"e": "Uma enfermeira da vigilância em saúde da SES/TO elabora o cronograma anual de ações intersetoriais: intensificação do controle do <em>Aedes aegypti</em> e monitoramento de agravos respiratórios associados à fumaça de queimadas. Para distribuir as ações ao longo do ano, ela considera o regime climático predominante no Tocantins.<br><br>Assinale a afirmativa correta.",
+"o": [
+"Predomina no estado o clima equatorial superúmido, com chuvas regularmente distribuídas durante todo o ano e ausência de estação seca definida, razão pela qual as queimadas são eventos raros no território.",
+"Predomina no estado o clima tropical, com duas estações bem definidas: a chuvosa, concentrada aproximadamente entre outubro/novembro e abril, e a seca, aproximadamente entre maio e setembro, período de maior ocorrência de queimadas.",
+"Predomina no estado o clima semiárido, com chuvas escassas e irregulares concentradas em poucas semanas do ano e longos períodos de estiagem, característica mais marcante na porção norte, junto ao Bico do Papagaio.",
+"Predomina no estado o clima subtropical, com chuvas bem distribuídas, verões amenos e invernos frios, sendo comuns as geadas nas áreas mais elevadas do sudeste, como a Serra Geral."
+],
+"g": 1,
+"c": "O Tocantins apresenta clima tropical com inverno seco (tipo Aw de Köppen), com estação chuvosa no verão (grosso modo, de outubro/novembro a abril) e estação seca no inverno (de maio a setembro, com julho e agosto entre os meses mais secos), quando se concentram as queimadas e os agravos respiratórios; já a proliferação do <em>Aedes</em> é maior no período chuvoso (B). O clima equatorial superúmido, sem estação seca, é típico da Amazônia ocidental, não do Tocantins (A). O semiárido corresponde ao interior do Nordeste, e o Bico do Papagaio, na transição para a Amazônia, é justamente a área mais úmida do estado (C). O clima subtropical, com geadas, é característico do Sul do Brasil (D)."
+},
+{
+"n": 20,
+"d": "HGTO",
+"it": "Anexo I · História e Geografia do Estado do Tocantins · item 10 — Hidrografia",
+"e": "Analise as afirmativas a seguir, a respeito da hidrografia do Estado do Tocantins.<br><br>I. O estado está inserido na Região Hidrográfica Tocantins-Araguaia; seus dois rios principais correm, de modo geral, no sentido sul-norte e se encontram no extremo norte, na região do Bico do Papagaio, na divisa com o Pará e o Maranhão.<br>II. O rio do Sono, cujas nascentes estão na região do Jalapão, é afluente da margem direita do rio Tocantins, no qual deságua na altura do município de Pedro Afonso.<br>III. O rio Araguaia, que demarca grande parte do limite oeste do estado, é afluente da margem direita do rio Tocantins.<br><br>Está correto o que se afirma em",
+"o": [
+"I, apenas.",
+"II, apenas.",
+"I e II, apenas.",
+"I, II e III."
+],
+"g": 2,
+"c": "A afirmativa I está correta: Tocantins e Araguaia correm de sul para norte e se encontram no Bico do Papagaio (município de Esperantina), no extremo norte, área de fronteira com Pará e Maranhão. A II também está correta: o rio do Sono nasce no Jalapão, onde drena o Parque Estadual do Jalapão, e deságua pela margem direita do Tocantins em Pedro Afonso. A III está errada: o Araguaia corre a oeste do Tocantins e, portanto, nele deságua pela margem <u>esquerda</u>. Logo, apenas I e II estão corretas (C); as opções (A) e (B) desprezam uma afirmativa verdadeira, e (D) inclui a III, que é falsa."
+},
+{
+"n": 21,
+"d": "HGTO",
+"it": "Anexo I · História e Geografia do Estado do Tocantins · item 12 — Unidades de Conservação",
+"e": "Uma equipe da SES/TO planeja ações de saúde para comunidades que vivem no entorno de unidades de conservação (UCs) do estado e precisa identificar o órgão gestor de cada uma delas para articular as atividades.<br><br>Assinale a opção que caracteriza corretamente a unidade de conservação mencionada.",
+"o": [
+"O Parque Estadual do Jalapão é unidade federal de uso sustentável, administrada pelo ICMBio, que admite a ocupação por propriedades privadas e a exploração comercial das dunas e dos fervedouros.",
+"O Parque Nacional do Araguaia é unidade estadual de uso sustentável, gerida pelo Naturatins e localizada no Jalapão, na divisa do Tocantins com a Bahia, onde se encontram as principais dunas do estado.",
+"A Estação Ecológica Serra Geral do Tocantins é unidade estadual de uso sustentável, gerida pelo Naturatins, aberta à visitação turística livre e destinada sobretudo à exploração de recursos naturais.",
+"O Parque Estadual do Jalapão, no município de Mateiros, é unidade de proteção integral gerida pelo órgão ambiental estadual, e a Estação Ecológica Serra Geral do Tocantins, na mesma região, é unidade federal gerida pelo ICMBio."
+],
+"g": 3,
+"c": "O Parque Estadual do Jalapão foi criado em 2001 pela Lei estadual nº 1.203, situa-se em Mateiros e é gerido pelo Naturatins; como parque, é UC de proteção integral (Lei 9.985/2000, art. 8º). A Estação Ecológica Serra Geral do Tocantins, criada em 2001, é federal, gerida pelo ICMBio, abrange áreas do Tocantins e da Bahia e também é de proteção integral (D). O Parque do Jalapão não é federal nem de uso sustentável (A). O Parque Nacional do Araguaia é federal e está na Ilha do Bananal, no oeste do estado, e não no Jalapão (B). A estação ecológica é de proteção integral, com visitação restrita a fins educacionais e pesquisa, e não estadual (C)."
+},
+{
+"n": 22,
+"d": "HGTO",
+"it": "Anexo I · História e Geografia do Estado do Tocantins · item 6 — Patrimônio histórico, cultural e ambiental",
+"e": "Durante uma campanha de vacinação no sudeste do estado, uma equipe da SES/TO percorreu municípios de grande valor histórico e cultural. Sobre o patrimônio histórico e cultural do Tocantins, assinale a afirmativa correta.",
+"o": [
+"Natividade, núcleo de origem setecentista ligado à mineração do ouro, teve seu conjunto arquitetônico, urbanístico e paisagístico tombado pelo IPHAN em 1987, e sua ourivesaria tradicional foi registrada como Patrimônio Cultural do Brasil.",
+"Porto Nacional, cidade situada às margens do rio Araguaia, é o único município tocantinense que possui bens tombados pelo IPHAN, uma vez que os demais núcleos coloniais do estado foram descaracterizados.",
+"O artesanato em capim-dourado, uma das principais expressões culturais do estado, é produzido tradicionalmente pelas comunidades ribeirinhas do Bico do Papagaio, no extremo norte, a partir de fibras de palmeiras.",
+"A Romaria do Senhor do Bonfim, uma das maiores manifestações religiosas do Tocantins, é realizada anualmente em Palmas, na Praça dos Girassóis, desde a instalação da capital definitiva em 1990."
+],
+"g": 0,
+"c": "Natividade surgiu no século XVIII, no ciclo do ouro, e seu Conjunto Arquitetônico, Urbanístico e Paisagístico foi tombado pelo IPHAN em 1987; em 2025, o Conselho Consultivo do IPHAN registrou a Ourivesaria de Natividade como Patrimônio Cultural do Brasil (A). Porto Nacional fica às margens do rio Tocantins, e não do Araguaia, e Natividade demonstra que não é o único município com bens tombados (B). O capim-dourado é típico da região do Jalapão (com destaque para a comunidade quilombola da Mumbuca, em Mateiros), e suas peças são feitas com a haste de uma sempre-viva, e não com fibra de palmeira (C). A Romaria do Senhor do Bonfim ocorre em Natividade, e não em Palmas (D)."
+},
+{
+"n": 23,
+"d": "HGTO",
+"it": "Anexo I · História e Geografia do Estado do Tocantins · item 4 — Aspectos demográficos",
+"e": "O planejamento da rede de atenção à saúde no Tocantins depende do conhecimento da distribuição da população no território. Considerando os resultados do Censo Demográfico 2022, do IBGE, assinale a afirmativa correta.",
+"o": [
+"O Tocantins ultrapassou a marca de 2 milhões de habitantes, e Araguaína, polo do norte do estado, superou Palmas como município mais populoso, concentrando cerca de um terço da população estadual.",
+"O Tocantins tem cerca de 1,5 milhão de habitantes; Araguaína é o município mais populoso, com mais de 300 mil habitantes, seguido de Palmas, com cerca de 170 mil.",
+"O Tocantins tem cerca de 1,51 milhão de habitantes; Palmas é o município mais populoso, com pouco mais de 300 mil habitantes, seguido de Araguaína, com cerca de 171 mil, e a densidade demográfica estadual é baixa.",
+"O Tocantins tem cerca de 1,5 milhão de habitantes; Palmas é o município mais populoso, seguido de Gurupi, e a densidade demográfica do estado é superior à média nacional, devido à urbanização acelerada."
+],
+"g": 2,
+"c": "Segundo o Censo 2022, o Tocantins tem 1.511.460 habitantes; Palmas é o município mais populoso (302.692 habitantes), seguido de Araguaína (171.301), e a densidade estadual, em torno de 5 hab/km², é muito inferior à média brasileira, de cerca de 24 hab/km² (C). O estado não chega a 2 milhões, e Araguaína não supera Palmas (A). A alternativa (B) inverte as posições e os números das duas maiores cidades. Gurupi é o terceiro município, não o segundo, e a densidade estadual está bem abaixo da nacional (D)."
+},
+{
+"n": 24,
+"d": "HGTO",
+"it": "Anexo I · História e Geografia do Estado do Tocantins · item 2 — Organização política e administrativa",
+"e": "A respeito da organização política e administrativa do Estado do Tocantins, assinale a afirmativa correta.",
+"o": [
+"O estado é dividido em 139 municípios, e Palmas foi a sede do governo desde a instalação do estado, em 1º de janeiro de 1989, sem que tenha havido capital provisória durante a implantação.",
+"O estado é dividido em 139 municípios; sua capital, Palmas, é cidade planejada, cuja pedra fundamental foi lançada em 20 de maio de 1989, tornando-se capital definitiva em 1º de janeiro de 1990.",
+"O estado é dividido em 139 municípios, e seu Poder Legislativo é bicameral, composto pela Assembleia Legislativa e por um Senado estadual com três representantes de cada região administrativa.",
+"O estado é dividido em 139 municípios, e sua capital, Palmas, é o núcleo urbano mais antigo do território, fundado no século XVIII durante o ciclo da mineração do ouro no antigo norte goiano."
+],
+"g": 1,
+"c": "O Tocantins possui 139 municípios. Palmas é capital planejada: a pedra fundamental foi lançada em 20 de maio de 1989, e a cidade passou a sediar definitivamente o governo em 1º de janeiro de 1990 (B). Até então, a capital provisória foi Miracema do Tocantins, o que torna (A) incorreta. Os Poderes Legislativos estaduais são unicamerais, exercidos pela Assembleia Legislativa (CF, art. 27), sem “Senado estadual” (C). Palmas é cidade nova, criada após a instalação do estado; núcleos setecentistas são, por exemplo, Natividade e Arraias (D)."
+},
+{
+"n": 25,
+"d": "SUS",
+"it": "Anexo I · Legislação · item 3 — Conselhos de Saúde, Conferências de Saúde e Comissões Intergestores",
+"e": "Na reunião ordinária da Comissão Intergestores Bipartite do Tocantins (CIB-TO), representantes da SES/TO e dos municípios discutem a reorganização da referência hospitalar de uma Região de Saúde. Considerando os arts. 14-A e 14-B da Lei nº 8.080/1990, incluídos pela Lei nº 12.466/2011, e o Decreto nº 7.508/2011, assinale a afirmativa correta.",
+"o": [
+"As Comissões Intergestores Bipartite e Tripartite são reconhecidas como foros de negociação e pactuação entre gestores quanto aos aspectos operacionais do SUS, decidindo por consenso, e o Cosems é representante dos municípios no âmbito estadual, se vinculado ao Conasems.",
+"A Comissão Intergestores Regional, vinculada diretamente ao Ministério da Saúde, delibera por maioria simples de votos e pode aprovar pactuações contrárias às diretrizes da CIB, prevalecendo sobre ela em caso de conflito.",
+"As Comissões Intergestores são instâncias de controle social compostas paritariamente por usuários e demais segmentos, cujas deliberações são homologadas pelo chefe do Poder Executivo de cada esfera de governo.",
+"Compete à CIB, com exclusividade, pactuar as diretrizes gerais para a composição da RENASES, os critérios para o planejamento integrado das Regiões de Saúde e as regras de continuidade do acesso em regiões de fronteira."
+],
+"g": 0,
+"c": "O art. 14-A da Lei 8.080 reconhece a CIB e a CIT como “foros de negociação e pactuação entre gestores” quanto aos aspectos operacionais do SUS; o Decreto 7.508 (art. 2º, IV) define as Comissões Intergestores como instâncias de pactuação consensual; e o art. 14-B, § 2º, reconhece os Cosems como representantes municipais no âmbito estadual, desde que vinculados institucionalmente ao Conasems (A). A CIR é vinculada à Secretaria Estadual de Saúde e deve observar as diretrizes da CIB (Decreto 7.508, art. 30, III), sem votação por maioria (B). Composição paritária com usuários e homologação pelo chefe do Poder são características dos Conselhos de Saúde (Lei 8.142, art. 1º), não das Comissões Intergestores (C). As matérias listadas em (D) são de pactuação exclusiva da CIT (Decreto 7.508, art. 32, parágrafo único)."
+},
+{
+"n": 26,
+"d": "SUS",
+"it": "Anexo I · Legislação · item 5 — Lei nº 8.080/1990",
+"e": "Uma paciente lúcida e orientada, internada em hospital público de Araguaína, pede ao enfermeiro informações sobre seu diagnóstico e sobre o tratamento proposto. Os familiares, porém, solicitam à equipe que nada lhe seja revelado e afirmam que decidirão sozinhos sobre o tratamento.<br><br>À luz dos princípios do SUS previstos no art. 7º da Lei nº 8.080/1990, assinale a afirmativa correta.",
+"o": [
+"O princípio da igualdade da assistência autoriza a família a decidir pelo paciente, já que todos devem receber o mesmo tratamento padronizado, independentemente da vontade individual manifestada.",
+"O direito à informação sobre a própria saúde é assegurado apenas aos familiares responsáveis, cabendo a eles definir o que pode ser comunicado à pessoa assistida, ainda que esta seja capaz.",
+"A utilização da epidemiologia para o estabelecimento de prioridades autoriza a equipe a restringir informações ao próprio paciente sempre que o caso tiver interesse para a vigilância em saúde.",
+"A preservação da autonomia das pessoas na defesa de sua integridade física e moral e o direito à informação, às pessoas assistidas, sobre sua saúde são princípios expressos que amparam o pedido da paciente."
+],
+"g": 3,
+"c": "O art. 7º da Lei 8.080 consagra, entre os princípios do SUS, a “preservação da autonomia das pessoas na defesa de sua integridade física e moral” (inciso III) e o “direito à informação, às pessoas assistidas, sobre sua saúde” (inciso V); a paciente capaz é a titular desses direitos (D). A igualdade da assistência (inciso IV) veda preconceitos e privilégios, e não transfere à família o poder de decidir por pessoa capaz (A). O direito à informação pertence à própria pessoa assistida, não aos familiares (B). O uso da epidemiologia (inciso VII) orienta prioridades, alocação de recursos e programação, e não legitima ocultar informações do paciente (C)."
+},
+{
+"n": 27,
+"d": "SUS",
+"it": "Anexo I · Legislação · item 1 — SUS: financiamento e gestão",
+"e": "Ao elaborar o demonstrativo de aplicação de recursos em ações e serviços públicos de saúde (ASPS), a equipe técnica do Fundo Municipal de Saúde de um município tocantinense precisa observar a Lei Complementar nº 141/2012. Assinale a afirmativa correta.",
+"o": [
+"Os Municípios devem aplicar anualmente em ASPS, no mínimo, 12% da receita de impostos e transferências constitucionais, e os Estados, no mínimo, 15%, invertendo-se os percentuais apenas no Distrito Federal.",
+"Os Municípios devem aplicar anualmente em ASPS, no mínimo, 15% da receita de impostos e transferências previstas na lei, e não se computam nesse mínimo despesas com aposentadorias e pensões, ainda que de servidores da saúde.",
+"Os Municípios devem aplicar anualmente em ASPS, no mínimo, 15% da receita de impostos e transferências, e computam-se nesse mínimo as despesas com merenda escolar, por seu impacto direto no estado nutricional das crianças.",
+"Os Estados devem aplicar anualmente em ASPS, no mínimo, 12% da receita de impostos e transferências, e computam-se nesse mínimo as despesas com limpeza urbana e remoção de resíduos, pelo seu impacto epidemiológico."
+],
+"g": 1,
+"c": "A LC 141/2012 fixa o mínimo de 15% para os Municípios (art. 7º) e de 12% para os Estados (art. 6º), calculados sobre a receita de impostos e as transferências constitucionais nela indicadas; o art. 4º, I, exclui das ASPS o pagamento de aposentadorias e pensões, inclusive dos servidores da saúde (B). A opção (A) inverte os percentuais de Municípios e Estados. A merenda escolar e outros programas de alimentação não são ASPS, ainda que executados em unidades do SUS, ressalvada a hipótese do art. 3º, II (art. 4º, IV), o que torna (C) incorreta. Limpeza urbana e remoção de resíduos também estão expressamente excluídas (art. 4º, VI), o que invalida (D)."
+},
+{
+"n": 28,
+"d": "SUS",
+"it": "Anexo I · Legislação · item 7 — Decreto nº 7.508/2011",
+"e": "Um usuário procura a farmácia de uma UBS de Gurupi com receita de medicamento que consta da Relação Nacional de Medicamentos Essenciais (RENAME), emitida por médico de clínica particular não vinculada ao SUS. O farmacêutico consulta o enfermeiro coordenador sobre as regras de acesso.<br><br>Nos termos do Decreto nº 7.508/2011, assinale a afirmativa correta.",
+"o": [
+"O acesso universal e igualitário à assistência farmacêutica exige somente que o medicamento conste da RENAME, independentemente de quem o prescreveu e do serviço em que o usuário é acompanhado.",
+"A RENAME é elaborada pela Comissão Intergestores Bipartite de cada estado e atualizada anualmente, cabendo a cada CIB definir livremente os medicamentos dispensados em seu território.",
+"O acesso universal e igualitário à assistência farmacêutica pressupõe, cumulativamente, usuário assistido pelo SUS, prescrição por profissional no exercício regular de funções no SUS, conformidade com a RENAME e os PCDT ou relação complementar, e dispensação em unidade indicada pela direção do SUS.",
+"Estados, Distrito Federal e Municípios são proibidos de adotar relações específicas e complementares de medicamentos, para preservar a uniformidade nacional e evitar desigualdades no acesso aos fármacos."
+],
+"g": 2,
+"c": "O art. 28 do Decreto 7.508 estabelece que o acesso universal e igualitário à assistência farmacêutica pressupõe, cumulativamente, os quatro requisitos descritos em (C); por isso, a receita emitida fora do SUS não atende, por si só, à regra geral. Constar da RENAME é necessário, mas não suficiente (A). A RENAME é disposta pelo Ministério da Saúde, observadas as diretrizes pactuadas na CIT, com consolidação e publicação das atualizações a cada dois anos (art. 26), e não pela CIB (B). O art. 27 permite expressamente que Estados, DF e Municípios adotem relações específicas e complementares, em consonância com a RENAME (D)."
+},
+{
+"n": 29,
+"d": "SUS",
+"it": "Anexo I · Legislação · item 4 — CF/1988, Seção II — Da Saúde",
+"e": "Assinale a opção que apresenta apenas atribuições conferidas expressamente ao Sistema Único de Saúde pelo art. 200 da Constituição Federal.",
+"o": [
+"Ordenar a formação de recursos humanos na área de saúde; participar da formulação da política e da execução das ações de saneamento básico; colaborar na proteção do meio ambiente, nele compreendido o do trabalho.",
+"Executar as ações de vigilância sanitária e epidemiológica; legislar privativamente sobre seguridade social; regulamentar e fiscalizar, com exclusividade, as operadoras de planos privados de assistência à saúde.",
+"Fiscalizar e inspecionar alimentos, bebidas e águas para consumo humano; executar diretamente todas as ações de saneamento básico; assumir a coleta e a destinação final dos resíduos sólidos urbanos.",
+"Incrementar o desenvolvimento científico e tecnológico e a inovação; participar do controle de substâncias psicoativas; autorizar o exercício profissional e julgar infrações éticas dos profissionais de saúde."
+],
+"g": 0,
+"c": "Os três itens de (A) reproduzem os incisos III, IV e VIII do art. 200 da CF. Em (B), legislar privativamente sobre seguridade social é competência da União (CF, art. 22, XXIII), e a regulação dos planos privados não figura no art. 200. Em (C), o SUS <u>participa</u> da formulação da política e da execução das ações de saneamento (inciso IV), mas não as executa integralmente, nem assume a limpeza urbana. Em (D), embora os dois primeiros itens constem dos incisos V e VII, a fiscalização do exercício profissional e da ética cabe aos conselhos de classe, como o Sistema Cofen/Coren."
+},
+{
+"n": 30,
+"d": "SUS",
+"it": "Anexo I · Legislação · item 2 — Participação e controle social no SUS",
+"e": "O Conselho Municipal de Saúde de Araguaína aprovou resolução que recomenda ajustes na programação orçamentária do Fundo Municipal de Saúde e rejeita parcialmente a prestação de contas do quadrimestre. Um servidor questiona se o colegiado poderia tratar de matéria financeira.<br><br>Considerando o disposto na Lei nº 8.142/1990, assinale a afirmativa correta.",
+"o": [
+"O Conselho de Saúde é órgão consultivo e temporário, convocado pelo Poder Executivo a cada quatro anos para avaliar a situação de saúde, razão pela qual não pode deliberar sobre a execução orçamentária do fundo.",
+"O Conselho de Saúde é composto exclusivamente por usuários e trabalhadores da saúde, sem representação do governo e dos prestadores de serviço, o que lhe garante independência para fiscalizar o gestor municipal.",
+"O Conselho de Saúde delibera apenas sobre aspectos assistenciais, pois o controle dos aspectos econômicos e financeiros da política de saúde é competência exclusiva do Tribunal de Contas e da Câmara Municipal.",
+"O Conselho de Saúde, em caráter permanente e deliberativo, atua na formulação de estratégias e no controle da execução da política de saúde, inclusive nos aspectos econômicos e financeiros, com decisões homologadas pelo chefe do Poder."
+],
+"g": 3,
+"c": "Pelo art. 1º, § 2º, da Lei 8.142, o Conselho de Saúde tem caráter permanente e deliberativo, é composto por representantes do governo, prestadores de serviço, profissionais de saúde e usuários, atua na formulação de estratégias e no controle da execução da política de saúde, “inclusive nos aspectos econômicos e financeiros”, e suas decisões são homologadas pelo chefe do poder legalmente constituído em cada esfera (D). A alternativa (A) descreve, de forma distorcida, a Conferência de Saúde (art. 1º, § 1º), que se reúne a cada quatro anos para avaliar a situação de saúde e propor diretrizes. O governo e os prestadores integram o Conselho (B). O controle externo dos Tribunais de Contas e do Legislativo não afasta a competência expressa do Conselho sobre aspectos econômicos e financeiros (C)."
+},
+{
+"n": 31,
+"d": "ENF",
+"it": "Anexo I · Enfermeiro · item 4 — Teorias e processo de enfermagem",
+"e": "Em uma enfermaria de clínica cirúrgica de hospital regional do Tocantins, a enfermeira utiliza a Teoria do Déficit de Autocuidado de Dorothea Orem para planejar a assistência a três pacientes:<br><b>Leito 1</b> — homem em coma, sob ventilação mecânica, incapaz de qualquer ação de autocuidado;<br><b>Leito 2</b> — mulher no 2º dia de pós-operatório de artroplastia de quadril, que se alimenta e faz a higiene oral sozinha, mas precisa de ajuda para o banho e para deambular;<br><b>Leito 3</b> — homem com diabetes recém-diagnosticado, plenamente capaz de executar os cuidados, mas que precisa aprender a autoaplicar insulina e reconhecer sinais de hipoglicemia.<br>Os sistemas de enfermagem adequados aos leitos 1, 2 e 3 são, respectivamente,",
+"o": [
+"parcialmente compensatório, totalmente compensatório e apoio-educação.",
+"totalmente compensatório, apoio-educação e parcialmente compensatório.",
+"apoio-educação, parcialmente compensatório e totalmente compensatório.",
+"totalmente compensatório, parcialmente compensatório e apoio-educação."
+],
+"g": 3,
+"c": "Orem descreve três sistemas de enfermagem conforme o déficit de autocuidado. No <b>totalmente compensatório</b> (leito 1), o paciente é incapaz de agir e a enfermagem supre integralmente o autocuidado; no <b>parcialmente compensatório</b> (leito 2), paciente e enfermagem dividem as ações; no <b>apoio-educação</b> (leito 3), o paciente pode realizar o cuidado, mas precisa de orientação, ensino e apoio para decidir e aprender. Por isso a sequência correta é a da letra (D). A alternativa (A) inverte os leitos 1 e 2, a (B) troca os leitos 2 e 3 e a (C) inverte a lógica por completo, atribuindo apoio-educação justamente ao paciente comatoso.",
+"ag": 4
+},
+{
+"n": 32,
+"d": "ENF",
+"it": "Anexo I · Enfermeiro · item 5 — Taxonomias de diagnósticos de enfermagem",
+"e": "Ao revisar os registros do processo de enfermagem de uma unidade de internação, a enfermeira responsável técnica encontrou a seguinte anotação: “<em>Risco de infecção relacionado a procedimento invasivo, evidenciado por hiperemia e secreção purulenta no óstio do cateter venoso central</em>”. Considerando a estrutura dos diagnósticos de enfermagem da NANDA International, assinale a afirmativa correta.",
+"o": [
+"O diagnóstico de risco tem título, definição e fatores de risco, sem características definidoras; havendo sinais de infecção instalada, o registro como “risco” é inadequado.",
+"O diagnóstico de risco exige, obrigatoriamente, fatores relacionados e características definidoras, de modo que o registro está estruturalmente completo e correto.",
+"O diagnóstico com foco no problema é formado apenas por título e fatores de risco, dispensando a descrição de sinais e sintomas observados no paciente.",
+"O diagnóstico de promoção da saúde só pode ser formulado quando há um problema real instalado, sendo sempre acompanhado de fatores de risco."
+],
+"g": 0,
+"c": "Na NANDA-I, o <b>diagnóstico de risco</b> descreve a suscetibilidade a desenvolver uma resposta indesejável e é estruturado por título, definição e <b>fatores de risco</b>; como o problema ainda não ocorreu, <u>não há características definidoras</u> (“evidenciado por”). Se já existem hiperemia e secreção purulenta, o problema está presente e o registro como risco é incoerente (A). A alternativa (B) atribui ao diagnóstico de risco componentes que ele não possui. A (C) descreve erroneamente o diagnóstico com foco no problema, que tem características definidoras e fatores relacionados. A (D) erra porque o diagnóstico de promoção da saúde expressa a motivação para aumentar o bem-estar e não depende de problema instalado, sendo sustentado por características definidoras.",
+"ag": 4
+},
+{
+"n": 33,
+"d": "ENF",
+"it": "Anexo I · Enfermeiro · item 10 — Relacionamento interpessoal, comunicação terapêutica, psicopatologias e psicofarmacologia",
+"e": "No primeiro atendimento a uma usuária recém-admitida em um CAPS II, o enfermeiro se apresenta, explica o funcionamento do serviço e procura compreender o motivo da busca por ajuda. Durante a conversa, a usuária diz: “Não consigo mais dormir desde que perdi o emprego”.<br>Com base na teoria das relações interpessoais de Hildegard Peplau e nas técnicas de comunicação terapêutica, assinale a afirmativa correta.",
+"o": [
+"O momento descrito corresponde à fase de resolução, e responder “Não se preocupe, logo tudo vai se ajeitar” é técnica terapêutica de encorajamento.",
+"O momento descrito corresponde à fase de exploração, e perguntar “Por que a senhora deixou isso acontecer?” é técnica terapêutica de clarificação.",
+"O momento descrito corresponde à fase de orientação, e responder “A senhora não consegue dormir desde que perdeu o emprego?” é técnica terapêutica de reflexão.",
+"O momento descrito corresponde à fase de identificação, que precede a orientação, e mudar de assunto para temas neutros é técnica terapêutica de reduzir a ansiedade."
+],
+"g": 2,
+"c": "Peplau descreve quatro fases sobrepostas da relação enfermeiro-paciente: <b>orientação</b>, identificação, exploração (ou aproveitamento) e resolução. O primeiro contato, em que ambos se conhecem e se delimita o problema, é a <b>fase de orientação</b>; devolver a fala do paciente para que ele a examine é a técnica de <b>reflexo/reflexão</b>, típica da comunicação terapêutica (C). A falsa tranquilização (“não se preocupe”) é não terapêutica e a resolução é a fase de encerramento (A). Perguntas do tipo “por quê” cobram justificativas e soam como julgamento, sendo não terapêuticas (B). Na (D), a ordem das fases está invertida e mudar de assunto bloqueia a comunicação.",
+"ag": 4
+},
+{
+"n": 34,
+"d": "ENF",
+"it": "Anexo I · Enfermeiro · item 10 — Relacionamento interpessoal, comunicação terapêutica, psicopatologias e psicofarmacologia",
+"e": "Homem de 45 anos, com transtorno afetivo bipolar, em uso de carbonato de lítio há dois anos, é levado ao pronto-socorro após quatro dias de diarreia e vômitos durante uma onda de calor. Apresenta tremor grosseiro, ataxia, disartria e confusão mental. A litemia é de 1,9 mEq/L. A família relata que ele iniciou, por conta própria, ibuprofeno para dor lombar.<br>Sobre o caso, é correto afirmar que",
+"o": [
+"a litemia está dentro da faixa terapêutica de manutenção, e os sintomas devem ser atribuídos à gastroenterite, mantendo-se a dose habitual do lítio.",
+"o quadro é compatível com intoxicação por lítio, favorecida por desidratação, perda de sódio e uso de anti-inflamatório não esteroide, que reduzem a excreção renal do fármaco.",
+"a conduta de enfermagem prioritária é orientar restrição de sódio e de líquidos, medida que acelera a eliminação renal do lítio.",
+"o tremor fino de extremidades é o sinal mais específico de intoxicação grave e indica suspensão definitiva do lítio, independentemente da litemia."
+],
+"g": 1,
+"c": "A faixa terapêutica de manutenção do lítio situa-se, em geral, entre 0,6 e 1,2 mEq/L; valores acima de 1,5 mEq/L associam-se a intoxicação, e o quadro neurológico (tremor grosseiro, ataxia, disartria, confusão) confirma a hipótese (B). O lítio é eliminado pelos rins e compete com o sódio: desidratação, hiponatremia, diuréticos tiazídicos, IECA e AINE reduzem sua excreção e elevam a litemia. A (A) erra a faixa terapêutica. A (C) é o oposto do correto: restringir sódio e água aumenta a reabsorção do lítio; deve-se manter hidratação e ingesta de sal adequadas. A (D) confunde o tremor fino, efeito adverso comum e esperado, com o tremor grosseiro da intoxicação.",
+"ag": 4
+},
+{
+"n": 35,
+"d": "ENF",
+"it": "Anexo I · Enfermeiro · itens 6 e 22 — Assistência ao adulto com transtorno mental; abuso de drogas",
+"e": "Homem de 52 anos, etilista pesado, internado há 60 horas para tratamento de fratura de rádio, passa a apresentar tremores, sudorese profusa, taquicardia, febre, desorientação temporoespacial e alucinações visuais (“bichos andando na parede”). A glicemia capilar é de 68 mg/dL. Há prescrição de diazepam, tiamina e soro glicosado a 5%.<br>Assinale a conduta de enfermagem correta.",
+"o": [
+"Administrar a tiamina antes da solução glicosada, para prevenir a encefalopatia de Wernicke, e manter o paciente em ambiente iluminado, calmo e com reorientação frequente.",
+"Iniciar primeiro a solução glicosada, para corrigir a hipoglicemia, deixando a tiamina para depois que o paciente estiver orientado e aceitando a via oral.",
+"Substituir o benzodiazepínico por haloperidol, que é o fármaco de primeira linha para tratar a abstinência e prevenir convulsões.",
+"Manter o paciente em quarto escuro, sob contenção mecânica contínua, para reduzir os estímulos sensoriais que desencadeiam as alucinações."
+],
+"g": 0,
+"c": "O quadro, iniciado 48–72 h após a interrupção do álcool, com hiperatividade autonômica, febre, desorientação e alucinações visuais, caracteriza <b>delirium tremens</b>. Em etilistas com deficiência de tiamina, a oferta de glicose sem reposição prévia consome a tiamina remanescente e pode precipitar a <b>encefalopatia de Wernicke</b>; por isso a tiamina deve preceder a glicose (A), e o ambiente iluminado e calmo reduz ilusões e agitação. A (B) inverte justamente essa ordem. A (C) erra porque os <b>benzodiazepínicos</b> são a base do tratamento e o haloperidol reduz o limiar convulsivo, não sendo primeira linha. A (D) é inadequada: o escuro favorece ilusões, e a contenção mecânica é excepcional, pelo menor tempo possível e com monitoramento.",
+"ag": 4
+},
+{
+"n": 36,
+"d": "ENF",
+"it": "Anexo I · Enfermeiro · item 11 — Assistência de enfermagem em gerontologia",
+"e": "Idosa de 82 anos, independente para as atividades de vida diária, é internada por infecção urinária. No segundo dia, a filha relata que a mãe “ficou estranha de repente”: alterna sonolência e agitação, não consegue manter a atenção na conversa, piora ao entardecer e à noite e tem momentos de lucidez pela manhã. Usa oito medicamentos, entre eles um benzodiazepínico para dormir.<br>Considerando o caso, assinale a afirmativa correta.",
+"o": [
+"O quadro sugere doença de Alzheimer, pois a piora vespertina é característica exclusiva das demências e o início do declínio cognitivo coincide com o envelhecimento.",
+"A contenção mecânica preventiva no leito é a principal medida para evitar quedas e a retirada de dispositivos em idosos com alteração cognitiva.",
+"Os benzodiazepínicos são os fármacos de escolha para o controle da agitação noturna do idoso, devendo ter a dose aumentada à noite.",
+"O quadro sugere delirium, marcado por início agudo, curso flutuante e déficit de atenção, cabendo medidas não farmacológicas e revisão da polifarmácia."
+],
+"g": 3,
+"c": "O <b>delirium</b> é uma síndrome geriátrica de <b>início agudo</b>, <b>curso flutuante</b> e <b>déficit de atenção</b>, frequentemente precipitado por infecção, desidratação e medicamentos, sobretudo benzodiazepínicos e anticolinérgicos; o manejo inclui tratar a causa, reorientar, garantir óculos e aparelho auditivo, preservar o ciclo sono-vigília, mobilizar precocemente e revisar a polifarmácia (D). A demência tem início insidioso e evolução progressiva; a piora vespertina (<em>sundowning</em>) não é exclusiva dela (A). A contenção mecânica aumenta o risco de delirium, lesões e quedas graves (B). Os benzodiazepínicos constam entre os medicamentos potencialmente inapropriados para idosos (critérios de Beers) e podem precipitar ou agravar o delirium (C).",
+"ag": 4
+},
+{
+"n": 37,
+"d": "ENF",
+"it": "Anexo I · Enfermeiro · item 12 — Procedimentos técnicos em enfermagem",
+"e": "Foi prescrita a infusão de 1.080 mL de soro fisiológico a 0,9% em 12 horas para um paciente adulto. A unidade dispõe de equipo macrogotas (20 gotas = 1 mL) e, alternativamente, de bomba de infusão programada em mL/h.<br>O gotejamento no equipo macrogotas e a vazão a ser programada na bomba são, respectivamente,",
+"o": [
+"90 gotas/min e 30 mL/h.",
+"10 gotas/min e 90 mL/h.",
+"30 gotas/min e 90 mL/h.",
+"30 gotas/min e 30 mL/h."
+],
+"g": 2,
+"c": "Para macrogotas, usa-se gotas/min = V ÷ (T × 3), com T em horas: 1.080 ÷ (12 × 3) = 1.080 ÷ 36 = <b>30 gotas/min</b>. A vazão na bomba é V ÷ T = 1.080 ÷ 12 = <b>90 mL/h</b>, valor que coincide com o número de microgotas/min (C). A (A) inverte os resultados, confundindo a fórmula de microgotas com a de macrogotas. A (B) divide indevidamente o resultado por 3 mais uma vez. A (D) acerta o gotejamento, mas programa a bomba com o valor de gotas/min, como se as unidades fossem equivalentes.",
+"ag": 4
+},
+{
+"n": 38,
+"d": "ENF",
+"it": "Anexo I · Enfermeiro · item 12 — Procedimentos técnicos em enfermagem",
+"e": "Foi prescrita benzilpenicilina potássica (penicilina cristalina) 2.000.000 UI por via intravenosa, de 4 em 4 horas. A farmácia dispõe de frasco-ampola de 5.000.000 UI, a ser reconstituído com 8 mL de água para injeção. Sabe-se que o pó desse frasco acrescenta 2 mL ao volume final da solução.<br>O volume a ser aspirado para cada dose é de",
+"o": [
+"3,2 mL.",
+"4,0 mL.",
+"2,5 mL.",
+"0,4 mL."
+],
+"g": 1,
+"c": "Na penicilina cristalina, o pó liofilizado ocupa volume: 8 mL de diluente + 2 mL do pó = <b>10 mL</b> de solução, com concentração de 5.000.000 UI ÷ 10 mL = 500.000 UI/mL. Logo, 2.000.000 UI ÷ 500.000 UI/mL = <b>4 mL</b> (B). A (A), 3,2 mL, resulta do erro clássico de ignorar o volume do pó (5.000.000 ÷ 8 = 625.000 UI/mL). A (C) inverte a proporção (5.000.000 ÷ 2.000.000). A (D) é erro de casa decimal, que levaria a subdose de dez vezes.",
+"ag": 4
+},
+{
+"n": 39,
+"d": "ENF",
+"it": "Anexo I · Enfermeiro · item 13 — Assistência de enfermagem perioperatória",
+"e": "Um hospital regional do Tocantins implantou a Lista de Verificação de Segurança Cirúrgica da Organização Mundial da Saúde, organizada em três momentos: antes da indução anestésica (entrada/<em>sign in</em>), antes da incisão cirúrgica (pausa cirúrgica/<em>time out</em>) e antes de o paciente sair da sala de operações (saída/<em>sign out</em>).<br>Assinale a opção que associa corretamente a verificação ao momento previsto na lista.",
+"o": [
+"A confirmação de alergias conhecidas e do risco de via aérea difícil ocorre na pausa cirúrgica, depois da indução e imediatamente antes da incisão.",
+"A demarcação do sítio cirúrgico é realizada pelo circulante de sala durante a pausa cirúrgica, com o paciente já anestesiado.",
+"A confirmação de que o antibiótico profilático foi administrado é feita na saída, após o fechamento da ferida operatória.",
+"Na saída, a equipe confirma verbalmente o nome do procedimento realizado, a contagem de instrumentais, compressas e agulhas e a identificação das amostras."
+],
+"g": 3,
+"c": "Na <b>saída</b> (<em>sign out</em>), antes de o paciente deixar a sala, confirmam-se verbalmente o procedimento registrado, a <b>contagem</b> de instrumentais, compressas e agulhas, a <b>identificação de amostras</b>, eventuais problemas com equipamentos e as preocupações para a recuperação (D). Alergias e risco de via aérea difícil e de perda sanguínea são checados na <b>entrada</b>, antes da indução anestésica (A). A demarcação do sítio deve ser feita previamente pelo cirurgião, com o paciente acordado sempre que possível, e verificada na entrada (B). A profilaxia antimicrobiana é confirmada na <b>pausa cirúrgica</b>, idealmente nos 60 minutos que antecedem a incisão (C).",
+"ag": 4
+},
+{
+"n": 40,
+"d": "ENF",
+"it": "Anexo I · Enfermeiro · item 14 — Assistência a pacientes com alterações da função cardiovascular e circulatória",
+"e": "Homem de 58 anos, hipertenso e tabagista, chega à porta de um pronto-socorro com dor retroesternal em aperto há 40 minutos, irradiada para o membro superior esquerdo, acompanhada de sudorese fria e náuseas. PA 148/92 mmHg, FC 104 bpm, SpO₂ 97% em ar ambiente. Refere uso de sildenafila na noite anterior.<br>Sobre o atendimento inicial a esse paciente, assinale a afirmativa correta.",
+"o": [
+"O eletrocardiograma de 12 derivações deve ser feito e interpretado em até 10 minutos da chegada, com monitorização contínua, dispensando oxigênio, pois não há hipoxemia.",
+"Deve-se instalar oxigênio a 100% por máscara com reservatório em todo paciente com dor torácica, para limitar a área de necrose miocárdica.",
+"O eletrocardiograma deve aguardar o resultado da troponina, pois o diagnóstico de infarto com supradesnivelamento de ST depende da elevação do marcador.",
+"A administração de nitrato sublingual é a primeira medida, mesmo com uso de inibidor da fosfodiesterase-5 nas últimas 24 horas, por se tratar de dor isquêmica."
+],
+"g": 0,
+"c": "Na suspeita de síndrome coronariana aguda, o <b>ECG de 12 derivações em até 10 minutos</b> da chegada é a ação que define o fluxo (com ou sem supradesnivelamento de ST), associada a monitorização, acesso venoso e AAS conforme protocolo (A). O oxigênio está indicado apenas na presença de hipoxemia (SpO₂ &lt; 90%) ou desconforto respiratório; o uso rotineiro em normoxêmicos não traz benefício (B). O IAM com supra é diagnosticado pelo ECG, e a reperfusão não deve esperar marcadores (C). Os nitratos são contraindicados após uso de sildenafila nas últimas 24 horas (48 horas para tadalafila), pelo risco de hipotensão grave (D).",
+"ag": 4
+},
+{
+"n": 41,
+"d": "ENF",
+"it": "Anexo I · Enfermeiro · item 14 — Assistência a pacientes com alterações da função metabólica e endócrina",
+"e": "Em uma Unidade Básica de Saúde de Araguaína, uma mulher de 60 anos, com diabetes tipo 2 em uso de insulina NPH, aguarda consulta quando refere tremor, sudorese e palpitações. Está consciente, orientada e consegue deglutir. A glicemia capilar é de 62 mg/dL.<br>Segundo a conduta preconizada para a hipoglicemia leve (nível 1), a enfermeira deve",
+"o": [
+"oferecer um lanche com pão, queijo e chocolate, pois proteínas e gorduras sustentam a glicemia por mais tempo e corrigem o quadro rapidamente.",
+"puncionar acesso venoso e administrar glicose a 50% imediatamente, já que toda hipoglicemia em usuário de insulina deve ser corrigida por via intravenosa.",
+"oferecer 15 g de carboidrato de absorção rápida, como uma colher de sopa de açúcar diluída em água ou 150 mL de refrigerante comum, e repetir a glicemia em 15 minutos.",
+"suspender a próxima dose de insulina e reavaliar a glicemia apenas após uma hora, evitando oferta de carboidratos para não provocar hiperglicemia de rebote."
+],
+"g": 2,
+"c": "Na hipoglicemia nível 1 (glicemia ≤ 70 mg/dL e ≥ 54 mg/dL) em paciente consciente e capaz de deglutir, aplica-se a <b>regra dos 15</b>: oferecer 15 g de carboidrato de absorção rápida e repetir a glicemia em 15 minutos, repetindo o ciclo se necessário; após a correção, oferece-se um lanche se a próxima refeição estiver distante (C). Alimentos com gordura e proteína, como o chocolate, retardam a absorção da glicose e não são a primeira opção (A). A glicose a 50% intravenosa (ou o glucagon) fica reservada ao paciente inconsciente ou incapaz de deglutir (B). Adiar a correção e esperar uma hora expõe a paciente a agravamento para hipoglicemia grave (D).",
+"ag": 4
+},
+{
+"n": 42,
+"d": "ENF",
+"it": "Anexo I · Enfermeiro · item 14 — Assistência a pacientes com alterações da função tegumentar",
+"e": "Paciente de 74 anos, restrito ao leito após AVC, incontinente e com baixa aceitação alimentar, obtém <b>11 pontos</b> na escala de Braden. Na região sacral, a enfermeira observa perda total da espessura da pele, com tecido adiposo visível no leito, tecido de granulação e pequena área de esfacelo que não impede a visualização da profundidade; não há exposição de fáscia, músculo, tendão ou osso.<br>De acordo com a classificação do NPIAP (National Pressure Injury Advisory Panel), assinale a afirmativa correta.",
+"o": [
+"Trata-se de lesão por pressão estágio 2, e a pontuação de Braden indica risco leve, porque escores mais altos na escala correspondem a maior risco.",
+"Trata-se de lesão por pressão estágio 3, e a pontuação de Braden indica risco elevado, porque escores mais baixos na escala correspondem a maior risco.",
+"Trata-se de lesão por pressão estágio 4, pois a presença de esfacelo e de tecido de granulação caracteriza perda tissular profunda.",
+"Trata-se de lesão por pressão não classificável, pois qualquer quantidade de esfacelo no leito impede o estadiamento da lesão."
+],
+"g": 1,
+"c": "Pelo NPIAP, o <b>estágio 3</b> é a perda total da espessura da pele com <b>gordura visível</b>, podendo haver granulação, esfacelo e escara, sem exposição de fáscia, músculo, tendão, ligamento, cartilagem ou osso. Na escala de Braden, quanto <b>menor</b> o escore, maior o risco; 10 a 12 pontos correspondem a risco elevado (B). O estágio 2 é perda parcial com derme exposta, sem gordura visível (A). O estágio 4 exige exposição ou palpação direta de fáscia, músculo, tendão, ligamento, cartilagem ou osso (C). A lesão só é não classificável quando esfacelo ou escara <u>impedem</u> confirmar a profundidade, o que não ocorre no caso (D).",
+"ag": 4
+},
+{
+"n": 43,
+"d": "ENF",
+"it": "Anexo I · Enfermeiro · item 15 — Saúde sexual e reprodutiva da mulher",
+"e": "Em atividade de planejamento reprodutivo em uma equipe de Saúde da Família, a enfermeira atende quatro mulheres e consulta os Critérios Médicos de Elegibilidade para Uso de Métodos Anticoncepcionais da Organização Mundial da Saúde.<br>Assinale a orientação compatível com esses critérios.",
+"o": [
+"A mulher de 22 anos, nulípara, sem infecção sexualmente transmissível atual, que deseja método de longa duração, pode receber o DIU de cobre, pois a nuliparidade não o contraindica.",
+"A puérpera com três semanas de pós-parto, em aleitamento materno exclusivo, tem no anticoncepcional oral combinado o método de primeira escolha.",
+"A mulher de 38 anos que fuma 20 cigarros por dia pode usar o anticoncepcional oral combinado, pois o tabagismo só o contraindica após os 40 anos.",
+"A mulher de 25 anos com enxaqueca com aura pode usar o anticoncepcional oral combinado, já que a restrição para essa condição se aplica apenas após os 35 anos."
+],
+"g": 0,
+"c": "Nos critérios da OMS, a <b>nuliparidade</b> é categoria 2 para o DIU de cobre (benefícios superam os riscos), de modo que ele pode ser oferecido à nulípara sem IST atual (A). O anticoncepcional combinado é categoria 4 na lactação com menos de 6 semanas pós-parto, por interferir na produção de leite e pelo risco tromboembólico; nessa fase priorizam-se métodos não hormonais ou só de progestágeno (B). Fumantes com 35 anos ou mais e consumo de 15 ou mais cigarros/dia são categoria 4 para métodos combinados (C). A <b>enxaqueca com aura</b> é categoria 4 em qualquer idade, pelo risco de AVC isquêmico (D).",
+"ag": 4
+},
+{
+"n": 44,
+"d": "ENF",
+"it": "Anexo I · Enfermeiro · item 16 — Gestante, parturiente e puérpera",
+"e": "Gestante de 34 semanas, com pré-eclâmpsia com sinais de gravidade (PA 170/112 mmHg, cefaleia e escotomas), recebe sulfato de magnésio pelo esquema de Zuspan, em infusão contínua. Seis horas após o início, a enfermeira constata: frequência respiratória de 10 irpm, reflexo patelar ausente e diurese de 15 mL/h nas últimas duas horas.<br>Diante desses achados, a conduta correta é",
+"o": [
+"aumentar a velocidade de infusão do sulfato de magnésio, pois a persistência da hipertensão indica dose insuficiente para prevenir a eclâmpsia.",
+"manter a infusão inalterada, pois a abolição do reflexo patelar indica que o nível terapêutico de magnésio foi atingido.",
+"administrar furosemida para elevar a diurese e manter a infusão de sulfato de magnésio na mesma velocidade.",
+"interromper a infusão, comunicar imediatamente a equipe médica e ter disponível gluconato de cálcio a 10%, 10 mL por via intravenosa lenta, como antídoto."
+],
+"g": 3,
+"c": "Antes de cada dose ou durante a infusão de sulfato de magnésio, verificam-se três parâmetros de segurança: <b>reflexo patelar presente</b>, <b>frequência respiratória adequada</b> (em geral ≥ 16 irpm) e <b>diurese ≥ 25–30 mL/h</b>, já que a excreção do magnésio é renal. Reflexo abolido, bradipneia e oligúria indicam risco de intoxicação, exigindo suspensão da infusão e uso do antídoto, o <b>gluconato de cálcio a 10%</b>, por via intravenosa lenta (D). Aumentar a dose (A) ou mantê-la (B) agravaria a hipermagnesemia, que pode levar a parada respiratória; a abolição do reflexo é o primeiro sinal de toxicidade, e não de efeito terapêutico. Diurético não corrige a intoxicação e não autoriza manter a infusão diante da depressão respiratória (C).",
+"ag": 4
+},
+{
+"n": 45,
+"d": "ENF",
+"it": "Anexo I · Enfermeiro · item 19 — Criança sadia e doenças prevalentes da infância (diarreicas e respiratórias)",
+"e": "Criança de 2 anos, pesando 12 kg, é levada à UBS com diarreia aquosa há três dias. Ao exame, está irritada, com olhos fundos, lágrimas ausentes, bebe água de forma ávida, a prega cutânea desaparece lentamente e o pulso está rápido. Não há sinais de gravidade como letargia, incapacidade de beber ou pulso muito fraco.<br>De acordo com o manejo do paciente com diarreia preconizado pelo Ministério da Saúde, a conduta adequada é",
+"o": [
+"Plano A, com orientação de soro caseiro no domicílio, sem necessidade de permanência na unidade nem de suplementação de zinco.",
+"Plano B, com terapia de reidratação oral na unidade, de 600 a 1.200 mL de SRO em 4 a 6 horas, reavaliação frequente e zinco 20 mg/dia por 10 a 14 dias.",
+"Plano C, com expansão venosa imediata de soro fisiológico a 0,9%, 20 mL/kg em 30 minutos, em razão da presença de sinais de desidratação.",
+"Plano B, com reidratação oral no domicílio associada a loperamida e antiemético para reduzir o número de evacuações e acelerar a recuperação."
+],
+"g": 1,
+"c": "Dois ou mais sinais (irritação, olhos fundos, sede ávida, prega que desaparece lentamente, pulso rápido) sem sinais de gravidade indicam <b>desidratação</b>, tratada pelo <b>Plano B</b> na própria unidade: SRO 50 a 100 mL/kg em 4 a 6 horas (para 12 kg, 600 a 1.200 mL), com reavaliação até o desaparecimento dos sinais. O zinco é indicado em todos os casos de diarreia em crianças: 10 mg/dia abaixo de 6 meses e 20 mg/dia acima, por 10 a 14 dias (B). O Plano A destina-se à criança sem desidratação (A). O Plano C exige desidratação grave, com ao menos um sinal de gravidade (C). Antidiarreicos como a loperamida são contraindicados em crianças, e o Plano B não é feito no domicílio (D).",
+"ag": 4
+},
+{
+"n": 46,
+"d": "ENF",
+"it": "Anexo I · Enfermeiro · item 20 — Urgência e emergência: politraumatizado",
+"e": "A equipe de suporte avançado do SAMU de Araguaína chega ao local de uma colisão entre motocicleta e caminhão na BR-153. O motociclista, consciente e falando frases completas, apresenta ferimento na face medial da coxa direita com sangramento vermelho-vivo, pulsátil e em jato, formando poça ao redor do membro. FR 28 irpm, pele fria e pálida, pulso radial fino.<br><br>De acordo com a sequência <b>XABCDE</b> adotada nas edições atuais do PHTLS/ATLS, a conduta prioritária do enfermeiro é",
+"o": [
+"abrir a via aérea com elevação do mento e instalar o colar cervical antes de qualquer outra intervenção, porque a via aérea precede todas as etapas do atendimento.",
+"puncionar dois acessos venosos calibrosos e infundir 2 litros de cristaloide aquecido antes de abordar o sangramento, para corrigir o choque hipovolêmico.",
+"controlar de imediato a hemorragia externa exsanguinante, com compressão direta e, se ineficaz, torniquete proximal à lesão com registro do horário, prosseguindo depois para a avaliação da via aérea.",
+"aplicar a escala de coma de Glasgow e avaliar as pupilas, uma vez que o nível de consciência define a gravidade e a ordem das demais intervenções."
+],
+"g": 2,
+"c": "A letra <b>X</b> (<em>eXsanguinating hemorrhage</em>) foi incorporada ao início da avaliação primária porque a hemorragia externa grave mata em poucos minutos, antes da obstrução de via aérea em vítima que fala; o controle é feito por compressão direta, curativo hemostático e torniquete, anotando-se o horário (C). A via aérea com restrição de movimento da coluna vem logo depois, e o paciente já fala frases completas (A). A reposição volêmica agressiva sem controle do sangramento contraria a estratégia de hipotensão permissiva e reposição criteriosa (B). Glasgow e pupilas pertencem à etapa D, avaliada somente após X, A, B e C (D).",
+"ag": 5
+},
+{
+"n": 47,
+"d": "ENF",
+"it": "Anexo I · Enfermeiro · item 14 — Assistência de enfermagem a pacientes com alterações da função neurológica",
+"e": "Homem de 64 anos, hipertenso, apresentou às 14h10, diante da família, desvio da rima labial, fraqueza no braço direito e fala arrastada (escala de Cincinnati positiva nos três itens). Deu entrada no hospital de referência às 15h00. Glicemia capilar de 112 mg/dL e PA de 200/115 mmHg. A tomografia de crânio sem contraste, realizada às 15h20, não mostrou hemorragia.<br><br>Com base nas diretrizes de atendimento ao AVC isquêmico agudo, assinale a afirmativa correta.",
+"o": [
+"O paciente está dentro da janela para trombólise intravenosa, de até 4,5 horas do início dos sintomas, mas a PA deve ser reduzida para valores inferiores a 185/110 mmHg antes da infusão do trombolítico.",
+"A PA de 200/115 mmHg constitui contraindicação definitiva à trombólise, devendo-se aguardar 24 horas de controle pressórico antes de reconsiderar a terapia de reperfusão.",
+"Deve-se administrar ácido acetilsalicílico 300 mg imediatamente, antes mesmo da tomografia, para não retardar a terapia antitrombótica enquanto se aguarda a imagem.",
+"A janela terapêutica para o trombolítico intravenoso é de até 6 horas contadas a partir da chegada do paciente ao hospital, e não do início dos sintomas."
+],
+"g": 0,
+"c": "O trombolítico intravenoso no AVC isquêmico pode ser administrado em até <b>4,5 h</b> do início dos sintomas (ou da última vez em que o paciente foi visto bem), após TC que exclua hemorragia; a PA deve estar <b>abaixo de 185/110 mmHg</b> antes da infusão e mantida abaixo de 180/105 mmHg nas 24 h seguintes (A). A hipertensão acima desse limite é corrigível com anti-hipertensivo intravenoso e não é contraindicação definitiva; esperar 24 h faria perder a janela (B). Antiagregante antes da imagem é erro, porque a TC é que distingue isquemia de hemorragia, e no paciente trombolisado o AAS é adiado por 24 h (C). A contagem do tempo parte do início dos sintomas, não da admissão, e o prazo de 6 h refere-se à trombectomia mecânica, não à trombólise IV (D).",
+"ag": 5
+},
+{
+"n": 48,
+"d": "ENF",
+"it": "Anexo I · Enfermeiro · item 20 — Urgência e emergência: politraumatizado, paciente crítico com distúrbios hidroeletrolíticos, insuficiência renal e métodos dialíticos",
+"e": "Paciente de 58 anos, com doença renal crônica em hemodiálise três vezes por semana em Araguaína, faltou às duas últimas sessões e chega ao pronto-socorro com fraqueza muscular e parestesias. Potássio sérico de 7,2 mEq/L. O ECG mostra ondas T apiculadas e alargamento do complexo QRS.<br><br>Sobre a abordagem dessa hipercalemia, assinale a afirmativa correta.",
+"o": [
+"As ondas T apiculadas são achado típico da hipocalemia, de modo que o ECG não corrobora o diagnóstico e o tratamento deve aguardar nova dosagem do potássio.",
+"A insulina regular intravenosa deve ser administrada isoladamente, sem glicose, pois o paciente renal crônico não tolera a sobrecarga de glicose e o risco de hipoglicemia é desprezível.",
+"O poliestireno sulfonato de cálcio por via oral é a medida inicial de escolha, por ser a terapia de ação mais rápida na redução do potássio sérico.",
+"O gluconato de cálcio a 10% IV deve ser administrado prontamente para estabilizar a membrana do miocárdio, sem reduzir o potássio, associando-se medidas que o deslocam para o intracelular, como insulina com glicose, e sua remoção pela hemodiálise."
+],
+"g": 3,
+"c": "Na hipercalemia com alteração eletrocardiográfica, a primeira medida é o <b>gluconato de cálcio</b>, que antagoniza o efeito do potássio sobre a membrana do miocárdio em minutos, sem alterar o potássio sérico; em seguida, desloca-se o potássio para o intracelular com <b>insulina regular associada a glicose</b> (e β2-agonista inalatório), e o potássio é removido; no paciente dialítico, a <b>hemodiálise</b> é o tratamento definitivo (D). Onda T apiculada, alargamento do QRS e achatamento da onda P são sinais de hipercalemia; a onda U é que sugere hipocalemia (A). A insulina sem glicose provoca hipoglicemia, risco ainda maior no renal crônico, que elimina menos insulina (B). As resinas de troca (poliestireno) agem em horas e não são terapia de emergência para arritmia iminente (C).",
+"ag": 5
+},
+{
+"n": 49,
+"d": "ENF",
+"it": "Anexo I · Enfermeiro · item 27 — Atuação da enfermagem em procedimentos e métodos diagnósticos",
+"e": "Uma paciente retorna à unidade de internação após cateterismo cardíaco diagnóstico realizado por punção da artéria femoral direita, com retirada do introdutor e curativo compressivo no local.<br><br>Assinale a opção que apresenta cuidados de enfermagem adequados nesse pós-procedimento.",
+"o": [
+"Manter a cabeceira elevada a 90° e estimular a deambulação na primeira hora após o retorno, para prevenir a trombose venosa profunda no membro puncionado.",
+"Manter o membro puncionado estendido, com repouso no leito pelo tempo definido em protocolo, inspecionar o curativo quanto a sangramento ou hematoma e avaliar pulsos distais, cor, temperatura e sensibilidade do membro.",
+"Restringir a ingestão hídrica nas primeiras 24 horas, pois o contraste iodado provoca sobrecarga de volume e pode precipitar congestão pulmonar.",
+"Retirar o curativo compressivo logo na chegada à unidade, para permitir a observação contínua do sítio de punção e a detecção precoce de sangramento."
+],
+"g": 1,
+"c": "Após punção femoral, o membro deve permanecer <b>estendido</b>, sem flexão do quadril, com repouso no leito pelo período previsto no protocolo institucional; o enfermeiro vigia o sítio (sangramento, hematoma, pseudoaneurisma) e a perfusão distal, comparando pulsos pedioso e tibial posterior, cor, temperatura e sensibilidade com o membro contralateral (B). Elevar a cabeceira a 90° e deambular precocemente flexionam o quadril e aumentam o risco de sangramento no sítio arterial (A). Salvo contraindicação, como insuficiência cardíaca descompensada, a hidratação é estimulada para favorecer a eliminação do contraste e prevenir a nefropatia induzida por contraste (C). O curativo compressivo deve ser mantido pelo tempo do protocolo; sua retirada precoce favorece o sangramento (D).",
+"ag": 5
+},
+{
+"n": 50,
+"d": "ENF",
+"it": "Anexo I · Enfermeiro · itens 28, 32 e 35 — Agravos à saúde relacionados ao trabalho; risco biológico e medidas de precaução; medidas de proteção nas situações de risco potencial de exposição",
+"e": "Uma técnica de enfermagem contratada pelo regime da CLT, em hospital filantrópico conveniado ao SUS no Tocantins, sofreu às 22h uma lesão percutânea profunda com agulha oca, com sangue visível, logo após puncionar o acesso venoso de um paciente cujo status sorológico para HIV, hepatite B e hepatite C é desconhecido.<br><br>De acordo com as recomendações do Ministério da Saúde, assinale a conduta correta.",
+"o": [
+"Espremer o local da lesão para extravasar o sangue contaminado e aplicar hipoclorito de sódio, notificando o caso no SINAN apenas se houver soroconversão no seguimento.",
+"Aguardar o resultado da sorologia convencional do paciente-fonte, que pode levar até 72 horas, antes de qualquer decisão, pois a PEP só se justifica com fonte comprovadamente reagente.",
+"Lavar o local com água e sabão, sem espremer; testar a fonte e a profissional; se indicada, iniciar a PEP o mais cedo possível, idealmente em até 2 horas e no máximo em 72 horas, por 28 dias; notificar no SINAN e emitir a CAT.",
+"Iniciar a PEP em até 7 dias, com duração de 14 dias, dispensando-se a notificação porque o acidente com material biológico não integra a lista de notificação compulsória."
+],
+"g": 2,
+"c": "Os cuidados imediatos com a área exposta são lavagem com <b>água e sabão</b>, sem espremer, sem esfregar com força e sem agentes cáusticos, que aumentam a área lesada (A errada). Recomenda-se teste rápido da fonte, quando possível, e da pessoa exposta; diante de fonte desconhecida ou reagente em exposição de risco, a PEP deve começar o quanto antes, idealmente nas primeiras 2 h e no máximo em <b>72 h</b>, por <b>28 dias</b> (esquema preferencial do PCDT PEP/MS: TDF/3TC + dolutegravir), podendo ser suspensa se a fonte for não reagente (C). Aguardar sorologia convencional desperdiça o período em que a profilaxia é mais eficaz (B). O acidente de trabalho com exposição a material biológico é de notificação compulsória no SINAN; para a trabalhadora celetista, emite-se também a CAT, e o prazo e a duração citados em (D) não existem.",
+"ag": 5
+},
+{
+"n": 51,
+"d": "ENF",
+"it": "Anexo I · Enfermeiro · item 2 — Vigilância epidemiológica e vigilância em saúde",
+"e": "Durante um plantão no pronto-socorro de um hospital regional do Tocantins, o enfermeiro do Núcleo de Vigilância Epidemiológica Hospitalar revisa os atendimentos do dia para organizar as notificações conforme a Lista Nacional de Notificação Compulsória (Anexo 1 do Anexo V da Portaria de Consolidação GM/MS nº 4/2017, com as atualizações posteriores).<br><br>Assinale a opção em que <u>todos</u> os agravos exigem notificação <b>imediata</b>, em até 24 horas.",
+"o": [
+"Caso suspeito de sarampo, caso suspeito de febre amarela e caso suspeito de botulismo.",
+"Caso suspeito de sarampo, caso confirmado de tuberculose e caso suspeito de cólera.",
+"Caso suspeito de raiva humana, caso confirmado de hanseníase e caso suspeito de febre amarela.",
+"Caso suspeito de dengue sem óbito, caso suspeito de botulismo e caso suspeito de cólera."
+],
+"g": 0,
+"c": "Sarampo, febre amarela e botulismo são de notificação <b>imediata</b> (até 24 h) às três esferas de gestão, pelo potencial epidêmico e pela necessidade de investigação e bloqueio rápidos (A). Tuberculose é de notificação <b>semanal</b>, o que invalida a letra (B), ainda que sarampo e cólera sejam imediatos. Hanseníase também é de notificação semanal, apesar de raiva humana e febre amarela serem imediatas (C). Para dengue, os <b>casos</b> são de notificação semanal e apenas o <b>óbito</b> é de notificação imediata, de modo que a letra (D) também está errada.",
+"ag": 5
+},
+{
+"n": 52,
+"d": "ENF",
+"it": "Anexo I · Enfermeiro · item 2 — Doenças e agravos não transmissíveis",
+"e": "Na consulta de enfermagem em uma Unidade Básica de Saúde de Palmas, o enfermeiro analisa os exames de quatro usuários adultos, todos sem diagnóstico prévio de diabetes, para definir quem deve ser encaminhado como caso confirmado de <em>diabetes mellitus</em>.<br><br>De acordo com os critérios diagnósticos adotados pelo Ministério da Saúde e pela Sociedade Brasileira de Diabetes, assinale a opção que, <u>isoladamente</u>, confirma o diagnóstico.",
+"o": [
+"Glicemia de jejum de 118 mg/dL, repetida em duas ocasiões distintas.",
+"Hemoglobina glicada (HbA1c) de 6,2%, confirmada em segunda amostra.",
+"Glicemia de 180 mg/dL duas horas após sobrecarga oral com 75 g de glicose.",
+"Glicemia casual de 246 mg/dL em usuário com poliúria, polidipsia e perda ponderal."
+],
+"g": 3,
+"c": "Glicemia ao acaso <b>≥ 200 mg/dL</b> na presença de sintomas clássicos de hiperglicemia (poliúria, polidipsia, perda de peso) confirma o diagnóstico de diabetes sem necessidade de um segundo exame (D). Os demais critérios, jejum ≥ 126 mg/dL, HbA1c ≥ 6,5% e TOTG de 2 h ≥ 200 mg/dL, exigem confirmação, salvo dois exames alterados na mesma amostra. Os valores das letras (A), jejum entre 100 e 125 mg/dL, (B), HbA1c entre 5,7% e 6,4%, e (C), TOTG de 2 h entre 140 e 199 mg/dL, caracterizam <b>pré-diabetes</b> (glicemia de jejum alterada e tolerância diminuída à glicose), e não diabetes.",
+"ag": 5
+},
+{
+"n": 53,
+"d": "ENF",
+"it": "Anexo I · Enfermeiro · item 2 — Programa Nacional de Imunizações",
+"e": "Em uma sala de vacina de Gurupi, a enfermeira atende duas crianças com a caderneta em atraso: Ana, de 9 meses, que nunca recebeu a vacina rotavírus; e Pedro, de 15 meses, que recebeu as três doses da vacina poliomielite aos 2, 4 e 6 meses.<br><br>Considerando o Calendário Nacional de Vacinação vigente, assinale a afirmativa correta.",
+"o": [
+"Ana não pode mais iniciar o esquema da vacina rotavírus, porque a primeira dose só pode ser aplicada até 3 meses e 15 dias de vida; Pedro deve receber o reforço com a vacina oral poliomielite.",
+"Ana pode receber a primeira dose da vacina rotavírus, cuja aplicação é permitida até 11 meses e 29 dias, e a segunda após intervalo mínimo de 30 dias, até 23 meses e 29 dias; Pedro deve receber o reforço com a VIP.",
+"Ana pode receber as duas doses da vacina rotavírus no mesmo dia, para compensar o atraso; Pedro deve receber o reforço com a VOP bivalente e um segundo reforço aos 4 anos.",
+"Ana pode receber a vacina rotavírus em qualquer idade até 4 anos, sem intervalo mínimo entre as doses; Pedro já tem o esquema completo e não precisa de reforço."
+],
+"g": 1,
+"c": "O Ministério da Saúde ampliou a faixa etária da vacina rotavírus: a 1ª dose é indicada aos 2 meses, mas pode ser aplicada <b>até 11 meses e 29 dias</b>, e a 2ª aos 4 meses, <b>até 23 meses e 29 dias</b>, com intervalo mínimo de 30 dias entre as doses. Além disso, desde a substituição da VOP pela VIP, o esquema contra a poliomielite é exclusivo com <b>VIP</b>: três doses (2, 4 e 6 meses) e <b>um reforço aos 15 meses</b> (B). A letra (A) traz os antigos limites de idade da rotavírus e o reforço oral já abandonado. Duas doses no mesmo dia desrespeitam o intervalo mínimo, e os dois reforços com VOPb (15 meses e 4 anos) foram extintos (C). Há limite etário e intervalo mínimo para a rotavírus, e o reforço da pólio aos 15 meses permanece no calendário (D).",
+"ag": 5
+},
+{
+"n": 54,
+"d": "ENF",
+"it": "Anexo I · Enfermeiro · item 3 — Modalidades assistenciais: assistência domiciliar, cuidado em saúde da família e Estratégia Saúde da Família",
+"e": "Um município tocantinense com Serviço de Atenção Domiciliar (Programa Melhor em Casa) avalia dois usuários: (I) idosa acamada há dois anos por sequela de AVC, clinicamente estável, que necessita de acompanhamento periódico e orientação à cuidadora; (II) homem recém-saído de internação, com osteomielite, que necessita de antibioticoterapia intravenosa diária e curativos complexos por algumas semanas.<br><br>Segundo as normas da Atenção Domiciliar no SUS (Portaria de Consolidação GM/MS nº 5/2017, com redação da Portaria GM/MS nº 3.005/2024), é correto afirmar que",
+"o": [
+"os dois usuários devem ser admitidos na modalidade AD2, porque toda restrição ao leito ou ao domicílio exige acompanhamento pela Equipe Multiprofissional de Atenção Domiciliar (EMAD).",
+"a idosa deve ser incluída na modalidade AD3, por estar acamada, e o homem na modalidade AD1, já que a antibioticoterapia é transitória e dispensa equipe especializada.",
+"a idosa enquadra-se na AD1, sob responsabilidade da Atenção Primária, com visitas programadas conforme o plano terapêutico, e o homem na AD2, acompanhado pela EMAD no mínimo uma vez por semana, com apoio da EMAP quando indicado.",
+"a modalidade AD1 é de responsabilidade da Equipe Multiprofissional de Apoio (EMAP), cabendo à equipe de Saúde da Família apenas encaminhar casos para o SAD."
+],
+"g": 2,
+"c": "A <b>AD1</b> destina-se a usuários com condição crônica estável e restrição ao leito ou ao lar, que demandam cuidados menos frequentes, e é de responsabilidade da <b>Atenção Primária</b>, com periodicidade definida no plano terapêutico singular; a <b>AD2</b> abrange cuidados transitórios e intensificados, como medicação parenteral diária e curativos complexos, sob responsabilidade do SAD, com atendimento da EMAD no mínimo semanal e apoio da EMAP quando necessário (C). Estar acamado não obriga a admissão na AD2 (A). A AD3 exige cuidados multiprofissionais predominantes e uso de equipamentos ou procedimentos de maior complexidade, perfil que não é o da idosa, e o homem não cabe na AD1 (B). A EMAP é equipe de apoio do SAD, e a AD1 cabe às equipes da APS (D).",
+"ag": 5
+},
+{
+"n": 55,
+"d": "ENF",
+"it": "Anexo I · Enfermeiro · item 19 — Criança sadia: aleitamento materno",
+"e": "Em consulta de puericultura na UBS, uma mãe de bebê de 4 meses, em aleitamento materno exclusivo, informa que retornará ao trabalho na semana seguinte e pergunta como ordenhar e armazenar o próprio leite para que a avó o ofereça durante sua ausência.<br><br>Segundo as recomendações do Ministério da Saúde, a orientação correta do enfermeiro é:",
+"o": [
+"o leite ordenhado cru pode ser conservado na geladeira por até 12 horas e no freezer ou congelador por até 15 dias; deve ser descongelado em banho-maria, com o fogo desligado, oferecido de preferência em copinho, e o aleitamento exclusivo deve ser mantido até os 6 meses.",
+"o leite ordenhado pode ser conservado na geladeira por até 48 horas e no freezer por até 6 meses; o aquecimento no micro-ondas é seguro, desde que o frasco seja agitado antes de ser oferecido ao bebê.",
+"com o retorno ao trabalho, o aleitamento exclusivo pode ser encerrado aos 4 meses, com introdução de fórmula infantil em mamadeira nos horários de ausência, mantendo-se o peito apenas à noite.",
+"o leite descongelado e não consumido pode ser congelado novamente em até 24 horas, desde que permaneça na porta da geladeira, onde a temperatura é mais estável."
+],
+"g": 0,
+"c": "Pelas orientações do Ministério da Saúde e da Rede Brasileira de Bancos de Leite Humano, o leite cru ordenhado pode ficar na <b>geladeira por até 12 h</b> e no <b>freezer ou congelador por até 15 dias</b>; o descongelamento é feito em banho-maria com o fogo desligado, e a oferta em copinho evita a confusão de bicos. O aleitamento deve ser <b>exclusivo até os 6 meses</b> e complementado até 2 anos ou mais (A). Os prazos de (B) estão superestimados, e o micro-ondas aquece de forma desigual e pode queimar a boca do bebê. O retorno ao trabalho não justifica interromper o aleitamento exclusivo, e a mamadeira é desaconselhada (C). O leite descongelado não deve ser recongelado, e a porta da geladeira é o local de maior variação de temperatura (D).",
+"ag": 5
+},
+{
+"n": 56,
+"d": "ENF",
+"it": "Anexo I · Enfermeiro · item 24 — Gerenciamento de recursos humanos: dimensionamento de pessoal",
+"e": "A enfermeira responsável técnica de um hospital estadual do Tocantins calculou, para a UTI adulto, considerando <b>18 horas de enfermagem por paciente nas 24 horas</b>, um quadro de pessoal (QP) total de <b>30 profissionais de enfermagem</b>. A Resolução Cofen nº 543/2017 foi revogada pela Resolução Cofen nº 743/2024, e os parâmetros de referência para o planejamento da força de trabalho passaram a constar do Parecer Normativo Cofen nº 1/2024.<br><br>Aplicando o percentual de enfermeiros previsto nesse parecer para o cuidado intensivo, o número de enfermeiros do quadro deve ser de",
+"o": [
+"10 enfermeiros.",
+"11 enfermeiros.",
+"13 enfermeiros.",
+"16 enfermeiros."
+],
+"g": 3,
+"c": "Os parâmetros do Parecer Normativo Cofen nº 1/2024, que reproduzem os da revogada Resolução 543/2017, fixam para o <b>cuidado intensivo 18 h</b> de enfermagem por paciente/24 h e <b>52% de enfermeiros</b> (48% de técnicos de enfermagem): 30 × 0,52 = 15,6, ou seja, <b>16 enfermeiros</b> (D). O valor de 10 resulta do percentual de 33%, próprio dos cuidados mínimo e intermediário (30 × 0,33 = 9,9) (A). O valor de 11 corresponde a 36%, da alta dependência (10,8) (B). O valor de 13 corresponde a 42%, do cuidado semi-intensivo (12,6) (C). Vale lembrar que a 743/2024 revogou a 543/2017 após decisões judiciais que afastaram o caráter impositivo da norma, de modo que os valores permanecem como referência técnica para o planejamento feito pelo enfermeiro.",
+"ag": 5
+},
+{
+"n": 57,
+"d": "ENF",
+"it": "Anexo I · Enfermeiro · item 24 — Gerenciamento de recursos humanos: educação continuada",
+"e": "O Núcleo de Educação Permanente de um hospital regional de Araguaína planeja suas ações para o próximo ano. A gerente de enfermagem propõe distinguir as atividades de <b>educação permanente em saúde</b> das de <b>educação continuada</b>, conforme a Política Nacional de Educação Permanente em Saúde (PNEPS).<br><br>Assinale a afirmativa correta.",
+"o": [
+"A educação permanente caracteriza-se por cursos pontuais de atualização técnico-científica por categoria profissional, ao passo que a educação continuada parte dos problemas do cotidiano do trabalho para transformar as práticas da equipe.",
+"A educação permanente baseia-se na aprendizagem significativa no próprio trabalho, a partir dos problemas do cotidiano e de forma multiprofissional, para transformar as práticas, ao passo que a educação continuada privilegia a atualização técnico-científica, em geral por categoria.",
+"A PNEPS veda a realização de cursos de atualização e de capacitações formais, substituindo-os integralmente por rodas de conversa sobre o processo de trabalho das equipes.",
+"A educação permanente é atribuição exclusiva do enfermeiro responsável técnico, que define sozinho os temas a serem abordados com base nas notificações de eventos adversos."
+],
+"g": 1,
+"c": "Segundo a PNEPS (Portarias GM/MS nº 198/2004 e nº 1.996/2007), a <b>educação permanente</b> é a aprendizagem no trabalho, em que aprender e ensinar se incorporam ao cotidiano; parte dos problemas enfrentados na realidade do serviço, envolve a equipe multiprofissional e visa transformar as práticas e a organização do trabalho. A <b>educação continuada</b> é a atualização técnico-científica, geralmente por categoria e em formato de cursos (B). A letra (A) inverte os conceitos. A política não proíbe capacitações formais: elas podem integrar a estratégia, desde que articuladas às necessidades do serviço (C). A educação permanente é construção coletiva, com participação de trabalhadores, gestores, instituições de ensino e controle social, e não decisão isolada de um profissional (D).",
+"ag": 5
+},
+{
+"n": 58,
+"d": "ENF",
+"it": "Anexo I · Enfermeiro · item 25 — Avaliação da qualidade nos processos de trabalho",
+"e": "A Comissão de Qualidade de um hospital do Tocantins selecionou três indicadores para o painel da enfermagem:<br>I. número de enfermeiros por leito na clínica médica;<br>II. percentual de pacientes avaliados com a escala de Braden nas primeiras 24 horas da admissão;<br>III. densidade de incidência de lesão por pressão a cada 1.000 pacientes-dia.<br><br>Segundo a tríade de Donabedian, os indicadores I, II e III classificam-se, respectivamente, como de",
+"o": [
+"processo, estrutura e resultado.",
+"resultado, processo e estrutura.",
+"estrutura, processo e resultado.",
+"estrutura, resultado e processo."
+],
+"g": 2,
+"c": "Na tríade de Donabedian, <b>estrutura</b> refere-se aos recursos físicos, humanos, materiais e organizacionais disponíveis, como a relação enfermeiro/leito (I); <b>processo</b> refere-se às atividades realizadas no cuidado, como a aplicação da escala de Braden na admissão (II); e <b>resultado</b> refere-se ao efeito do cuidado no estado de saúde do paciente, como a incidência de lesão por pressão (III) (C). A letra (A) confunde quadro de pessoal com atividade assistencial e trata a avaliação de risco como recurso. As letras (B) e (D) classificam como processo ou estrutura a incidência de lesão, que mede o efeito da assistência e por isso é resultado.",
+"ag": 5
+},
+{
+"n": 59,
+"d": "ENF",
+"it": "Anexo I · Enfermeiro · itens 33 e 36 — Precaução-padrão e precauções por transmissão; controle de infecção hospitalar",
+"e": "Na clínica médica de um hospital de Araguaína, um técnico de enfermagem vai realizar curativo de cateter venoso central em um paciente internado por diarreia associada a <em>Clostridioides difficile</em>, em precaução de contato.<br><br>Considerando os cinco momentos para a higiene das mãos (OMS/Anvisa) e as indicações de cada técnica, assinale a afirmativa correta.",
+"o": [
+"Como o álcool a 70% elimina os esporos de <em>C. difficile</em>, a fricção com preparação alcoólica é a técnica preferencial após o contato com esse paciente, mesmo sem sujidade visível.",
+"As mãos devem ser higienizadas imediatamente antes do curativo, procedimento asséptico, mesmo que se usem luvas, e após o contato com o paciente deve-se preferir água e sabão, pois o álcool não é esporicida.",
+"Como o técnico usará luvas durante todo o procedimento, a higiene das mãos é dispensada antes de calçá-las e após retirá-las, porque as luvas substituem essa medida.",
+"A higiene das mãos após contato com as superfícies próximas ao paciente só é necessária quando houver sujidade visível no mobiliário ou nos equipamentos."
+],
+"g": 1,
+"c": "Os cinco momentos são: antes de tocar o paciente, <b>antes de realizar procedimento limpo ou asséptico</b>, após risco de exposição a fluidos corporais, após tocar o paciente e após tocar superfícies próximas a ele. O curativo de CVC é procedimento asséptico, e o uso de luvas não substitui a higiene das mãos. A preparação alcoólica é a técnica de rotina, mas <b>água e sabão</b> são preferíveis quando as mãos estão visivelmente sujas ou após contato com pacientes com <em>C. difficile</em>, porque o álcool não inativa esporos (B; A errada). As luvas podem ter microfuros e as mãos se contaminam na retirada, por isso se higienizam as mãos antes e depois de usá-las (C). O 5º momento independe de sujidade visível, já que o ambiente próximo ao paciente é colonizado (D).",
+"ag": 5
+},
+{
+"n": 60,
+"d": "ENF",
+"it": "Anexo I · Enfermeiro · item 37 — Código de Ética dos Profissionais de Enfermagem; exercício profissional",
+"e": "Em reunião com a equipe de uma unidade de pronto atendimento do Tocantins, a enfermeira coordenadora revisa a divisão de atividades entre as categorias da enfermagem, à luz da Lei nº 7.498/1986, que regulamenta o exercício da profissão.<br><br>Assinale a opção que apresenta somente atividades <b>privativas</b> do enfermeiro, nos termos do art. 11, inciso I, da lei.",
+"o": [
+"Prevenção e controle sistemático da infecção hospitalar e prescrição de medicamentos estabelecidos em programas de saúde pública e em rotina aprovada pela instituição.",
+"Execução de cuidados diretos a pacientes graves com risco de vida pelo técnico de enfermagem, desde que sob supervisão do enfermeiro, e consulta de enfermagem.",
+"Consulta de enfermagem, prescrição da assistência de enfermagem e cuidados de maior complexidade técnica que exijam conhecimentos científicos e capacidade de tomar decisões imediatas.",
+"Educação visando à melhoria da saúde da população e participação na elaboração, execução e avaliação dos planos assistenciais de saúde."
+],
+"g": 2,
+"c": "O art. 11, inciso I, da Lei nº 7.498/1986 lista como privativos do enfermeiro, entre outros, a <b>consulta de enfermagem</b>, a <b>prescrição da assistência de enfermagem</b>, os <b>cuidados diretos de enfermagem a pacientes graves com risco de vida</b> e os <b>cuidados de maior complexidade técnica</b> que exijam conhecimentos de base científica e capacidade de tomar decisões imediatas (C). A prescrição de medicamentos de programas de saúde pública e a prevenção e controle da infecção hospitalar constam do inciso II, que trata das atividades do enfermeiro como integrante da equipe de saúde, e não são privativas (A). O cuidado direto ao paciente grave com risco de vida é privativo do enfermeiro; o técnico executa ações assistenciais, exceto as privativas do enfermeiro (art. 12), e o Decreto nº 94.406/1987 atribui-lhe assistir o enfermeiro na prestação desses cuidados, e não executá-los em seu lugar (B). A educação em saúde e a participação nos planos assistenciais também estão no inciso II (D).",
+"ag": 5
+}
+];
+
+/* ===================== CONFIGURAÇÃO ===================== */
+const AGENTES = {
+  1:{nome:"Agente 1 · Língua Portuguesa",cor:"#24497a",desc:"Dois textos-base no padrão FGV; formação de palavras, tempos e modos verbais, pontuação, regência, sintaxe, classes e significação."},
+  2:{nome:"Agente 2 · Raciocínio Lógico-Matemático",cor:"#6a3d9a",desc:"Funções, sequências, matrizes e determinantes, inequações, estatística, diagramas lógicos, tabela-verdade e argumentação."},
+  3:{nome:"Agente 3 · Tocantins e Legislação do SUS",cor:"#9a6b0e",desc:"Clima, relevo, hidrografia, UCs, patrimônio, demografia; Comissões Intergestores, LC 141/2012, Lei 8.080, Decreto 7.508, controle social."},
+  4:{nome:"Agente 4 · Enfermagem Assistencial",cor:"#b3362f",desc:"Teorias, NANDA-I, saúde mental, gerontologia, cálculos, perioperatório, clínica, mulher, gestante e criança."},
+  5:{nome:"Agente 5 · Saúde Coletiva, Gestão e Biossegurança",cor:"#1d7a4c",desc:"Trauma, AVC, hipercalemia, métodos diagnósticos, acidente biológico, vigilância, PNI, AD/ESF, dimensionamento, liderança, qualidade, IRAS e Lei 7.498."}
+};
+const DISC = {
+  LP:{nome:"Língua Portuguesa",mod:1,peso:1,ag:1},
+  RLM:{nome:"Raciocínio Lógico e Matemático",mod:1,peso:1,ag:2},
+  HGTO:{nome:"História e Geografia do Tocantins",mod:1,peso:1,ag:3},
+  SUS:{nome:"Legislação do SUS",mod:1,peso:1,ag:3},
+  ENF:{nome:"Conhecimentos Específicos – Enfermeiro",mod:2,peso:2,ag:5,agLabel:"Agentes 4 e 5 · Enfermagem"}
+};
+const DISC_ORDER = ["LP","RLM","HGTO","SUS","ENF"];
+const LET = ["A","B","C","D"];
+const DURACAO = 4*3600;
+const KEY = "simulado_sesto_enf_v2";
+
+/* ===================== ESTADO ===================== */
+let S = null; // {name, local, mode, answers[60], flags[60], cur, startedAt, remaining, finished, elapsed}
+let tick = null;
+
+const $ = id => document.getElementById(id);
+const store = {
+  get(){ try{ const r = localStorage.getItem(KEY); return r ? JSON.parse(r) : null; }catch(e){ return null; } },
+  set(v){ try{ localStorage.setItem(KEY, JSON.stringify(v)); }catch(e){} },
+  del(){ try{ localStorage.removeItem(KEY); }catch(e){} }
+};
+function save(){ if(S) store.set(S); }
+function esc(s){ return String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
+function fmt(sec){ sec=Math.max(0,Math.round(sec)); const h=Math.floor(sec/3600), m=Math.floor(sec%3600/60), s=sec%60; return [h,m,s].map(x=>String(x).padStart(2,"0")).join(":"); }
+function num(n){ return String(n).padStart(2,"0"); }
+function ptsBR(n){ return n.toLocaleString("pt-BR",{minimumFractionDigits:0,maximumFractionDigits:1}); }
+
+/* ===================== TELA 1 ===================== */
+function renderAgents(){
+  $("agentsList").innerHTML = Object.entries(AGENTES).map(([k,a]) => {
+    const qs = QUESTOES.filter(q=>(q.ag||DISC[q.d].ag)==k);
+    return `<div class="agent"><div class="av" style="background:${a.cor}">${k}</div><div><b>${esc(a.nome)} <span style="color:var(--muted);font-weight:500">· Q${num(qs[0].n)}–${num(qs[qs.length-1].n)}</span></b><small>${esc(a.desc)}</small></div></div>`;
+  }).join("");
+}
+document.querySelectorAll('#modes input').forEach(r => r.addEventListener('change', () => {
+  document.querySelectorAll('#modes .mode').forEach(m => m.classList.toggle('on', m.querySelector('input').checked));
+}));
+function checkResume(){
+  const prev = store.get();
+  if(prev && !prev.finished){
+    $("resumeBox").classList.remove("hidden");
+    $("btnResume").onclick = () => { S = prev; startExam(true); };
+    $("btnDiscard").onclick = () => { store.del(); $("resumeBox").classList.add("hidden"); };
+  }
+}
+$("btnStart").onclick = () => {
+  const name = $("inName").value.trim() || "Candidato(a)";
+  S = {
+    name, local: $("inLocal").value,
+    mode: document.querySelector('#modes input:checked').value,
+    answers: Array(60).fill(null), flags: Array(60).fill(false),
+    cur: 0, remaining: DURACAO, finished: false, elapsed: 0
+  };
+  save(); startExam(false);
+};
+
+/* ===================== TELA 2 ===================== */
+function show(id){
+  ["screen-setup","screen-exam","screen-result"].forEach(s => $(s).classList.toggle("hidden", s!==id));
+  $("brand").classList.toggle("hidden", id==="screen-exam");
+  window.scrollTo(0,0);
+}
+function startExam(){
+  show("screen-exam");
+  $("hdName").textContent = S.name;
+  $("hdLocal").textContent = "Lotação: " + S.local;
+  $("hdMode").textContent = S.mode==="treino" ? "Treino Comentado" : "Prova Real";
+  // seletor de disciplina
+  $("jump").innerHTML = DISC_ORDER.map(k => {
+    const qs = QUESTOES.filter(q=>q.d===k);
+    return `<option value="${qs[0].n-1}">${DISC[k].nome} (${num(qs[0].n)}–${num(qs[qs.length-1].n)})</option>`;
+  }).join("");
+  $("jump").onchange = e => go(+e.target.value);
+  buildSheet();
+  render();
+  startTimer();
+}
+function startTimer(){
+  clearInterval(tick);
+  let last = Date.now();
+  const paint = () => {
+    const t = $("timer");
+    t.textContent = fmt(S.remaining);
+    t.classList.toggle("warn", S.remaining<=1800 && S.remaining>600);
+    t.classList.toggle("crit", S.remaining<=600);
+  };
+  paint();
+  tick = setInterval(() => {
+    const now = Date.now(); const dt = (now-last)/1000; last = now;
+    S.remaining -= dt; S.elapsed += dt;
+    if(S.remaining <= 0){ S.remaining = 0; paint(); finish(true); return; }
+    paint();
+    if(Math.floor(S.elapsed)%5===0) save();
+  }, 1000);
+}
+function buildSheet(){
+  let html = "", lastMod = 0;
+  QUESTOES.forEach((q,i) => {
+    const m = DISC[q.d].mod;
+    if(m!==lastMod){ html += `<div class="sep">Módulo ${m===1?"I":"II"}</div>`; lastMod = m; }
+    html += `<button class="cell" data-i="${i}" title="Questão ${num(q.n)} · ${DISC[q.d].nome}">${num(q.n)}</button>`;
+  });
+  $("sheet").innerHTML = html;
+  $("sheet").onclick = e => { const b = e.target.closest(".cell"); if(b) go(+b.dataset.i); };
+}
+function paintSheet(){
+  const treino = S.mode==="treino";
+  document.querySelectorAll("#sheet .cell").forEach(c => {
+    const i = +c.dataset.i, a = S.answers[i];
+    c.className = "cell";
+    if(a!==null){
+      if(treino) c.classList.add(a===QUESTOES[i].g ? "r-ok" : "r-bad");
+      else c.classList.add("ans");
+    }
+    if(S.flags[i]) c.classList.add("flag");
+    if(i===S.cur) c.classList.add("cur");
+  });
+  const done = S.answers.filter(a=>a!==null).length, p = Math.round(done/60*100);
+  $("progBar").style.width = p+"%";
+  $("progTxt").textContent = `${done} de 60 respondidas`;
+  $("progPct").textContent = p+"%";
+}
+function render(){
+  const q = QUESTOES[S.cur], d = DISC[q.d], ag = AGENTES[q.ag||d.ag];
+  const a = S.answers[S.cur], treino = S.mode==="treino", locked = treino && a!==null;
+  $("qtop").innerHTML =
+    `<span class="qnum">Questão ${num(q.n)} de 60</span>`+
+    `<span class="badge ${d.mod===1?"b-mod1":"b-mod2"}">Módulo ${d.mod===1?"I":"II"} · Peso ${d.peso},0</span>`+
+    `<span class="badge b-disc">${esc(d.nome)}</span>`+
+    `<span class="badge b-agent" style="background:${ag.cor}">${esc(ag.nome)}</span>`+
+    (S.flags[S.cur] ? `<span class="flagmark">⚑ Revisar</span>` : "");
+  $("qbase").innerHTML = q.t ? `<div class="basetext"><h4>${TEXTOS[q.t].titulo}</h4>${TEXTOS[q.t].corpo}</div>` : "";
+  $("qenun").innerHTML = (q.it?`<div class="edital-it">📋 ${q.it}</div>`:"") + q.e;
+  $("qalts").innerHTML = q.o.map((txt,i) => {
+    let cls = "alt";
+    if(locked){ if(i===q.g) cls+=" ok"; else if(i===a) cls+=" bad"; }
+    else if(i===a) cls+=" sel";
+    return `<button class="${cls}" data-i="${i}" ${locked?"disabled":""}><span class="L">${LET[i]}</span><span>${txt}</span></button>`;
+  }).join("");
+  $("qalts").onclick = e => { const b = e.target.closest(".alt"); if(b && !b.disabled) answer(+b.dataset.i); };
+  $("qfeed").innerHTML = locked ?
+    `<div class="feedback ${a===q.g?"ok":"bad"}"><h5>${a===q.g?"✓ Correto!":"✗ Incorreto. Gabarito: "+LET[q.g]}</h5>${q.c}<div class="by">Comentário · ${esc(ag.nome)}</div></div>` : "";
+  $("btnPrev").disabled = S.cur===0;
+  $("btnNext").textContent = S.cur===59 ? "Revisar e encerrar" : "Próxima →";
+  $("btnFlag").textContent = S.flags[S.cur] ? "⚑ Desmarcar revisão" : "⚑ Marcar p/ revisão";
+  $("btnClear").disabled = a===null || locked;
+  $("jump").value = String(QUESTOES.findIndex(x=>x.d===q.d));
+  paintSheet();
+}
+function answer(i){ S.answers[S.cur] = i; save(); render(); }
+function go(i){ if(i<0||i>59) return; S.cur = i; save(); render(); window.scrollTo({top:0,behavior:"smooth"}); }
+$("btnPrev").onclick = () => go(S.cur-1);
+$("btnNext").onclick = () => S.cur===59 ? askFinish() : go(S.cur+1);
+$("btnFlag").onclick = () => { S.flags[S.cur] = !S.flags[S.cur]; save(); render(); };
+$("btnClear").onclick = () => { S.answers[S.cur] = null; save(); render(); };
+$("btnFinish").onclick = askFinish;
+document.addEventListener("keydown", e => {
+  if($("screen-exam").classList.contains("hidden") || !$("modal").classList.contains("hidden")) return;
+  if(e.target.matches("input,select,textarea")) return;
+  const k = e.key.toUpperCase();
+  if(["A","B","C","D"].includes(k)){
+    const locked = S.mode==="treino" && S.answers[S.cur]!==null;
+    if(!locked) answer(LET.indexOf(k));
+  } else if(e.key==="ArrowRight") go(S.cur+1);
+  else if(e.key==="ArrowLeft") go(S.cur-1);
+  else if(k==="F"){ S.flags[S.cur] = !S.flags[S.cur]; save(); render(); }
+});
+
+/* ===================== MODAL ===================== */
+function modal(title, body, buttons){
+  $("mTitle").textContent = title; $("mBody").innerHTML = body;
+  $("mRow").innerHTML = "";
+  buttons.forEach(b => { const el = document.createElement("button"); el.className = "btn "+b.cls; el.textContent = b.t; el.onclick = () => { $("modal").classList.add("hidden"); b.fn && b.fn(); }; $("mRow").appendChild(el); });
+  $("modal").classList.remove("hidden");
+}
+function askFinish(){
+  const blank = S.answers.filter(a=>a===null).length, fl = S.flags.filter(Boolean).length;
+  modal("Encerrar a prova?",
+    `<p>Você deixou <b>${blank}</b> questão(ões) em branco${fl?` e há <b>${fl}</b> marcada(s) para revisão`:""}.</p><p>Tempo restante: <b>${fmt(S.remaining)}</b>. Depois de encerrar, não será possível alterar respostas.</p>`,
+    [{t:"Voltar à prova",cls:"btn-ghost"},{t:"Encerrar e corrigir",cls:"btn-danger",fn:()=>finish(false)}]);
+}
+
+/* ===================== TELA 3 ===================== */
+function score(){
+  const by = {}; DISC_ORDER.forEach(k => by[k] = {q:0,ok:0,pts:0,max:0});
+  let m1=0, m2=0, ok=0, blank=0;
+  QUESTOES.forEach((q,i) => {
+    const d = DISC[q.d], a = S.answers[i], hit = a===q.g;
+    by[q.d].q++; by[q.d].max += d.peso;
+    if(a===null) blank++;
+    if(hit){ ok++; by[q.d].ok++; by[q.d].pts += d.peso; if(d.mod===1) m1 += d.peso; else m2 += d.peso; }
+  });
+  return {by, m1, m2, total:m1+m2, ok, blank, wrong:60-ok-blank};
+}
+function finish(timeout){
+  clearInterval(tick);
+  S.finished = true; save();
+  const r = score();
+  const pass = r.m2>=24 && r.total>=36;
+  show("screen-result");
+  $("printHead").innerHTML = `<b>Simulado 2 · SES/TO 2026 · Enfermeiro</b> · ${esc(S.name)} · Lotação: ${esc(S.local)} · ${new Date().toLocaleString("pt-BR")}`;
+
+  const motivos = [];
+  if(r.m2<24) motivos.push(`Módulo II com ${r.m2} pts (mínimo 24)`);
+  if(r.total<36) motivos.push(`total de ${r.total} pts (mínimo 36)`);
+  $("verdict").className = "verdict " + (pass?"pass":"fail");
+  $("verdict").innerHTML = `<div class="ico">${pass?"✓":"✗"}</div><div><h2>${pass?"APROVADO NOS CRITÉRIOS DO EDITAL":"ELIMINADO PELO CORTE MÍNIMO"}</h2><p>${esc(S.name)} · ${esc(S.local)} · ${S.mode==="treino"?"Modo Treino Comentado":"Modo Prova Real"}${timeout?" · tempo esgotado":""}</p><p>${pass?"Item 11.14 atendido: Módulo II ≥ 24 pts e total ≥ 36 pts.":"Item 11.14 não atendido: "+motivos.join(" e ")+"."}</p></div>`;
+
+  const bar = (v,max,cut,color) => `<div class="bar"><i style="width:${v/max*100}%;background:${color}"></i>${cut!=null?`<span class="cut" style="left:${cut/max*100}%" title="Corte"></span>`:""}</div>`;
+  $("kpis").innerHTML =
+    `<div class="kpi"><small>Nota final</small><b>${ptsBR(r.total)} <em>/ 90</em></b>${bar(r.total,90,36,pass?"var(--green)":"var(--red)")}<div class="note">Corte: 36 pts · ${Math.round(r.total/90*100)}%</div></div>`+
+    `<div class="kpi"><small>Módulo I · Gerais</small><b>${ptsBR(r.m1)} <em>/ 30</em></b>${bar(r.m1,30,null,"var(--navy-3)")}<div class="note">${r.m1} acertos de 30 · peso 1,0</div></div>`+
+    `<div class="kpi"><small>Módulo II · Específicos</small><b>${ptsBR(r.m2)} <em>/ 60</em></b>${bar(r.m2,60,24,r.m2>=24?"var(--green)":"var(--red)")}<div class="note">${r.m2/2} acertos de 30 · corte 24 pts</div></div>`+
+    `<div class="kpi"><small>Acertos · Tempo</small><b>${r.ok} <em>/ 60</em></b><div class="note" style="margin-top:12px">${r.wrong} erro(s) · ${r.blank} em branco<br>Tempo gasto: <b>${fmt(S.elapsed)}</b></div></div>`;
+
+  const pctCell = (p) => { const c = p>=70?"var(--green)":p>=40?"var(--amber)":"var(--red)"; return `<span class="pct"><i><s style="width:${p}%;background:${c}"></s></i>${p}%</span>`; };
+  let rows = "";
+  [1,2].forEach(m => {
+    const ks = DISC_ORDER.filter(k=>DISC[k].mod===m);
+    let tq=0,tok=0,tp=0,tm=0;
+    ks.forEach(k => { const b = r.by[k], d = DISC[k]; tq+=b.q; tok+=b.ok; tp+=b.pts; tm+=b.max;
+      rows += `<tr><td>${esc(d.nome)}</td><td>${esc(d.agLabel||AGENTES[d.ag].nome)}</td><td class="n">${b.q}</td><td class="n">${b.ok}</td><td class="n">${ptsBR(b.pts)} / ${b.max}</td><td class="n">${pctCell(Math.round(b.ok/b.q*100))}</td></tr>`; });
+    rows += `<tr class="sub"><td colspan="2">Subtotal Módulo ${m===1?"I":"II"}</td><td class="n">${tq}</td><td class="n">${tok}</td><td class="n">${ptsBR(tp)} / ${tm}</td><td class="n">${pctCell(Math.round(tok/tq*100))}</td></tr>`;
+  });
+  $("perfTbl").innerHTML = `<thead><tr><th>Disciplina</th><th>Agente especialista</th><th style="text-align:right">Questões</th><th style="text-align:right">Acertos</th><th style="text-align:right">Pontos</th><th style="text-align:right">Aproveitamento</th></tr></thead><tbody>${rows}<tr class="sub"><td colspan="2">TOTAL GERAL</td><td class="n">60</td><td class="n">${r.ok}</td><td class="n">${ptsBR(r.total)} / 90</td><td class="n">${pctCell(Math.round(r.total/90*100))}</td></tr></tbody>`;
+
+  const F = [["all","Todas (60)"],["bad",`Erradas (${r.wrong})`],["blank",`Em branco (${r.blank})`],["ok",`Certas (${r.ok})`],["flag","Marcadas p/ revisão"]]
+    .concat(DISC_ORDER.map(k=>[k,DISC[k].nome]));
+  $("filters").innerHTML = F.map(([k,t],i)=>`<button class="chip ${i===0?"on":""}" data-f="${k}">${t}</button>`).join("");
+  $("filters").onclick = e => { const b = e.target.closest(".chip"); if(!b) return;
+    document.querySelectorAll("#filters .chip").forEach(c=>c.classList.toggle("on",c===b)); renderReview(b.dataset.f); };
+  renderReview("all");
+}
+function renderReview(f){
+  $("review").innerHTML = QUESTOES.map((q,i) => {
+    const a = S.answers[i], st = a===null?"blank":(a===q.g?"ok":"bad"), d = DISC[q.d], ag = AGENTES[q.ag||d.ag];
+    if(f==="ok"||f==="bad"||f==="blank"){ if(st!==f) return ""; }
+    else if(f==="flag"){ if(!S.flags[i]) return ""; }
+    else if(f!=="all" && q.d!==f) return "";
+    const lis = q.o.map((t,j)=>`<li class="${j===q.g?"g":(j===a?"x":"")}"><b>${LET[j]}</b>${t}</li>`).join("");
+    const base = q.t ? `<details style="margin-bottom:8px"><summary style="cursor:pointer;font-size:13px;color:var(--navy-3);font-weight:600">${TEXTOS[q.t].titulo}</summary><div class="basetext" style="margin-top:8px">${TEXTOS[q.t].corpo}</div></details>` : "";
+    return `<div class="ritem ${st}"><div class="rh"><span class="qnum">Questão ${num(q.n)}</span><span class="badge ${d.mod===1?"b-mod1":"b-mod2"}">Módulo ${d.mod===1?"I":"II"} · Peso ${d.peso},0</span><span class="badge b-disc">${esc(d.nome)}</span>${S.flags[i]?'<span class="badge" style="background:var(--amber-soft);color:#7a4a05">⚑ Revisão</span>':""}<span class="st">${st==="ok"?"✓ ACERTOU · +"+d.peso+" pt"+(d.peso>1?"s":""):st==="bad"?"✗ ERROU":"— EM BRANCO"}</span></div>
+      ${base}${q.it?`<div class="edital-it">📋 ${q.it}</div>`:""}<div class="en">${q.e}</div><ol>${lis}</ol>
+      <div style="font-size:13px;margin-bottom:8px">Sua resposta: <b>${a===null?"—":LET[a]}</b> · Gabarito oficial: <b style="color:var(--green)">${LET[q.g]}</b></div>
+      <div class="com"><b>${esc(ag.nome)}:</b> ${q.c}</div></div>`;
+  }).join("") || `<p style="color:var(--muted)">Nenhuma questão neste filtro.</p>`;
+}
+$("btnPrint").onclick = () => window.print();
+$("btnRestart").onclick = () => modal("Reiniciar simulado?","<p>O resultado atual será descartado deste navegador.</p>",
+  [{t:"Cancelar",cls:"btn-ghost"},{t:"Reiniciar",cls:"btn-primary",fn:()=>{ store.del(); S=null; $("resumeBox").classList.add("hidden"); show("screen-setup"); }}]);
+
+/* ===================== INICIALIZAÇÃO ===================== */
+(function init(){
+  if(QUESTOES.length!==60) console.error("Esperadas 60 questões, encontradas", QUESTOES.length);
+  renderAgents();
+  const prev = store.get();
+  if(prev && prev.finished){ S = prev; finish(false); }
+  else checkResume();
+})();
+</script>
+</body>
+</html>
