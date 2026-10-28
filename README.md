@@ -81,14 +81,15 @@ Depois ative o **GitHub Pages** em **Settings → Pages** (branch `main`, pasta 
 
 ---
 
-## Simulados SES/TO 2026 · Enfermeiro (pasta `ses-to/`)
+## Simulados SES/TO 2026 (pasta `ses-to/`)
 
-Dois simulados de 60 questões para o cargo de **Enfermeiro**, Concurso SES/TO, Edital 001/2026 (banca FGV):
+Simulados de 60 questões para os cargos de **Enfermeiro** e **Administrador Hospitalar**, Concurso SES/TO, Edital 001/2026 (banca FGV):
 
 | Arquivo | Conteúdo |
 |---|---|
 | `ses-to/index.html` | Página inicial com os dois simulados |
 | `ses-to/simulado-1.html` | Simulado 1: 60 questões comentadas |
 | `ses-to/simulado-2.html` | Simulado 2: 60 questões, cada uma com o item do Anexo I |
+| `ses-to/administrador-hospitalar.html` | Simulado 3 (Administrador Hospitalar): 60 questões, cada uma com o item do Anexo I |
 
 Link público: https://iagoadriano.github.io/questoesprova/ses-to/

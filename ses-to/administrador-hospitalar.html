@@ -1,0 +1,1554 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Simulado Administrador Hospitalar</title>
+<style>
+:root{
+  --navy:#0e2340; --navy-2:#173559; --navy-3:#24497a;
+  --gold:#c49a2c; --gold-soft:#f3e7c4;
+  --green:#1d7a4c; --green-soft:#e1f2e8;
+  --red:#b3362f; --red-soft:#f8e3e1;
+  --amber:#c27a12; --amber-soft:#fbefd9;
+  --ink:#1b2430; --muted:#5d6878; --line:#dfe3ea;
+  --bg:#f4f5f8; --card:#ffffff;
+  --radius:12px;
+  --sans: system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --serif: "Iowan Old Style","Palatino Linotype",Palatino,Georgia,"Times New Roman",serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{font-family:var(--sans);color:var(--ink);background:var(--bg);line-height:1.5;-webkit-font-smoothing:antialiased}
+button{font:inherit;cursor:pointer}
+.hidden{display:none!important}
+.wrap{max-width:1180px;margin:0 auto;padding:0 16px}
+
+/* ---------- TOPO INSTITUCIONAL ---------- */
+.brand{background:var(--navy);color:#fff;border-bottom:4px solid var(--gold)}
+.brand .wrap{display:flex;align-items:center;gap:14px;padding-top:14px;padding-bottom:14px}
+.seal{width:42px;height:42px;border-radius:50%;border:2px solid var(--gold);display:grid;place-items:center;font-weight:800;color:var(--gold);font-size:13px;letter-spacing:.5px;flex:none}
+.brand h1{font-size:17px;margin:0;font-weight:700;letter-spacing:.2px}
+.brand p{margin:0;font-size:12.5px;color:#b9c6d8}
+
+/* ---------- TELA 1 ---------- */
+.hero{padding:28px 0 8px}
+.hero h2{font-family:var(--serif);font-size:30px;line-height:1.15;margin:0 0 6px;color:var(--navy)}
+.hero .lead{color:var(--muted);margin:0;max-width:760px}
+.grid-setup{display:grid;grid-template-columns:1.25fr 1fr;gap:20px;margin:22px 0 40px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:20px}
+.card h3{margin:0 0 12px;font-size:15px;text-transform:uppercase;letter-spacing:.8px;color:var(--navy-3)}
+.rules{width:100%;border-collapse:collapse;font-size:14px}
+.rules th,.rules td{padding:8px 6px;border-bottom:1px solid var(--line);text-align:left}
+.rules th{font-size:12px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.5px}
+.rules td.num{text-align:right;font-variant-numeric:tabular-nums}
+.rules tr.mod td{background:#f7f8fb;font-weight:700;color:var(--navy)}
+.rules tr.tot td{font-weight:800;border-bottom:none}
+.facts{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}
+.fact{background:var(--gold-soft);border-radius:10px;padding:10px 12px}
+.fact b{display:block;font-size:20px;color:var(--navy);font-variant-numeric:tabular-nums}
+.fact span{font-size:12px;color:#6b5a26}
+.agents{display:grid;gap:8px;margin-top:4px}
+.agent{display:flex;gap:12px;align-items:flex-start;padding:10px;border:1px solid var(--line);border-radius:10px}
+.agent .av{flex:none;width:34px;height:34px;border-radius:8px;display:grid;place-items:center;color:#fff;font-weight:800;font-size:14px}
+.agent b{font-size:14px;display:block}
+.agent small{color:var(--muted);font-size:12.5px}
+label.fl{display:block;font-size:13px;font-weight:600;margin:14px 0 6px;color:var(--navy)}
+input[type=text],select{width:100%;padding:11px 12px;border:1px solid #c9d0db;border-radius:9px;font:inherit;background:#fff;color:var(--ink)}
+input[type=text]:focus,select:focus{outline:2px solid var(--gold);outline-offset:1px;border-color:var(--gold)}
+.modes{display:grid;gap:10px;margin-top:6px}
+.mode{display:flex;gap:12px;padding:12px;border:2px solid var(--line);border-radius:10px;cursor:pointer;align-items:flex-start}
+.mode input{margin-top:3px;accent-color:var(--navy)}
+.mode.on{border-color:var(--navy);background:#f2f5fa}
+.mode b{display:block;font-size:14.5px}
+.mode small{color:var(--muted);font-size:12.5px}
+.btn{border:none;border-radius:9px;padding:11px 18px;font-weight:700;font-size:14.5px;display:inline-flex;align-items:center;gap:8px;justify-content:center}
+.btn-primary{background:var(--navy);color:#fff}
+.btn-primary:hover{background:var(--navy-2)}
+.btn-gold{background:var(--gold);color:var(--navy)}
+.btn-gold:hover{filter:brightness(1.05)}
+.btn-ghost{background:#fff;color:var(--navy);border:1px solid #c9d0db}
+.btn-ghost:hover{border-color:var(--navy)}
+.btn-danger{background:var(--red);color:#fff}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn-block{width:100%;margin-top:18px;padding:14px}
+.resume{margin-top:12px;padding:12px;border-radius:10px;background:var(--amber-soft);font-size:13.5px;display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+
+/* ---------- TELA 2 ---------- */
+.examhead{position:sticky;top:0;z-index:20;background:var(--navy);color:#fff;border-bottom:3px solid var(--gold)}
+.examhead .wrap{display:flex;align-items:center;gap:14px;padding-top:10px;padding-bottom:10px;flex-wrap:wrap}
+.examhead .who{flex:1;min-width:180px;font-size:13px;color:#c8d3e3;line-height:1.3}
+.examhead .who b{color:#fff;font-size:14px;display:block}
+.timer{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;font-size:24px;font-weight:700;letter-spacing:1px;background:rgba(255,255,255,.08);padding:4px 12px;border-radius:8px;font-variant-numeric:tabular-nums}
+.timer.warn{color:#ffd27a}
+.timer.crit{color:#ff8a80;animation:pulse 1s infinite}
+@keyframes pulse{50%{opacity:.55}}
+.modetag{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;padding:3px 8px;border-radius:20px;background:var(--gold);color:var(--navy)}
+.exam{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:20px;padding-top:20px;padding-bottom:40px}
+.qcard{background:#fff;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}
+.qtop{padding:16px 20px;border-bottom:1px solid var(--line);display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.qnum{font-weight:800;font-size:16px;color:var(--navy);margin-right:6px}
+.badge{font-size:11.5px;font-weight:700;padding:3px 9px;border-radius:20px;white-space:nowrap}
+.b-mod1{background:#e6edf7;color:var(--navy-3)}
+.b-mod2{background:var(--gold-soft);color:#7a5c0e}
+.b-disc{background:#eef0f3;color:#3d4756}
+.b-agent{color:#fff}
+.flagmark{margin-left:auto;color:var(--amber);font-weight:700;font-size:12.5px}
+.qbody{padding:20px}
+.basetext{background:#f8f6ef;border-left:4px solid var(--gold);padding:14px 16px;border-radius:6px;margin-bottom:18px;font-family:var(--serif);font-size:15.5px}
+.basetext h4{font-family:var(--sans);margin:0 0 8px;font-size:12.5px;text-transform:uppercase;letter-spacing:.7px;color:#7a5c0e}
+.basetext p{margin:0 0 10px;text-indent:1.5em}
+.basetext .fonte{font-family:var(--sans);font-size:11.5px;color:var(--muted);text-indent:0;text-align:right;margin:0}
+.enun{font-family:var(--serif);font-size:17px;line-height:1.6;margin:0 0 18px}
+.enun blockquote{margin:12px 0;padding:10px 14px;background:#f5f7fa;border-left:3px solid var(--navy-3);font-size:15.5px}
+.alts{display:grid;gap:10px}
+.alt{display:flex;gap:12px;align-items:flex-start;width:100%;text-align:left;background:#fff;border:1.5px solid var(--line);border-radius:10px;padding:12px 14px;font-family:var(--serif);font-size:16px;line-height:1.5;color:var(--ink);transition:border-color .12s,background .12s}
+.alt:hover:not(:disabled){border-color:var(--navy-3);background:#f7f9fc}
+.alt .L{flex:none;width:30px;height:30px;border-radius:50%;border:1.5px solid #aab3c2;display:grid;place-items:center;font-family:var(--sans);font-weight:800;font-size:13.5px;color:var(--navy)}
+.alt.sel{border-color:var(--navy);background:#eef2f9}
+.alt.sel .L{background:var(--navy);border-color:var(--navy);color:#fff}
+.alt.ok{border-color:var(--green);background:var(--green-soft)}
+.alt.ok .L{background:var(--green);border-color:var(--green);color:#fff}
+.alt.bad{border-color:var(--red);background:var(--red-soft)}
+.alt.bad .L{background:var(--red);border-color:var(--red);color:#fff}
+.alt:disabled{cursor:default}
+.feedback{margin-top:18px;border-radius:10px;padding:14px 16px;font-size:14.5px}
+.feedback.ok{background:var(--green-soft);border:1px solid #a9d8bd}
+.feedback.bad{background:var(--red-soft);border:1px solid #ecb7b2}
+.feedback h5{margin:0 0 6px;font-size:14px}
+.feedback .by{font-size:12px;color:var(--muted);margin-top:8px}
+.qactions{display:flex;gap:8px;flex-wrap:wrap;padding:14px 20px;border-top:1px solid var(--line);background:#fafbfc}
+.qactions .sp{flex:1}
+.kbd{font-size:11.5px;color:var(--muted);padding:0 20px 14px;background:#fafbfc}
+.kbd kbd{font-family:inherit;background:#fff;border:1px solid #cfd5df;border-bottom-width:2px;border-radius:4px;padding:0 5px;font-size:11px}
+
+.side{position:sticky;top:76px;align-self:start;display:grid;gap:14px}
+.side .card{padding:16px}
+.prog{height:8px;background:#e7eaf0;border-radius:8px;overflow:hidden;margin:6px 0 4px}
+.prog i{display:block;height:100%;background:linear-gradient(90deg,var(--green),#2fa86a);width:0;transition:width .25s}
+.progtxt{display:flex;justify-content:space-between;font-size:12.5px;color:var(--muted)}
+.sheet{display:grid;grid-template-columns:repeat(6,1fr);gap:5px;margin-top:10px}
+.cell{aspect-ratio:1;border:1px solid #cfd5df;background:#fff;border-radius:6px;font-size:12px;font-weight:700;color:var(--muted);position:relative;padding:0;font-variant-numeric:tabular-nums}
+.cell.ans{background:var(--navy);border-color:var(--navy);color:#fff}
+.cell.flag::after{content:"";position:absolute;top:2px;right:2px;width:7px;height:7px;border-radius:50%;background:var(--amber)}
+.cell.flag:not(.ans){background:var(--amber-soft);border-color:var(--amber);color:#7a4a05}
+.cell.cur{outline:2px solid var(--gold);outline-offset:1px}
+.cell.r-ok{background:var(--green);border-color:var(--green);color:#fff}
+.cell.r-bad{background:var(--red);border-color:var(--red);color:#fff}
+.sheet .sep{grid-column:1/-1;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--navy-3);margin-top:6px}
+.legend{display:flex;flex-wrap:wrap;gap:10px;font-size:11.5px;color:var(--muted);margin-top:12px}
+.legend span{display:inline-flex;align-items:center;gap:5px}
+.legend i{width:12px;height:12px;border-radius:3px;display:inline-block;border:1px solid #cfd5df}
+
+/* ---------- MODAL ---------- */
+.modal{position:fixed;inset:0;background:rgba(10,20,35,.55);display:grid;place-items:center;z-index:50;padding:16px}
+.modal .box{background:#fff;border-radius:14px;max-width:440px;width:100%;padding:22px}
+.modal h4{margin:0 0 8px;color:var(--navy);font-size:18px}
+.modal p{margin:0 0 6px;color:var(--muted);font-size:14.5px}
+.modal .row{display:flex;gap:8px;justify-content:flex-end;margin-top:18px;flex-wrap:wrap}
+
+/* ---------- TELA 3 ---------- */
+.verdict{border-radius:var(--radius);padding:22px 24px;margin:22px 0 18px;color:#fff;display:flex;gap:18px;align-items:center;flex-wrap:wrap}
+.verdict.pass{background:linear-gradient(120deg,#145c39,var(--green))}
+.verdict.fail{background:linear-gradient(120deg,#7d211c,var(--red))}
+.verdict .ico{font-size:34px;line-height:1;width:58px;height:58px;border-radius:50%;background:rgba(255,255,255,.15);display:grid;place-items:center;flex:none}
+.verdict h2{margin:0;font-size:21px;letter-spacing:.4px}
+.verdict p{margin:4px 0 0;opacity:.92;font-size:14px}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.kpi{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:16px}
+.kpi small{display:block;font-size:12px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);font-weight:600}
+.kpi b{display:block;font-size:30px;color:var(--navy);font-variant-numeric:tabular-nums;line-height:1.2;margin-top:4px}
+.kpi b em{font-style:normal;font-size:15px;color:var(--muted);font-weight:600}
+.kpi .bar{height:6px;background:#e7eaf0;border-radius:6px;margin-top:10px;position:relative;overflow:visible}
+.kpi .bar i{display:block;height:100%;border-radius:6px}
+.kpi .bar .cut{position:absolute;top:-4px;width:2px;height:14px;background:var(--ink)}
+.kpi .note{font-size:12px;color:var(--muted);margin-top:8px}
+.section-t{font-size:15px;text-transform:uppercase;letter-spacing:.8px;color:var(--navy-3);margin:30px 0 10px}
+.tbl{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;font-size:14px}
+.tbl th{background:var(--navy);color:#fff;font-weight:600;font-size:12.5px;text-align:left;padding:10px 12px}
+.tbl td{padding:10px 12px;border-top:1px solid var(--line)}
+.tbl td.n{text-align:right;font-variant-numeric:tabular-nums}
+.tbl tr.sub td{background:#f6f7fa;font-weight:700}
+.pct{display:flex;align-items:center;gap:8px;justify-content:flex-end}
+.pct i{display:inline-block;width:70px;height:6px;border-radius:6px;background:#e7eaf0;overflow:hidden}
+.pct i s{display:block;height:100%;text-decoration:none}
+.filters{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.chip{border:1px solid #c9d0db;background:#fff;border-radius:20px;padding:5px 12px;font-size:13px;font-weight:600;color:var(--navy)}
+.chip.on{background:var(--navy);color:#fff;border-color:var(--navy)}
+.review{display:grid;gap:12px}
+.ritem{background:#fff;border:1px solid var(--line);border-left:5px solid var(--line);border-radius:10px;padding:16px 18px}
+.ritem.ok{border-left-color:var(--green)}
+.ritem.bad{border-left-color:var(--red)}
+.ritem.blank{border-left-color:#9aa3b2}
+.ritem .rh{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:8px}
+.ritem .st{margin-left:auto;font-weight:800;font-size:12.5px}
+.ritem.ok .st{color:var(--green)} .ritem.bad .st{color:var(--red)} .ritem.blank .st{color:#6b7484}
+.ritem .en{font-family:var(--serif);font-size:15.5px;margin:0 0 10px}
+.ritem .en blockquote{margin:8px 0;padding:6px 12px;background:#f5f7fa;border-left:3px solid var(--navy-3)}
+.ritem ol{list-style:none;padding:0;margin:0 0 10px;display:grid;gap:4px}
+.ritem li{font-family:var(--serif);font-size:14.5px;padding:5px 8px;border-radius:6px}
+.ritem li b{font-family:var(--sans);margin-right:6px}
+.ritem li.g{background:var(--green-soft)}
+.ritem li.x{background:var(--red-soft);text-decoration:line-through;text-decoration-color:rgba(179,54,47,.5)}
+.ritem .com{font-size:14px;background:#f6f7fa;border-radius:8px;padding:10px 12px}
+.ritem .com b{color:var(--navy)}
+.endbar{display:flex;gap:10px;flex-wrap:wrap;margin:24px 0 50px}
+.printhead{display:none}
+.edital-it{font-family:var(--sans);font-size:12px;color:#6b5a26;background:var(--gold-soft);display:table;padding:3px 9px;border-radius:6px;margin-bottom:12px;line-height:1.4}
+
+@media (max-width:900px){
+  .grid-setup{grid-template-columns:1fr}
+  .exam{grid-template-columns:1fr}
+  .side{position:static}
+  .kpis{grid-template-columns:repeat(2,1fr)}
+  .sheet{grid-template-columns:repeat(10,1fr)}
+}
+@media (max-width:520px){
+  .hero h2{font-size:24px}
+  .facts{grid-template-columns:1fr 1fr}
+  .timer{font-size:19px}
+  .enun{font-size:16px}
+  .alt{font-size:15px;padding:10px 12px}
+  .qactions .btn{padding:10px 12px;font-size:13.5px}
+  .kpi b{font-size:24px}
+  .tbl{font-size:12.5px}
+  .tbl th,.tbl td{padding:8px 6px}
+  .pct i{display:none}
+  .sheet{grid-template-columns:repeat(6,1fr)}
+}
+@media print{
+  body{background:#fff}
+  .brand,.endbar,.filters,.examhead,#screen-setup,#screen-exam{display:none!important}
+  .printhead{display:block;margin:0 0 10px;font-size:12px;color:#333}
+  .verdict{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .ritem,.kpi,.tbl{break-inside:avoid}
+  .ritem{border:1px solid #bbb}
+  .wrap{max-width:none}
+}
+</style>
+</head>
+<body>
+
+<header class="brand" id="brand">
+  <div class="wrap">
+    <div class="seal">TO</div>
+    <div>
+      <h1>Simulado 3 · Preditivo SES/TO 2026 · Administrador Hospitalar</h1>
+      <p>Edital nº 001/2026 – SECAD/SES/TO · Banca FGV Conhecimento · Nível Superior</p>
+    </div>
+  </div>
+</header>
+
+<!-- ================= TELA 1 ================= -->
+<main id="screen-setup">
+  <div class="wrap">
+    <section class="hero">
+      <h2>Administrador Hospitalar: 60 questões inéditas amarradas ao Anexo I</h2>
+      <p class="lead">Estrutura, pesos, tempo e critério de aprovação reproduzem os itens 11.1.3, 11.6.2, 11.6.3.1 e 11.14 do edital. Quatro alternativas por questão, uma única correta. Cada questão indica o item do Anexo I que ela cobre.</p>
+    </section>
+
+    <div class="grid-setup">
+      <div class="card">
+        <h3>Regras do edital</h3>
+        <table class="rules">
+          <thead><tr><th>Disciplina</th><th>Questões</th><th class="num">Peso</th><th class="num">Pontos</th></tr></thead>
+          <tbody>
+            <tr class="mod"><td colspan="4">Módulo I · Conhecimentos Gerais</td></tr>
+            <tr><td>Língua Portuguesa</td><td>01–10</td><td class="num">1,0</td><td class="num">10</td></tr>
+            <tr><td>Raciocínio Lógico e Matemático</td><td>11–18</td><td class="num">1,0</td><td class="num">8</td></tr>
+            <tr><td>História e Geografia do Tocantins</td><td>19–24</td><td class="num">1,0</td><td class="num">6</td></tr>
+            <tr><td>Legislação do SUS</td><td>25–30</td><td class="num">1,0</td><td class="num">6</td></tr>
+            <tr class="mod"><td colspan="4">Módulo II · Conhecimentos Específicos</td></tr>
+            <tr><td>Administrador Hospitalar</td><td>31–60</td><td class="num">2,0</td><td class="num">60</td></tr>
+            <tr class="tot"><td>Total</td><td>60</td><td></td><td class="num">90</td></tr>
+          </tbody>
+        </table>
+        <div class="facts">
+          <div class="fact"><b>04:00:00</b><span>Duração (item 11.1.3)</span></div>
+          <div class="fact"><b>≥ 24 pts</b><span>Mínimo no Módulo II (12 acertos)</span></div>
+          <div class="fact"><b>≥ 36 pts</b><span>Mínimo no total (40% de 90)</span></div>
+        </div>
+
+        <h3 style="margin-top:22px">Agentes especialistas</h3>
+        <div class="agents" id="agentsList"></div>
+      </div>
+
+      <div class="card">
+        <h3>Identificação do candidato</h3>
+        <label class="fl" for="inName">Nome do candidato</label>
+        <input type="text" id="inName" placeholder="Seu nome completo" autocomplete="name">
+
+        <label class="fl" for="inLocal">Localidade de lotação pretendida</label>
+        <select id="inLocal">
+          <option>Araguaína</option><option>Palmas</option><option>Porto Nacional</option>
+          <option>Gurupi</option><option>Augustinópolis</option><option>Guaraí</option>
+          <option>Paraíso do Tocantins</option><option>Dianópolis</option><option>Araguatins</option>
+          <option>Arraias</option><option>Miracema do Tocantins</option><option>Pedro Afonso</option>
+          <option>Tocantinópolis</option><option>Xambioá</option>
+        </select>
+
+        <label class="fl">Modo de realização</label>
+        <div class="modes" id="modes">
+          <label class="mode on"><input type="radio" name="mode" value="real" checked>
+            <div><b>Modo Prova Real</b><small>Sem feedback durante a prova. Gabarito e comentários só após o encerramento, como no dia 1º de novembro.</small></div></label>
+          <label class="mode"><input type="radio" name="mode" value="treino">
+            <div><b>Modo Treino Comentado</b><small>Feedback imediato (verde/vermelho) e comentário do agente assim que você marca a alternativa. A resposta fica travada.</small></div></label>
+        </div>
+
+        <div id="resumeBox" class="resume hidden">
+          <span>Há um simulado em andamento salvo neste navegador.</span>
+          <span style="display:flex;gap:6px">
+            <button class="btn btn-gold" id="btnResume" style="padding:7px 12px">Continuar</button>
+            <button class="btn btn-ghost" id="btnDiscard" style="padding:7px 12px">Descartar</button>
+          </span>
+        </div>
+
+        <button class="btn btn-primary btn-block" id="btnStart">Iniciar simulado · 60 questões</button>
+        <p style="font-size:12px;color:var(--muted);margin:10px 0 0">Atalhos na prova: <b>A–D</b> marcam, <b>←/→</b> navegam e <b>F</b> marca para revisão. O progresso é salvo automaticamente neste navegador.</p>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- ================= TELA 2 ================= -->
+<div id="screen-exam" class="hidden">
+  <div class="examhead">
+    <div class="wrap">
+      <div class="who"><b id="hdName">Candidato</b><span id="hdLocal"></span></div>
+      <span class="modetag" id="hdMode">Prova Real</span>
+      <div class="timer" id="timer" aria-live="off">04:00:00</div>
+      <button class="btn btn-gold" id="btnFinish">Encerrar prova</button>
+    </div>
+  </div>
+  <div class="wrap exam">
+    <div>
+      <article class="qcard">
+        <div class="qtop" id="qtop"></div>
+        <div class="qbody">
+          <div id="qbase"></div>
+          <div class="enun" id="qenun"></div>
+          <div class="alts" id="qalts"></div>
+          <div id="qfeed"></div>
+        </div>
+        <div class="qactions">
+          <button class="btn btn-ghost" id="btnPrev">← Anterior</button>
+          <button class="btn btn-ghost" id="btnFlag">⚑ Marcar p/ revisão</button>
+          <button class="btn btn-ghost" id="btnClear">Limpar resposta</button>
+          <span class="sp"></span>
+          <button class="btn btn-primary" id="btnNext">Próxima →</button>
+        </div>
+        <div class="kbd"><kbd>A</kbd>–<kbd>D</kbd> marcar · <kbd>←</kbd><kbd>→</kbd> navegar · <kbd>F</kbd> revisão</div>
+      </article>
+    </div>
+    <aside class="side">
+      <div class="card">
+        <h3 style="margin-bottom:4px">Cartão de respostas</h3>
+        <div class="prog"><i id="progBar"></i></div>
+        <div class="progtxt"><span id="progTxt">0 de 60 respondidas</span><span id="progPct">0%</span></div>
+        <label class="fl" for="jump" style="margin-top:12px">Ir para disciplina</label>
+        <select id="jump"></select>
+        <div class="sheet" id="sheet"></div>
+        <div class="legend">
+          <span><i style="background:var(--navy);border-color:var(--navy)"></i>Respondida</span>
+          <span><i style="background:var(--amber-soft);border-color:var(--amber)"></i>Revisão</span>
+          <span><i></i>Em branco</span>
+        </div>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<!-- ================= TELA 3 ================= -->
+<main id="screen-result" class="hidden">
+  <div class="wrap">
+    <div class="printhead" id="printHead"></div>
+    <div class="verdict" id="verdict"></div>
+    <div class="kpis" id="kpis"></div>
+
+    <h3 class="section-t">Desempenho por disciplina e agente</h3>
+    <div style="overflow-x:auto"><table class="tbl" id="perfTbl"></table></div>
+
+    <h3 class="section-t">Correção comentada · 60 questões</h3>
+    <div class="filters" id="filters"></div>
+    <div class="review" id="review"></div>
+
+    <div class="endbar">
+      <button class="btn btn-primary" id="btnPrint">Imprimir / salvar em PDF</button>
+      <button class="btn btn-ghost" id="btnRestart">Reiniciar simulado</button>
+    </div>
+  </div>
+</main>
+
+<div class="modal hidden" id="modal"><div class="box">
+  <h4 id="mTitle"></h4><div id="mBody"></div>
+  <div class="row" id="mRow"></div>
+</div></div>
+
+<script>
+const TEXTOS = {"T4": {"titulo": "Texto I — A fila que não aparece nos painéis", "corpo": "<p>Quem percorre os corredores de um pronto-socorro estadual em dia de grande movimento conhece uma fila que não aparece nos painéis eletrônicos: a dos pacientes que já foram atendidos, já têm indicação de internação e, ainda assim, aguardam em macas improvisadas por um leito que não chega. Essa espera não decorre apenas da falta de vagas; resulta, em boa parte, de leitos ocupados por quem já poderia ter recebido alta, de exames que demoram a ser liberados e de uma comunicação precária entre as unidades da rede.</p><p>A regulação de leitos nasceu justamente para enfrentar esse problema. Ao centralizar as solicitações e cruzá-las com a disponibilidade real de cada hospital, a central reguladora deveria transformar a disputa por vagas em um processo transparente, orientado pelo risco clínico. Os hospitais, contudo, nem sempre informam a ocupação em tempo real, e o sistema passa a trabalhar com dados que envelhecem em poucas horas. O instrumento existe; falta-lhe alimento confiável.</p><p>Não se trata, portanto, de escolher entre eficiência e humanização, como se fossem metas rivais. Um paciente que permanece três dias em uma maca de corredor é, ao mesmo tempo, um custo evitável e uma pessoa desassistida. Gerir bem o leito — liberar a alta no início da manhã, agilizar laudos, atualizar o painel da regulação — é também uma forma de cuidado. A boa gestão, afinal, mede-se menos pelo número de leitos inaugurados do que pelo uso que se faz de cada um deles.</p><p class='fonte'>Editorial elaborado para fins didáticos.</p>"}, "T5": {"titulo": "Texto II — “Comprar bem também é cuidar”", "corpo": "<p><em>Nesta entrevista, a diretora administrativa de um hospital regional fala sobre custos e transparência nas compras públicas.</em></p><p><b>Por que as compras são vistas como um ponto crítico da gestão hospitalar?</b><br>Porque quase tudo o que se faz num hospital depende de algo que foi comprado: do soro ao reagente de laboratório, do lençol ao contrato de manutenção dos equipamentos. Quando uma compra atrasa, o efeito não fica restrito à área administrativa; chega à beira do leito.</p><p><b>Qual é o principal desafio?</b><br>Planejar. Muitas unidades ainda compram por urgência, e a urgência é a forma mais cara de comprar. Não se negocia preço com um fornecedor quando o estoque já acabou. Por isso, insistimos em que cada setor estime seu consumo anual e o registre no plano de contratações, que é o documento de que partimos para organizar as licitações.</p><p><b>E a transparência?</b><br>Ela protege o gestor e o cidadão. Publicamos os editais, os contratos e os preços pagos, e qualquer pessoa pode compará-los com os de outros hospitais. Isso nos obriga a justificar cada diferença. No começo, houve resistência; hoje, os próprios fornecedores sabem que proposta mal fundamentada não prospera.</p><p><b>Que conselho daria a quem assume a gestão de um hospital público?</b><br>Conheça seus custos antes de cortá-los. Há despesas que parecem altas e são imprescindíveis, e outras, aparentemente pequenas, que se repetem milhares de vezes por mês. Só se gerencia bem aquilo que se mede.</p><p class='fonte'>Entrevista elaborada para fins didáticos.</p>"}};
+const QUESTOES = [
+{
+"n": 1,
+"d": "LP",
+"t": "T4",
+"it": "Anexo I · Língua Portuguesa · item 1 — Leitura, compreensão e interpretação de textos de diferentes gêneros",
+"e": "Considerando o Texto I em seu conjunto, assinale a opção que melhor expressa a intenção comunicativa do editorial.",
+"o": [
+"Defender a ampliação do número de leitos como a solução prioritária para as filas, uma vez que a regulação depende de vagas novas para funcionar.",
+"Denunciar a ineficácia da central reguladora e propor sua substituição pela gestão autônoma das vagas por cada hospital.",
+"Convencer o leitor de que o mau aproveitamento dos leitos existentes alimenta as filas e de que gerir bem esse uso é também uma forma de humanizar o cuidado.",
+"Sustentar que, diante da escassez de vagas, a eficiência deve prevalecer sobre a humanização, já que o paciente de corredor é sobretudo um custo."
+],
+"g": 2,
+"c": "O editorial é texto argumentativo: atribui a espera a leitos mal aproveitados e a falhas de informação (1º e 2º §§) e conclui que eficiência e humanização não são “metas rivais”, pois “Gerir bem o leito [...] é também uma forma de cuidado” (C). A opção (A) contraria a frase final, segundo a qual a boa gestão se mede “menos pelo número de leitos inaugurados”. A opção (B) exagera: o texto afirma que “O instrumento existe”; o problema é a falta de dados confiáveis, não a regulação em si. A opção (D) inverte a tese, pois o paciente é apresentado “ao mesmo tempo” como custo e como pessoa desassistida, sem hierarquia entre os dois aspectos."
+},
+{
+"n": 2,
+"d": "LP",
+"t": "T4",
+"it": "Anexo I · Língua Portuguesa · item 13 — Coesão e coerência textual",
+"e": "No Texto I, os mecanismos de coesão garantem a progressão das ideias. Assinale a afirmativa correta sobre esses mecanismos.",
+"o": [
+"Em “O instrumento existe; falta-lhe alimento confiável” (2º §), “O instrumento” retoma “A regulação de leitos” por substituição lexical, com um termo de sentido mais genérico.",
+"Em “falta-lhe alimento confiável” (2º §), o pronome “lhe” retoma “Os hospitais”, apontados como responsáveis pela falta de informação.",
+"Em “Essa espera não decorre apenas da falta de vagas” (1º §), o demonstrativo “Essa” antecipa uma informação que só será apresentada adiante (catáfora).",
+"Em “pelo uso que se faz de cada um deles” (3º §), o pronome “deles” retoma “Um paciente”, referido anteriormente no mesmo parágrafo."
+],
+"g": 0,
+"c": "A expressão “O instrumento” é um hiperônimo que recupera “A regulação de leitos”, evitando a repetição e acrescentando uma avaliação (a regulação é um meio, uma ferramenta), o que torna (A) correta. Em (B), “lhe” é complemento de “falta” e se refere ao próprio “instrumento” (falta ao instrumento alimento confiável), não aos hospitais, que estão no plural. Em (C), “Essa” é anafórico: resume a espera descrita na frase anterior (encapsulamento), e não antecipa conteúdo. Em (D), “deles” está no plural e retoma “leitos (inaugurados)”, e não “Um paciente”."
+},
+{
+"n": 3,
+"d": "LP",
+"t": "T4",
+"it": "Anexo I · Língua Portuguesa · item 15 — Reescrita de frases e substituição de palavras ou trechos",
+"e": "Assinale a opção em que a substituição proposta para um conector do Texto I preserva a correção gramatical e o sentido original.",
+"o": [
+"“contudo” (2º §) por “porquanto”, mantendo-se a relação de oposição entre as ideias.",
+"“portanto” (3º §) por “todavia”, mantendo-se a relação de conclusão entre as ideias.",
+"“contudo” (2º §) por “destarte”, mantendo-se a relação de oposição entre as ideias.",
+"“portanto” (3º §) por “por conseguinte”, mantendo-se a relação de conclusão entre as ideias."
+],
+"g": 3,
+"c": "Em “Não se trata, portanto, de escolher...”, o conector é conclusivo: o 3º § extrai uma conclusão do que foi exposto. “Por conseguinte” tem o mesmo valor e pode ocupar a mesma posição, entre vírgulas, o que torna (D) correta. Em (A), “porquanto” é causal ou explicativo e não expressa oposição. Em (B), “todavia” é adversativo e, por isso, transformaria a conclusão em contraste. Em (C), “destarte” significa “assim, desse modo”, tem valor conclusivo e anularia a oposição marcada por “contudo” (equivalente a “no entanto”, “entretanto”)."
+},
+{
+"n": 4,
+"d": "LP",
+"t": "T4",
+"it": "Anexo I · Língua Portuguesa · item 5 — Emprego da pontuação",
+"e": "Sobre os sinais de pontuação empregados no Texto I, assinale a afirmativa correta.",
+"o": [
+"Os dois-pontos do 1º § introduzem uma enumeração das causas da espera, desenvolvida nas orações seguintes do período.",
+"Os travessões do 3º § isolam uma enumeração que especifica as ações de “Gerir bem o leito” e poderiam ser substituídos por parênteses sem prejuízo gramatical.",
+"O ponto e vírgula em “O instrumento existe; falta-lhe alimento confiável” poderia ser substituído por vírgula seguida de “porque”, sem alteração de sentido.",
+"O ponto e vírgula do 1º § separa orações coordenadas de valor conclusivo e poderia ser substituído pelo conector “logo”."
+],
+"g": 1,
+"c": "Os travessões duplos do 3º § destacam um aposto enumerativo intercalado entre o sujeito (“Gerir bem o leito”) e o verbo (“é”). Como o trecho já contém vírgulas internas, os travessões, ou os parênteses, evitam ambiguidade, o que torna (B) correta. Em (A), os dois-pontos introduzem uma especificação de “uma fila que não aparece” (“a dos pacientes...”), e não as causas, que só aparecem no período seguinte. Em (C), a relação entre “O instrumento existe” e “falta-lhe alimento confiável” é de contraste (“mas”), não de causa. Em (D), o ponto e vírgula separa uma negação (“não decorre apenas...”) da sua retificação (“resulta, em boa parte...”), relação que não é conclusiva."
+},
+{
+"n": 5,
+"d": "LP",
+"t": "T5",
+"it": "Anexo I · Língua Portuguesa · item 4 — Acentuação gráfica",
+"e": "Assinale a opção em que as duas palavras do Texto II são acentuadas graficamente pela mesma regra.",
+"o": [
+"“laboratório” e “área”.",
+"“saúde” e “também”.",
+"“já” e “cortá-los”.",
+"“imprescindíveis” e “público”."
+],
+"g": 0,
+"c": "“Laboratório” (la-bo-ra-TÓ-rio) e “área” (Á-rea) são paroxítonas terminadas em ditongo crescente, também chamadas de proparoxítonas eventuais ou aparentes. Por isso (A) está correta. Em (B), “saúde” leva acento pela regra do hiato (“u” tônico sozinho na sílaba, depois de vogal), e “também” é oxítona terminada em “-em”. Em (C), “já” é monossílabo tônico terminado em “a”; “cortá-los” segue a regra das oxítonas terminadas em “a”, pois a forma verbal é analisada separadamente do pronome. Em (D), “imprescindíveis” é paroxítona terminada em ditongo “ei(s)”, e “público” é proparoxítona (PÚ-bli-co), e todas as proparoxítonas são acentuadas; as regras, portanto, são diferentes."
+},
+{
+"n": 6,
+"d": "LP",
+"t": "T5",
+"it": "Anexo I · Língua Portuguesa · item 10 — Colocação pronominal",
+"e": "Considerando a norma-padrão da colocação pronominal, assinale a afirmativa correta sobre o Texto II.",
+"o": [
+"Em “Não se negocia preço com um fornecedor”, a ênclise (“Não negocia-se”) também seria correta, pois a oração é independente.",
+"Em “que se repetem milhares de vezes por mês”, a próclise é facultativa, porque o pronome relativo não exerce atração sobre o pronome oblíquo.",
+"Em “Conheça seus custos antes de cortá-los”, a ênclise ao infinitivo é adequada, e o pronome assume a forma “-los” porque a terminação “-r” do verbo é suprimida.",
+"Em “Só se gerencia bem aquilo que se mede”, a norma exigiria a ênclise (“Só gerencia-se”), já que se trata do verbo da oração principal."
+],
+"g": 2,
+"c": "Com infinitivo não flexionado precedido de preposição, a ênclise é a colocação recomendada. Quando o verbo termina em “-r”, “-s” ou “-z”, essa letra cai e o pronome “o” assume a forma “lo”, com acento na vogal tônica (“cortá-los”), o que torna (C) correta. Em (A), a palavra negativa “não” torna a próclise obrigatória. Em (B), o pronome relativo “que” é fator de atração, e a próclise é, portanto, obrigatória. Em (D), o advérbio “só” (com o sentido de “somente”) também atrai o pronome, e por isso a ênclise seria incorreta."
+},
+{
+"n": 7,
+"d": "LP",
+"t": "T5",
+"it": "Anexo I · Língua Portuguesa · item 11 — Emprego do sinal indicativo de crase",
+"e": "As frases a seguir foram elaboradas a partir do Texto II. Assinale a opção em que o emprego do acento indicativo de crase está de acordo com a norma-padrão.",
+"o": [
+"A diretora referiu-se à contratos emergenciais firmados em razão da falta de planejamento.",
+"Os relatórios de preços pagos foram encaminhados à Palmas na última semana.",
+"A transparência obriga o gestor à justificar cada diferença de preço publicada.",
+"O atraso pode chegar até à beira do leito, e a diretora atribui o problema à nossa falta de planejamento."
+],
+"g": 3,
+"c": "Em (D), os dois acentos são facultativos e, portanto, corretos: depois da preposição “até”, admite-se “até a” ou “até à”; antes de pronome possessivo feminino no singular, o artigo é opcional (“a nossa” ou “à nossa”). Em (A), não ocorre crase antes de palavra masculina no plural (“a contratos”). Em (B), “Palmas” não admite artigo (“vou a Palmas, volto de Palmas”), logo a crase é proibida. Em (C), não há crase antes de verbo no infinitivo (“a justificar”)."
+},
+{
+"n": 8,
+"d": "LP",
+"it": "Anexo I · Língua Portuguesa · item 8 — Concordância verbal e nominal",
+"e": "Em um hospital regional, a equipe administrativa redigiu frases para documentos internos. Assinale a opção em que a concordância nominal está inteiramente de acordo com a norma-padrão.",
+"o": [
+"Seguem anexo ao processo as planilhas de custo e os mapas comparativos de preços.",
+"As planilhas seguem anexas ao processo, e a coordenadora ficou meio apreensiva com os prazos, já bastante curtos.",
+"É proibida entrada de acompanhantes no centro cirúrgico sem autorização da chefia de enfermagem.",
+"Havia bastante fornecedores interessados, mas já era meio-dia e meio quando a sessão pública começou."
+],
+"g": 1,
+"c": "Em (B), “anexas” é adjetivo e concorda com “planilhas”; “meio”, no sentido de “um pouco”, é advérbio e invariável; “bastante”, que modifica o adjetivo “curtos”, também é advérbio e invariável. Por isso (B) está correta. Em (A), “anexo” deveria concordar com os substantivos (“anexas” ou “anexos”); invariável é apenas a locução “em anexo”. Em (C), sem determinante, a expressão fica invariável (“É proibido entrada”); com artigo, concorda (“É proibida a entrada”). Em (D), “bastante” acompanha substantivo e funciona como adjetivo (“bastantes fornecedores”), e o correto é “meio-dia e meia” (hora)."
+},
+{
+"n": 9,
+"d": "LP",
+"it": "Anexo I · Língua Portuguesa · item 3 — Ortografia oficial",
+"e": "O assessor técnico de compras de um hospital estadual revisou trechos de despachos. Assinale a opção em que a grafia está inteiramente correta.",
+"o": [
+"O setor de compras ainda não explicou porque o pregão foi suspenso, mas o mal planejamento da demanda é evidente.",
+"Os servidores não sabem aonde estão arquivados os contratos, embora o porquê do atraso já tenha sido esclarecido.",
+"A comissão reuniu-se afim de revisar os termos de referência, por que o prazo de publicação terminava na sexta-feira.",
+"Ninguém sabe por que o fornecedor entregou mal os insumos nem aonde ele pretende ir com o recurso; a fim de evitar novo atraso, a direção quer saber o porquê."
+],
+"g": 3,
+"c": "Em (D), “por que” introduz interrogativa indireta; “mal” é advérbio (oposto de “bem”); “aonde” indica movimento (“ir a”); “a fim de” é locução de finalidade; “o porquê”, substantivado, leva acento. Em (A), deveria ser “por que” (interrogativa indireta, equivalente a “por qual motivo”) e “mau planejamento” (“mau” é adjetivo, oposto de “bom”). Em (B), “estar” não indica movimento, por isso o correto é “onde estão arquivados”. Em (C), a finalidade exige “a fim de” (“afim” significa “semelhante” ou “que tem afinidade”), e a causa exige “porque”."
+},
+{
+"n": 10,
+"d": "LP",
+"it": "Anexo I · Língua Portuguesa · item 17 — Redação oficial",
+"e": "O diretor-geral de um hospital regional da rede estadual do Tocantins vai encaminhar ofício ao Superintendente de Unidades Hospitalares da SES/TO, autoridade que recebe o tratamento de Vossa Senhoria. De acordo com o Manual de Redação da Presidência da República (3ª edição, 2018), assinale a afirmativa correta.",
+"o": [
+"O vocativo adequado é “Senhor Superintendente,”, sendo dispensado o superlativo “Ilustríssimo” para autoridades tratadas por Vossa Senhoria.",
+"A identificação do signatário deve conter apenas a assinatura e o nome, omitindo-se o cargo, que já consta do cabeçalho do documento.",
+"O campo “Assunto” deve transcrever o primeiro parágrafo do texto, para que o destinatário conheça de imediato o pedido formulado.",
+"Local e data devem ser alinhados à margem esquerda, ao final do documento, com o nome do mês abreviado e grafado com inicial maiúscula."
+],
+"g": 0,
+"c": "O Manual dispensa o emprego de “Ilustríssimo” para autoridades tratadas por Vossa Senhoria e para particulares, bastando “Senhor”; o vocativo é formado por “Senhor” seguido do cargo (“Senhor Superintendente,”), o que torna (A) correta. A dispensa foi reforçada pelo Decreto nº 9.758/2019 no âmbito federal. Em (B), a identificação do signatário, exceto nas comunicações do Presidente da República, deve conter nome e cargo de quem assina. Em (C), o assunto deve resumir o teor do documento de forma sucinta, e não reproduzir o texto. Em (D), local e data vêm no início do documento, após a identificação do expediente, alinhados à direita e com o mês por extenso e inicial minúscula (ex.: “Palmas, 3 de novembro de 2026.”)."
+},
+{
+"n": 11,
+"d": "RLM",
+"it": "Anexo I · Raciocínio Lógico e Matemático · item 2 — Razões e proporções (divisão proporcional)",
+"e": "A SES/TO vai ratear uma verba extra de R$ 2.080.000,00 para reposição de insumos entre três hospitais regionais. O critério fixado em portaria é: cada parcela deve ser <b>diretamente proporcional</b> ao número de leitos do hospital e <b>inversamente proporcional</b> à cobertura de estoque atual, medida em meses de consumo.<br><br>• Araguaína: 120 leitos; estoque para 2 meses.<br>• Gurupi: 80 leitos; estoque para 1 mês.<br>• Porto Nacional: 60 leitos; estoque para 3 meses.<br><br>Pelo critério da portaria, o Hospital Regional de Gurupi receberá",
+"o": [
+"R$ 640.000,00.",
+"R$ 1.040.000,00.",
+"R$ 780.000,00.",
+"R$ 332.800,00."
+],
+"g": 1,
+"c": "Os pesos são leitos ÷ meses de estoque: 120/2 = 60, 80/1 = 80 e 60/3 = 20, que somam 160. A constante é 2.080.000 ÷ 160 = 13.000, e Gurupi recebe 80 × 13.000 = R$ 1.040.000,00 (B). Para conferir, Araguaína fica com 780.000 e Porto Nacional com 260.000, e as três parcelas somam a verba total. A opção (A) considera só os leitos (2.080.000 ÷ 260 × 80) e ignora a parte inversa. A opção (C) é a parcela de Araguaína, não a de Gurupi. A opção (D) multiplica leitos pelos meses (peso 80 em um total de 500) e trata como direta uma grandeza que é inversa."
+},
+{
+"n": 12,
+"d": "RLM",
+"it": "Anexo I · Raciocínio Lógico e Matemático · item 3 — Regra de três simples e composta (regra de três simples inversa)",
+"e": "No Hospital Geral de Palmas, uma equipe de 18 faturistas, todos com a mesma produtividade e a mesma jornada, conclui o fechamento mensal das AIH em 12 dias úteis. Para cumprir um novo prazo de envio ao Ministério da Saúde, o fechamento deverá ser feito em 8 dias úteis, mantidas a produtividade e a jornada.<br><br>O número de faturistas que deverão ser <u>acrescidos</u> à equipe é",
+"o": [
+"6.",
+"12.",
+"27.",
+"9."
+],
+"g": 3,
+"c": "Com o mesmo volume de trabalho, número de faturistas e prazo são inversamente proporcionais: 18 × 12 = x × 8, logo x = 27 faturistas. Como a equipe já tem 18, devem ser acrescidos 27 − 18 = 9 (D). A opção (C) dá o total da nova equipe, e não o acréscimo pedido no comando. A opção (B) vem da regra de três montada como direta (18 × 8 ÷ 12 = 12), e a opção (A) é a diferença 18 − 12 calculada a partir desse mesmo erro. Antes de montar a regra de três, vale perguntar se “menos dias” exige “mais pessoas”: se exige, a relação é inversa."
+},
+{
+"n": 13,
+"d": "RLM",
+"it": "Anexo I · Raciocínio Lógico e Matemático · item 4 — Porcentagem (aumentos e descontos sucessivos)",
+"e": "O preço unitário de referência de um cateter venoso periférico, usado na pesquisa de preços de um hospital estadual, foi reajustado em 20% por causa da alta do insumo importado. Na sessão do pregão, o lance vencedor ficou 15% abaixo desse preço reajustado.<br><br>Em relação ao preço unitário original, antes do reajuste, o preço contratado teve",
+"o": [
+"aumento de 2%.",
+"aumento de 5%.",
+"redução de 2%.",
+"redução de 3%."
+],
+"g": 0,
+"c": "Variações percentuais sucessivas se multiplicam, não se somam: 1,20 × 0,85 = 1,02, ou seja, um aumento líquido de 2% sobre o preço original (A). A opção (B) apenas soma as taxas (+20% − 15% = +5%) e esquece que o desconto incide sobre um valor já aumentado. A opção (C) acerta o módulo, mas troca o sinal. A opção (D) toma o termo cruzado 0,20 × 0,15 = 0,03 como se fosse a variação final. Em fórmula: (1 + i<sub>1</sub>)(1 + i<sub>2</sub>) − 1 = 1,2 × 0,85 − 1 = 0,02."
+},
+{
+"n": 14,
+"d": "RLM",
+"it": "Anexo I · Raciocínio Lógico e Matemático · item 5 — Juros simples e compostos (taxa equivalente)",
+"e": "O Fundo Estadual de Saúde aplicou R$ 100.000,00, reservados para o pagamento de um contrato de manutenção de equipamentos, em uma aplicação que rende juros compostos à taxa de 4,04% ao bimestre. O gestor financeiro precisa saber o saldo após 3 meses, sem resgates nem novos aportes, usando a taxa mensal equivalente.<br><br>O montante ao final do 3º mês será de",
+"o": [
+"R$ 106.000,00.",
+"R$ 106.060,00.",
+"R$ 106.120,80.",
+"R$ 106.183,24."
+],
+"g": 2,
+"c": "Em juros compostos, a taxa mensal equivalente i satisfaz (1 + i)² = 1,0404, o que dá i = 2% ao mês, pois 1,02² = 1,0404. O montante é então 100.000 × 1,02³ = 100.000 × 1,061208 = R$ 106.120,80 (C). A opção (D) divide a taxa bimestral por 2 (2,02%), o que só vale para taxas proporcionais em juros simples, e depois capitaliza 1,0202³. A opção (B) usa essa mesma taxa de 2,02% em juros simples (6,06% em 3 meses). A opção (A) acerta a taxa de 2%, mas aplica juros simples (6%) em vez de compostos."
+},
+{
+"n": 15,
+"d": "RLM",
+"it": "Anexo I · Raciocínio Lógico e Matemático · item 6 — Equações, inequações e sistemas de equações (sistema linear)",
+"e": "Em uma compra emergencial, o almoxarifado do Hospital Regional de Araguaína recebeu 140 caixas de luvas, de dois tipos: luvas de procedimento, a R$ 25,00 a caixa, e luvas cirúrgicas estéreis, a R$ 60,00 a caixa. A nota fiscal totalizou R$ 5.250,00.<br><br>É correto afirmar que o número de caixas de luvas de procedimento superou o de luvas estéreis em",
+"o": [
+"50.",
+"90.",
+"30.",
+"40."
+],
+"g": 3,
+"c": "Seja x o número de caixas de luvas de procedimento e y o de luvas estéreis: x + y = 140 e 25x + 60y = 5.250. Substituindo x = 140 − y, temos 3.500 + 35y = 5.250, logo y = 50 e x = 90. A diferença pedida é 90 − 50 = 40 (D). Confira: 25 × 90 + 60 × 50 = 2.250 + 3.000 = 5.250. As opções (A) e (B) são os valores de y e de x, respostas parciais que não atendem ao comando. A opção (C) não sai de nenhuma solução coerente do sistema."
+},
+{
+"n": 16,
+"d": "RLM",
+"it": "Anexo I · Raciocínio Lógico e Matemático · item 10 — Probabilidade (probabilidade condicional)",
+"e": "Na auditoria de contas de um hospital estadual, foram analisadas 250 AIH de um mês: 100 de procedimentos cirúrgicos e 150 de procedimentos clínicos. Das cirúrgicas, 15 sofreram glosa; das clínicas, 10 sofreram glosa.<br><br>Sorteando-se ao acaso uma AIH entre as que <u>sofreram glosa</u>, a probabilidade de que ela seja de procedimento cirúrgico é",
+"o": [
+"15%.",
+"60%.",
+"6%.",
+"10%."
+],
+"g": 1,
+"c": "A condição “sofreu glosa” reduz o espaço amostral às 15 + 10 = 25 AIH glosadas. Dessas, 15 são cirúrgicas, então P(cirúrgica | glosa) = 15/25 = 60% (B). A opção (A) inverte a condicional e calcula P(glosa | cirúrgica) = 15/100. A opção (C) é a probabilidade conjunta P(cirúrgica e glosa) = 15/250, que usa o total geral como denominador. A opção (D) é P(glosa) = 25/250, sem nenhuma condição. Pela definição, P(A | B) = P(A ∩ B)/P(B) = (15/250)/(25/250) = 0,6."
+},
+{
+"n": 17,
+"d": "RLM",
+"it": "Anexo I · Raciocínio Lógico e Matemático · item 11 — Análise combinatória (permutação com repetição)",
+"e": "A coordenação de um pronto-socorro estadual precisa montar a escala de plantões noturnos de uma semana, de segunda a domingo, com um único plantonista por noite. Ficou definido que o médico X fará 3 plantões, o médico Y fará 2 e o médico Z fará 2, e importa apenas qual médico fica em cada noite.<br><br>O número de escalas distintas que podem ser montadas é",
+"o": [
+"5.040.",
+"420.",
+"210.",
+"35."
+],
+"g": 2,
+"c": "Montar a escala equivale a ordenar as letras X, X, X, Y, Y, Z, Z nas 7 noites, o que é uma permutação com repetição: 7!/(3! · 2! · 2!) = 5.040/24 = 210 (C). A opção (A) é 7!, que trata os plantões de um mesmo médico como se fossem distintos. A opção (B), 7!/(3! · 2!), esquece de dividir pela repetição de um dos médicos com 2 plantões. A opção (D), C(7,3) = 35, conta apenas as noites do médico X e não distribui as 4 noites restantes entre Y e Z, que dão C(4,2) = 6 maneiras (35 × 6 = 210)."
+},
+{
+"n": 18,
+"d": "RLM",
+"it": "Anexo I · Raciocínio Lógico e Matemático · item 16 — Equivalências e negações",
+"e": "Em reunião de planejamento orçamentário de um hospital estadual, o diretor administrativo afirmou:<br><br><blockquote>“O hospital cumpre a meta de faturamento SUS ou o orçamento de custeio é contingenciado.”</blockquote>Assinale a opção que apresenta uma proposição <b>logicamente equivalente</b> à afirmação do diretor.",
+"o": [
+"Se o hospital não cumpre a meta de faturamento SUS, então o orçamento de custeio é contingenciado.",
+"Se o hospital cumpre a meta de faturamento SUS, então o orçamento de custeio não é contingenciado.",
+"O hospital não cumpre a meta de faturamento SUS e o orçamento de custeio é contingenciado.",
+"Se o orçamento de custeio é contingenciado, então o hospital não cumpre a meta de faturamento SUS."
+],
+"g": 0,
+"c": "Chamando p = “cumpre a meta” e q = “é contingenciado”, a afirmação é p ∨ q, e vale a equivalência p ∨ q ≡ ~p → q. Ou seja: se a primeira parte falha, a segunda tem de ocorrer (A). A opção (B), p → ~q, é falsa quando p e q são ambas verdadeiras, caso em que p ∨ q é verdadeira. A opção (C), ~p ∧ q, é apenas um dos cenários que tornam a disjunção verdadeira, não uma proposição equivalente. A opção (D), q → ~p, equivale a ~(p ∧ q), outra proposição. Também seria equivalente ~q → p (“se não é contingenciado, então cumpre a meta”), que não aparece entre as opções."
+},
+{
+"n": 19,
+"d": "HGTO",
+"it": "Anexo I · História e Geografia do Estado do Tocantins · item 1 — Processo histórico de criação do Estado do Tocantins",
+"e": "Em palestra de integração de novos servidores da SES/TO no Hospital Regional de Araguaína, o palestrante recapitulou o movimento autonomista do século XX que antecedeu a criação do Estado. Considere as afirmativas a seguir.<br><br>I. A Comissão de Estudos dos Problemas do Norte Goiano (Conorte), constituída juridicamente em 1981, teve entre seus objetivos organizar a luta autonomista da região.<br>II. Siqueira Campos, então deputado federal, reagiu a veto do presidente José Sarney à criação do novo Estado com uma greve de fome, episódio que deu visibilidade nacional à causa.<br>III. O Estado do Tocantins foi criado por lei ordinária federal sancionada em 1985, cabendo à Assembleia Nacional Constituinte apenas confirmar a capital provisória.<br><br>Está correto o que se afirma em",
+"o": [
+"I, apenas.",
+"II, apenas.",
+"I e III, apenas.",
+"I e II, apenas."
+],
+"g": 3,
+"c": "A afirmativa I está correta: a Conorte (Comissão de Estudos dos Problemas do Norte Goiano) foi criada juridicamente em 1981 e assumiu a organização da luta autonomista, na linha de entidades anteriores, como a Casa do Estudante do Norte Goiano (Cenog). A afirmativa II também está correta: os projetos de criação aprovados pelo Congresso foram vetados pelo presidente José Sarney, e Siqueira Campos respondeu com uma greve de fome (1985), ampliando a pressão política que desaguou na Constituinte. A afirmativa III está errada: o Tocantins não nasceu de lei ordinária de 1985, justamente vetada, mas da Constituição de 5/10/1988 (ADCT, art. 13), após emenda popular. Por isso, erram (A) e (B), que omitem uma afirmativa verdadeira, e (C), que inclui a III."
+},
+{
+"n": 20,
+"d": "HGTO",
+"it": "Anexo I · História e Geografia do Estado do Tocantins · item 9 — Relevo",
+"e": "Uma equipe da SES/TO planeja rotas terrestres de remoção de pacientes entre municípios do sudeste e do sul do Estado e a capital, e um analista resumiu as principais feições do relevo tocantinense que interferem nos trajetos. Assinale a afirmativa correta.",
+"o": [
+"A Serra Geral acompanha a porção leste do Estado, junto às divisas com Bahia, Piauí e Maranhão, e o ponto mais alto do Tocantins, com cerca de 1.340 m, fica na Serra das Traíras, em Paranã.",
+"A Serra do Lajeado, vizinha a Palmas, situa-se na margem esquerda do rio Tocantins, no interflúvio com o Araguaia, e abriga o ponto mais alto do Estado, com cerca de 1.340 m.",
+"O relevo é dominado por altitudes superiores a 1.000 m, distribuídas de modo homogêneo pelo território, e o ponto culminante do Estado localiza-se nas serras do Jalapão.",
+"A Ilha do Bananal integra um compartimento de planalto cristalino, onde se registram as maiores altitudes médias do Estado, ao passo que o leste apresenta planícies alagáveis."
+],
+"g": 0,
+"c": "A alternativa (A) está correta: a Serra Geral marca o leste do Estado, na divisa com Bahia, Piauí e Maranhão, e concentra as maiores altitudes médias; o ponto culminante (cerca de 1.340 m) está na Serra das Traíras, em Paranã, no sul, junto à divisa com Goiás. (B) erra porque a Serra do Lajeado (ou do Carmo) fica na margem direita do rio Tocantins (Palmas, Monte do Carmo), e não abriga o ponto culminante. (C) erra porque a maior parte do território está abaixo de 500 m (altitude média em torno de 450 m). (D) inverte a realidade: a Ilha do Bananal corresponde à Planície do Bananal, área baixa e alagável, e as maiores altitudes médias estão no leste, na Serra Geral."
+},
+{
+"n": 21,
+"d": "HGTO",
+"it": "Anexo I · História e Geografia do Estado do Tocantins · item 8 — Vegetação",
+"e": "Em estudo para instalar uma unidade de saúde em área rural, técnicos da SES/TO receberam um laudo ambiental que lembra que o Cerrado recobre a maior parte do território tocantinense (em torno de 87% a 90%), com transição para a floresta amazônica no norte, e que o bioma reúne formações florestais, savânicas e campestres. Sobre as fitofisionomias do Cerrado presentes no Estado, é correto afirmar que",
+"o": [
+"o cerradão, por apresentar vegetação baixa e esparsa sobre solos rasos, é classificado como formação campestre, ao lado do campo limpo e do campo rupestre.",
+"a mata de galeria acompanha riachos e córregos de pequeno porte, formando corredores sobre o curso d’água, enquanto a mata ciliar acompanha rios de médio e grande porte.",
+"as veredas caracterizam-se pelo predomínio do babaçu em solos profundos e bem drenados do topo das chapadas, longe das nascentes e dos cursos d’água.",
+"a floresta amazônica de transição concentra-se no sudeste do Estado, junto às divisas com Bahia e Goiás, onde substitui o Cerrado nas áreas de maior altitude."
+],
+"g": 1,
+"c": "A alternativa (B) está correta: na classificação de Ribeiro e Walter (Embrapa), a mata de galeria acompanha riachos e córregos de pequeno porte e forma corredores (galerias) sobre o curso d’água, sendo perenifólia; a mata ciliar acompanha rios de médio e grande porte e apresenta graus variados de caducifolia na seca. (A) erra porque o cerradão é formação florestal, de dossel mais fechado. (C) erra porque a vereda é formação savânica com predomínio de buritis, em solos saturados, normalmente junto a nascentes; o babaçu marca outras paisagens, como o Bico do Papagaio. (D) erra porque a transição amazônica ocorre no norte do Estado, e não no sudeste."
+},
+{
+"n": 22,
+"d": "HGTO",
+"it": "Anexo I · História e Geografia do Estado do Tocantins · item 13 — Economia do Estado",
+"e": "Ao analisar o custo de frete de insumos hospitalares adquiridos fora do Estado, a área de compras da SES/TO examinou o papel da Ferrovia Norte-Sul (FNS) como eixo logístico do Tocantins, que também escoa grãos produzidos no Estado. Assinale a afirmativa correta.",
+"o": [
+"A FNS é um eixo ferroviário leste-oeste que liga o Tocantins aos portos do Pacífico pelo Peru, razão pela qual a soja tocantinense é exportada sobretudo para a Ásia por esse corredor.",
+"O tramo norte da FNS, concedido à Rumo em 2019, liga Porto Nacional a Estrela d’Oeste (SP) e se conecta à Estrada de Ferro Carajás, levando a carga até o Porto de Santos.",
+"O trecho entre Açailândia (MA) e Porto Nacional (TO), operado pela VLI, conecta-se à Estrada de Ferro Carajás rumo ao Porto do Itaqui, e o tramo central foi concedido à Rumo em 2019.",
+"O Tocantins não possui terminais ferroviários em operação, e toda a produção de grãos do Estado é escoada pela hidrovia Araguaia-Tocantins, plenamente navegável até Belém."
+],
+"g": 2,
+"c": "A alternativa (C) está correta: o trecho Açailândia (MA)–Porto Nacional (TO), de cerca de 720 km, é operado pela VLI e, em Açailândia, conecta-se à Estrada de Ferro Carajás, que leva ao Porto do Itaqui, em São Luís; o tramo central (Porto Nacional–Estrela d’Oeste/SP, cerca de 1.537 km) foi leiloado em março de 2019 e concedido à Rumo, com contrato assinado em julho daquele ano. (A) erra porque a FNS é um eixo norte-sul, sem ligação ferroviária com o Pacífico. (B) troca os tramos e as concessionárias: a Rumo opera o tramo central, que segue para o Sudeste, e não o norte ligado a Carajás. (D) erra porque o Estado tem pátios e terminais ferroviários em operação, como o pátio multimodal de Porto Nacional, e a hidrovia não é plenamente navegável."
+},
+{
+"n": 23,
+"d": "HGTO",
+"it": "Anexo I · História e Geografia do Estado do Tocantins · item 16 — Matriz energética",
+"e": "A direção de um hospital regional da SES/TO estuda instalar usina solar fotovoltaica para reduzir a conta de energia, e o relatório técnico contextualiza a matriz elétrica do Tocantins. Assinale a opção que descreve corretamente essa matriz.",
+"o": [
+"Predomínio da geração termelétrica a gás natural, com a hidreletricidade restrita a pequenas centrais e o Estado dependente de importação de energia de outras unidades da federação.",
+"Predomínio da fonte hídrica, responsável por mais de 90% da capacidade instalada, com excedente destinado ao Sistema Interligado Nacional e expansão recente da energia solar.",
+"Equilíbrio entre fontes hídrica, eólica e solar, cada uma com cerca de um terço da capacidade instalada, sendo o consumo estadual superior à geração local em todo o ano.",
+"Predomínio da energia eólica, favorecida pelos ventos constantes do Jalapão, com a hidreletricidade em declínio após a desativação das usinas do rio Tocantins."
+],
+"g": 1,
+"c": "A alternativa (B) está correta: segundo o governo estadual (2026), mais de 93% da capacidade instalada vem de usinas hidrelétricas e pequenas centrais hidrelétricas, como as UHEs do rio Tocantins; a demanda estadual é bem inferior à geração, e o excedente segue para o Sistema Interligado Nacional (SIN). Ao mesmo tempo, o Estado iniciou uma migração para a energia solar, favorecida pela alta irradiação, com parques solares inclusive em prédios públicos. (A) erra porque a termelétrica não predomina e o Estado é superavitário, e não importador. (C) erra porque não há equilíbrio entre as fontes, e o consumo é menor que a geração. (D) erra porque a eólica não tem peso relevante, e as hidrelétricas seguem em operação."
+},
+{
+"n": 24,
+"d": "HGTO",
+"it": "Anexo I · História e Geografia do Estado do Tocantins · item 2 — Organização política e administrativa",
+"e": "Na preparação do cerimonial de inauguração de um novo serviço hospitalar, a assessoria da SES/TO revisou o uso dos símbolos oficiais do Estado do Tocantins. Assinale a afirmativa correta.",
+"o": [
+"A bandeira estadual apresenta faixa branca diagonal entre um triângulo verde e outro vermelho, com estrelas que representam os municípios criados em 1989.",
+"O lema do brasão, escrito em latim, alude ao trabalho dos pioneiros do norte goiano, e o escudo traz a data de promulgação da Constituição Federal de 1988.",
+"A bandeira e o brasão foram instituídos pela própria Constituição Federal, no ADCT, que fixou suas cores e dispensou lei estadual sobre a matéria.",
+"O brasão traz o lema em tupi “Co yvy ore retama” (“Esta terra é nossa”) e duas faixas azuis que representam os rios Tocantins e Araguaia."
+],
+"g": 3,
+"c": "A alternativa (D) está correta: o brasão do Tocantins traz o lema em tupi “Co yvy ore retama”, traduzido como “Esta terra é nossa”, a data de instalação do Estado (janeiro de 1989) e duas faixas azuis que simbolizam os rios Tocantins e Araguaia, além de ramos que remetem às riquezas naturais. (A) erra porque a bandeira tem faixa branca diagonal entre um campo azul e outro amarelo, com um sol dourado, e não traz estrelas. (B) erra porque o lema está em tupi, e não em latim, e a data é a de instalação do Estado. (C) erra porque os símbolos estaduais foram instituídos por lei estadual: a bandeira, pela Lei estadual nº 94, de 17/11/1989; a Constituição só prevê que os Estados podem ter símbolos próprios (art. 13, § 2º)."
+},
+{
+"n": 25,
+"d": "SUS",
+"it": "Anexo I · Legislação · item 5 — Lei 8.080/1990",
+"e": "No Hospital Regional de Gurupi, a direção registrou três frentes de trabalho em uma mesma semana:<br><br>I. inspeção dos serviços de esterilização e de nutrição terceirizados, para controlar riscos decorrentes da prestação de serviços de interesse da saúde;<br>II. investigação de casos de diarreia em uma enfermaria, a fim de conhecer os fatores determinantes e recomendar e adotar medidas de prevenção e controle;<br>III. acompanhamento de técnicos de enfermagem que sofreram acidentes com perfurocortantes, com ações de promoção, proteção, recuperação e reabilitação da saúde desses profissionais.<br><br>À luz das definições do art. 6º da Lei nº 8.080/1990, as frentes I, II e III correspondem, respectivamente, a",
+"o": [
+"vigilância epidemiológica, vigilância sanitária e saúde do trabalhador.",
+"vigilância sanitária, saúde do trabalhador e vigilância epidemiológica.",
+"vigilância sanitária, vigilância epidemiológica e saúde do trabalhador.",
+"saúde do trabalhador, vigilância epidemiológica e vigilância sanitária."
+],
+"g": 2,
+"c": "A alternativa (C) está correta. Pelo art. 6º, § 1º, da Lei 8.080/1990, vigilância sanitária é o conjunto de ações capaz de eliminar, diminuir ou prevenir riscos à saúde e de intervir nos problemas sanitários decorrentes do meio ambiente, da produção e circulação de bens e da prestação de serviços de interesse da saúde (frente I). O § 2º define vigilância epidemiológica como o conjunto de ações que proporcionam o conhecimento, a detecção ou a prevenção de mudanças nos fatores determinantes e condicionantes da saúde, para recomendar e adotar medidas de prevenção e controle (frente II). O § 3º trata da saúde do trabalhador como o conjunto de atividades de promoção, proteção, recuperação e reabilitação da saúde dos trabalhadores submetidos a riscos e agravos do trabalho (frente III). (A), (B) e (D) embaralham essas definições legais."
+},
+{
+"n": 26,
+"d": "SUS",
+"it": "Anexo I · Legislação · item 5 — Lei 8.080/1990",
+"e": "Um paciente da etnia Karajá, referenciado por um Distrito Sanitário Especial Indígena (DSEI) para cirurgia em hospital da SES/TO, levou a equipe administrativa a revisar as regras do Subsistema de Atenção à Saúde Indígena, previsto nos arts. 19-A e seguintes da Lei nº 8.080/1990. Assinale a afirmativa correta.",
+"o": [
+"Cabe aos Estados e Municípios, com recursos próprios, financiar o Subsistema, e a União atua apenas de modo complementar no custeio das ações.",
+"Cabe à União, com recursos próprios, financiar o Subsistema, e os Estados e Municípios podem atuar complementarmente no custeio e na execução das ações.",
+"O Subsistema organiza-se exclusivamente nas regiões de saúde definidas pelos Estados, o que dispensa os Distritos Sanitários Especiais Indígenas.",
+"Os indígenas devem ser atendidos apenas pelo Subsistema, sendo vedado o acesso a hospitais regionais e centros especializados do SUS."
+],
+"g": 1,
+"c": "A alternativa (B) está correta: o art. 19-C da Lei 8.080/1990 determina que cabe à União, com seus recursos próprios, financiar o Subsistema de Atenção à Saúde Indígena, e o art. 19-E permite que Estados, Municípios e outras instituições governamentais e não governamentais atuem complementarmente no custeio e na execução das ações. (A) inverte essa responsabilidade. (C) erra porque o art. 19-G, § 1º, diz que o Subsistema tem como base os Distritos Sanitários Especiais Indígenas, e não as regiões de saúde. (D) contraria o art. 19-G, §§ 2º e 3º: o SUS serve de retaguarda e referência, e os indígenas têm acesso garantido ao SUS nos âmbitos local, regional e de centros especializados."
+},
+{
+"n": 27,
+"d": "SUS",
+"it": "Anexo I · Legislação · item 1 — SUS: princípios, diretrizes, organização, regionalização, financiamento e gestão",
+"e": "Em reunião técnica, a Superintendência de Planejamento da SES/TO precisou distinguir as competências que a Lei nº 8.080/1990 reserva a cada esfera de direção do SUS. Assinale a opção que indica uma competência atribuída pela lei à direção estadual do SUS.",
+"o": [
+"Promover a descentralização para os Municípios dos serviços e das ações de saúde.",
+"Estabelecer normas e executar a vigilância sanitária de portos, aeroportos e fronteiras.",
+"Definir e coordenar os sistemas de redes integradas de assistência de alta complexidade.",
+"Formar consórcios administrativos intermunicipais para a execução de serviços de saúde."
+],
+"g": 0,
+"c": "A alternativa (A) está correta: o art. 17, I, da Lei 8.080/1990 atribui à direção estadual promover a descentralização para os Municípios dos serviços e das ações de saúde (à direção nacional cabe descentralizar para as Unidades Federadas e para os Municípios, art. 16, XV). (B) é competência da direção nacional (art. 16, VII), com a qual os Municípios apenas colaboram (art. 18, IX). (C) também é da direção nacional (art. 16, III); à direção estadual cabe identificar estabelecimentos hospitalares de referência e gerir sistemas públicos de alta complexidade de referência estadual e regional (art. 17, IX), o que torna esse distrator sutil. (D) é competência da direção municipal (art. 18, VII)."
+},
+{
+"n": 28,
+"d": "SUS",
+"it": "Anexo I · Legislação · item 8 — Política Nacional de Humanização (PNH)",
+"e": "O pronto-socorro do Hospital Geral de Palmas enfrenta filas longas e queixas frequentes de usuários e familiares. A direção decidiu reorganizar o serviço com base nas diretrizes e dispositivos da Política Nacional de Humanização (HumanizaSUS). Está de acordo com a PNH a medida de",
+"o": [
+"adotar a classificação de risco como triagem excludente, dispensando sem atendimento os usuários classificados como de menor gravidade e mantendo a ordem de chegada para os demais.",
+"implantar a clínica ampliada por meio do aumento do número de leitos e da construção de nova ala, já que a diretriz se refere à expansão da capacidade física instalada.",
+"instituir a cogestão por colegiado formado apenas pela diretoria do hospital, com caráter consultivo, para afastar trabalhadores e usuários das decisões de gestão.",
+"implantar o acolhimento com classificação de risco, atendendo todos os que procuram o serviço por ordem de necessidade, e garantir visita aberta e direito a acompanhante."
+],
+"g": 3,
+"c": "A alternativa (D) está correta: o acolhimento com classificação de risco é dispositivo da PNH no qual todas as pessoas que buscam o serviço são atendidas, mas a ordem deixa de ser a de chegada e passa a ser a de maior necessidade; a visita aberta e o direito a acompanhante também estão entre os dispositivos da política. (A) erra porque a classificação de risco não é triagem excludente nem mantém a lógica da ordem de chegada. (B) erra porque a clínica ampliada amplia o objeto do cuidado, que passa a considerar as dimensões biológica, subjetiva e social do sujeito (“tratar é mais que eliminar sintomas”), e não a estrutura física. (C) erra porque a cogestão significa incluir novos sujeitos (trabalhadores e usuários) nos processos de gestão, como no colegiado gestor."
+},
+{
+"n": 29,
+"d": "SUS",
+"it": "Anexo I · Legislação · item 9 — Política Nacional de Saúde do Trabalhador e da Trabalhadora",
+"e": "A SES/TO avalia como os Centros de Referência em Saúde do Trabalhador (CEREST) podem apoiar os hospitais regionais na notificação e no manejo de agravos relacionados ao trabalho. De acordo com a Política Nacional de Saúde do Trabalhador e da Trabalhadora (Portaria GM/MS nº 1.823/2012), é correto afirmar que",
+"o": [
+"a política extinguiu a Rede Nacional de Atenção Integral à Saúde do Trabalhador (RENAST), transferindo suas atribuições aos serviços especializados de segurança e medicina do trabalho das empresas.",
+"os CEREST são a porta de entrada exclusiva do trabalhador no SUS, de modo que acidentes e doenças do trabalho não devem ser atendidos pela atenção primária nem pelas urgências.",
+"cabe aos CEREST, no âmbito da RENAST, prestar apoio matricial à rede de serviços e atuar como retaguarda técnica especializada e polo irradiador de ações de vigilância em saúde do trabalhador.",
+"quando o Município não tiver condições técnicas e operacionais, as ações de vigilância em saúde do trabalhador ficam suspensas até a habilitação de um CEREST municipal."
+],
+"g": 2,
+"c": "A alternativa (C) está correta: o art. 14 da Portaria GM/MS nº 1.823/2012 atribui aos CEREST, no âmbito da RENAST, funções de suporte técnico e de educação permanente, apoio matricial à atenção primária, aos serviços especializados, às urgências e à vigilância, além de retaguarda técnica especializada e de polo irradiador de ações e experiências de vigilância em saúde. (A) erra porque a estruturação da RENAST é uma das estratégias da política (art. 9º, III), e não foi extinta. (B) erra porque os CEREST não substituem a rede: a política busca a atenção integral ao trabalhador em toda a Rede de Atenção à Saúde, inclusive na atenção primária e nas urgências, que os CEREST apoiam matricialmente (art. 14, II). (D) erra porque o art. 14, § 2º, determina que, nesse caso, a Secretaria Estadual de Saúde execute diretamente as ações, inclusive por meio dos CEREST, em caráter complementar ou suplementar."
+},
+{
+"n": 30,
+"d": "SUS",
+"it": "Anexo I · Legislação · item 7 — Decreto 7.508/2011",
+"e": "Para subsidiar o planejamento integrado de uma região de saúde do norte do Tocantins, a SES/TO e os municípios envolvidos elaboraram um instrumento que descreve geograficamente a distribuição de recursos humanos e de ações e serviços de saúde ofertados pelo SUS e pela iniciativa privada, considerando a capacidade instalada, os investimentos e o desempenho aferido por indicadores. Segundo o Decreto nº 7.508/2011, esse instrumento denomina-se",
+"o": [
+"Mapa da Saúde, que será utilizado na identificação das necessidades de saúde e orientará o planejamento integrado dos entes federativos.",
+"Contrato Organizativo da Ação Pública da Saúde (COAP), que é o documento técnico de diagnóstico elaborado por cada ente de forma isolada.",
+"Protocolo Clínico e Diretriz Terapêutica, que estabelece a distribuição geográfica dos serviços e os investimentos previstos para a região.",
+"Relação Nacional de Ações e Serviços de Saúde (RENASES), que descreve a capacidade instalada da iniciativa privada em cada município."
+],
+"g": 0,
+"c": "A alternativa (A) está correta: o art. 2º, V, do Decreto 7.508/2011 define o Mapa da Saúde como a descrição geográfica da distribuição de recursos humanos e de ações e serviços de saúde ofertados pelo SUS e pela iniciativa privada, considerando a capacidade instalada, os investimentos e o desempenho aferido a partir dos indicadores de saúde; e o art. 17 prevê que ele será utilizado na identificação das necessidades de saúde e orientará o planejamento integrado. (B) erra porque o COAP (art. 2º, II) é um acordo de colaboração entre entes federativos, com responsabilidades, indicadores, metas e recursos, e não um diagnóstico isolado. (C) erra porque o Protocolo Clínico e Diretriz Terapêutica (art. 2º, VIII) define critérios de diagnóstico, tratamento, posologia e acompanhamento. (D) erra porque a RENASES compreende as ações e serviços que o SUS oferece ao usuário para a integralidade da assistência, e não um cadastro da capacidade privada."
+},
+{
+"n": 31,
+"d": "ADM",
+"p": 2,
+"it": "Anexo I · Administrador Hospitalar · item 1 — Administração geral e comportamento organizacional",
+"e": "No Hospital Regional de Gurupi, os técnicos do almoxarifado passaram a receber ordens simultâneas do diretor administrativo e da gerente de enfermagem, muitas vezes contraditórias, sobre a prioridade de dispensação de materiais às unidades de internação. Um consultor, apoiado na Teoria Clássica, apontou que o problema decorre da violação de um princípio geral de administração.<br><br>Assinale a opção que identifica corretamente o princípio violado e o seu formulador.",
+"o": [
+"Princípio da separação entre planejamento e execução do trabalho, formulado por Taylor no âmbito da Administração Científica.",
+"Princípio da unidade de comando, formulado por Fayol, segundo o qual cada empregado deve receber ordens de um único superior.",
+"Princípio da unidade de direção, formulado por Fayol, segundo o qual cada empregado deve receber ordens de um único superior.",
+"Princípio da cadeia escalar, formulado por Taylor, segundo o qual a autoridade flui do topo à base em linha ininterrupta."
+],
+"g": 1,
+"c": "A situação descrita (um subordinado com dois chefes emitindo ordens conflitantes) viola a <b>unidade de comando</b>, um dos 14 princípios gerais de Fayol: cada empregado deve receber ordens de um só chefe (B). A <b>unidade de direção</b> (C) também é de Fayol, mas significa “um só chefe e um só plano” para um conjunto de atividades com o mesmo objetivo; a alternativa troca a definição. A separação entre planejamento e execução (A) é de fato tayloriana, mas não descreve o problema apontado. A cadeia escalar (D) é princípio de Fayol, não de Taylor, e trata da linha hierárquica, não da duplicidade de chefia.",
+"ag": 4
+},
+{
+"n": 32,
+"d": "ADM",
+"p": 2,
+"it": "Anexo I · Administrador Hospitalar · item 1 — Administração geral e comportamento organizacional",
+"e": "Após pesquisa de clima no Hospital Geral de Palmas, a direção concedeu reajuste da gratificação, reformou o repouso da equipe e trocou o mobiliário dos postos de enfermagem. Seis meses depois, a nova pesquisa mostrou queda acentuada das queixas, mas nenhuma melhora nos indicadores de engajamento, iniciativa e participação em comissões.<br><br>À luz da teoria dos dois fatores de Herzberg, é correto afirmar que",
+"o": [
+"o resultado contraria a teoria, pois remuneração e ambiente físico correspondem, na hierarquia de Maslow, às necessidades de autorrealização, as mais motivadoras.",
+"o resultado indica que a direção adotou os pressupostos da Teoria Y de McGregor, segundo a qual as pessoas evitam o trabalho e precisam de incentivos externos.",
+"o resultado é coerente com a teoria, pois remuneração e condições físicas são fatores higiênicos, que reduzem a insatisfação sem gerar motivação.",
+"o resultado é coerente com a teoria, pois remuneração e condições físicas são fatores motivacionais, cujo efeito só aparece após um ano."
+],
+"g": 2,
+"c": "Para Herzberg, os <b>fatores higiênicos</b> (extrínsecos: salário, condições físicas, supervisão, políticas) apenas evitam a insatisfação; a satisfação e a motivação dependem dos <b>fatores motivacionais</b> (intrínsecos: reconhecimento, responsabilidade, realização, o próprio conteúdo do cargo), por isso C está correta. A alternativa D inverte a classificação do salário e inventa um prazo. A alternativa A erra ao situar remuneração e ambiente físico na autorrealização; em Maslow eles se relacionam a necessidades fisiológicas e de segurança. A alternativa B descreve a Teoria X, não a Y: a Teoria Y presume que as pessoas gostam do trabalho e buscam responsabilidade.",
+"ag": 4
+},
+{
+"n": 33,
+"d": "ADM",
+"p": 2,
+"it": "Anexo I · Administrador Hospitalar · item 2 — Teoria das organizações",
+"e": "No setor de faturamento de um hospital regional do Tocantins, os servidores recusaram-se a reapresentar contas glosadas cujo prazo vencia no mesmo dia, porque o formulário interno exigia três assinaturas e uma delas estava ausente. A perda de receita foi justificada com a frase “o procedimento foi cumprido”. Analisando o caso, um auditor recorreu às disfunções da burocracia descritas por Robert Merton.<br><br>Assinale a afirmativa correta.",
+"o": [
+"Trata-se de manifestação da impessoalidade, que Weber já descrevera como a principal disfunção do modelo burocrático por ele idealizado.",
+"Para Merton, as disfunções decorrem da incompetência deliberada dos funcionários, e não de consequências imprevistas do próprio modelo.",
+"O comportamento revela a dominação carismática, base de legitimidade do tipo ideal de burocracia descrito por Max Weber.",
+"O caso ilustra a internalização das regras e o apego aos regulamentos, em que a norma deixa de ser meio e passa a ser um fim em si mesma."
+],
+"g": 3,
+"c": "Merton chamou de <b>disfunções</b> as consequências imprevistas do modelo weberiano. Entre elas estão a internalização das regras e o apego aos regulamentos, com deslocamento dos objetivos: o regulamento vira fim em si mesmo, exatamente como no caso narrado (D). Weber descreveu as <b>características</b> do tipo ideal, entre elas a impessoalidade, e não as disfunções (A). As disfunções não resultam de má-fé dos funcionários, e sim da própria lógica do modelo levada ao extremo (B). A burocracia assenta-se na dominação <b>racional-legal</b>, não na carismática (C).",
+"ag": 4
+},
+{
+"n": 34,
+"d": "ADM",
+"p": 2,
+"it": "Anexo I · Administrador Hospitalar · item 3 — Administração de recursos humanos",
+"e": "Na avaliação de desempenho anual dos servidores do Hospital Regional de Porto Nacional, constatou-se que: (I) uma chefia atribuiu conceito “regular” a toda a equipe, em todos os fatores, para “não se comprometer”; (II) outra chefia deu notas máximas em todos os fatores a um enfermeiro muito pontual, inclusive em fatores que não observara. Para o ciclo seguinte, propôs-se a avaliação 360°.<br><br>Assinale a afirmativa correta.",
+"o": [
+"Em (I) ocorreu tendência central, em (II) efeito halo, e a avaliação 360° reúne percepções de chefia, pares, subordinados, usuários e do próprio avaliado.",
+"Em (I) ocorreu efeito halo, em (II) tendência central, e a avaliação 360° reúne percepções de chefia, pares, subordinados, usuários e do próprio avaliado.",
+"Em (I) ocorreu tendência central, em (II) efeito halo, e a avaliação 360° é aquela feita somente pelo superior imediato com base em escalas gráficas.",
+"Em (I) ocorreu leniência, em (II) efeito de recenticidade, e a avaliação 360° substitui a autoavaliação por uma comissão externa ao hospital."
+],
+"g": 0,
+"c": "A <b>tendência central</b> é o vício de concentrar todas as notas no ponto médio da escala para evitar extremos, como em (I). O <b>efeito halo</b> é a generalização de uma característica marcante (a pontualidade) para todos os fatores, como em (II). A avaliação <b>360°</b> é circular e envolve múltiplas fontes, inclusive a autoavaliação; por isso A está correta. B inverte os dois vícios. C erra ao descrever a 360° como avaliação apenas da chefia imediata. D erra nos dois rótulos: leniência é a benevolência generalizada e recenticidade é o peso excessivo de fatos recentes, nenhum deles descrito no caso. Também erra na 360°, que inclui a autoavaliação em vez de substituí-la.",
+"ag": 4
+},
+{
+"n": 35,
+"d": "ADM",
+"p": 2,
+"it": "Anexo I · Administrador Hospitalar · item 4 — Técnicas de planejamento e controle",
+"e": "A diretoria do Hospital Regional de Araguaína elabora seu planejamento estratégico para 2027 e listou, entre outros, os seguintes pontos: (1) prontuário ainda parcialmente em papel; (2) equipe de cirurgia vascular reconhecida na região; (3) anúncio de redução de repasses federais de custeio; (4) abertura de residência médica em parceria com universidade local. Em seguida, os objetivos serão desdobrados em um <em>Balanced Scorecard</em> (BSC).<br><br>Assinale a opção correta.",
+"o": [
+"(1) é ameaça, (2) é oportunidade e (3) é fraqueza; no BSC aplicado a organizações públicas, a perspectiva de aprendizado e crescimento substitui a de processos internos.",
+"(1) é fraqueza, (2) é força, (3) é ameaça e (4) é oportunidade; o BSC organiza objetivos nas perspectivas financeira, do cliente, dos processos internos e do aprendizado e crescimento.",
+"(2) é oportunidade e (4) é força, por serem fatores positivos; o BSC organiza objetivos nas perspectivas financeira, do cliente, dos processos internos e do aprendizado e crescimento.",
+"(1) é fraqueza, (2) é força e (3) é ameaça; o BSC, por ser instrumento de nível operacional, dispensa a definição de indicadores e metas para cada objetivo."
+],
+"g": 1,
+"c": "Na análise SWOT, forças e fraquezas são fatores <b>internos</b>, controláveis pela organização: o prontuário em papel (1) e a equipe reconhecida (2). Oportunidades e ameaças são fatores <b>externos</b>: o corte de repasses (3) e a residência em parceria (4). Por isso B está correta e também descreve bem as quatro perspectivas clássicas do BSC de Kaplan e Norton. A alternativa A inverte interno e externo e inventa uma substituição de perspectivas; no setor público, o que costuma mudar é a ordem, com o cidadão no topo. A alternativa C confunde “positivo” com “oportunidade”, ignorando o critério interno/externo. A alternativa D erra porque o BSC é ferramenta de gestão estratégica e se apoia justamente em objetivos, indicadores, metas e iniciativas.",
+"ag": 4
+},
+{
+"n": 36,
+"d": "ADM",
+"p": 2,
+"it": "Anexo I · Administrador Hospitalar · item 4 — Técnicas de planejamento e controle",
+"e": "O núcleo de qualidade de um hospital estadual em Gurupi investiga o aumento das glosas do faturamento SUS. A equipe pretende, nesta ordem: (i) descobrir quais poucos motivos de glosa concentram a maior parte do valor glosado; (ii) levantar as causas prováveis do motivo principal, agrupadas em categorias como método, mão de obra, máquina e material; (iii) elaborar um plano de ação definindo o que será feito, por quê, onde, quando, por quem, como e quanto custará; (iv) inserir tudo num ciclo de melhoria contínua.<br><br>As ferramentas adequadas a (i), (ii), (iii) e (iv) são, respectivamente,",
+"o": [
+"diagrama de Ishikawa, diagrama de Pareto, PDCA e 5W2H.",
+"5W2H, diagrama de Ishikawa, diagrama de Pareto e PDCA.",
+"diagrama de Pareto, 5W2H, diagrama de Ishikawa e PDCA.",
+"diagrama de Pareto, diagrama de Ishikawa, 5W2H e PDCA."
+],
+"g": 3,
+"c": "O <b>diagrama de Pareto</b> ordena as causas por frequência ou valor e evidencia os “poucos vitais” (regra 80/20), atendendo a (i). O <b>diagrama de Ishikawa</b> (causa e efeito, “espinha de peixe”) organiza as causas prováveis nas categorias dos 6M, atendendo a (ii). O <b>5W2H</b> é o plano de ação (<em>what, why, where, when, who, how, how much</em>), atendendo a (iii). O <b>PDCA</b> é o ciclo de melhoria contínua, atendendo a (iv). A sequência correta é, portanto, a de D. A inverte Pareto e Ishikawa e troca 5W2H por PDCA. B usa o 5W2H para priorizar, o que não é sua função. C inverte as funções do Ishikawa e do 5W2H.",
+"ag": 4
+},
+{
+"n": 37,
+"d": "ADM",
+"p": 2,
+"it": "Anexo I · Administrador Hospitalar · item 5 — Administração contábil e financeira",
+"e": "Em 18/12/2025, o Fundo Estadual de Saúde empenhou a despesa com a manutenção corretiva de autoclaves do Hospital Regional de Porto Nacional. O serviço foi executado e atestado em 20/01/2026 e pago em 05/02/2026. No mesmo período, foram arrecadados em janeiro de 2026 valores de ressarcimento relativos a atendimentos prestados em novembro de 2025.<br><br>Considerando a Lei nº 4.320/1964 e os fundamentos de contabilidade, assinale a afirmativa correta.",
+"o": [
+"Sob o enfoque orçamentário, a despesa pertence ao exercício de 2025, em que foi legalmente empenhada, e a receita, ao de 2026, em que foi arrecadada; o empenho não pago em 31/12 é inscrito em restos a pagar não processados.",
+"Sob o enfoque orçamentário, a despesa pertence ao exercício de 2026, em que foi liquidada, e a receita, ao de 2025, em que ocorreu o fato gerador; o empenho não pago em 31/12 é inscrito em restos a pagar processados.",
+"Sob o enfoque orçamentário, a despesa pertence ao exercício de 2026, em que foi paga, e a receita, ao de 2026, em que foi arrecadada, pois a Lei nº 4.320/1964 adota o regime de caixa para ambas.",
+"Sob o enfoque orçamentário, ambas pertencem ao exercício de 2025, pois a Lei nº 4.320/1964 adota o regime de competência integral, que também exige que o ativo seja igual ao passivo exigível."
+],
+"g": 0,
+"c": "O art. 35 da Lei nº 4.320/1964 dispõe que pertencem ao exercício financeiro “as receitas nele arrecadadas” e “as despesas nele legalmente empenhadas”, o chamado regime orçamentário misto. Assim, a despesa é de 2025 e a receita, de 2026. Pelo art. 36, as despesas empenhadas e não pagas até 31 de dezembro são restos a pagar; como em 31/12/2025 o serviço ainda não havia sido liquidado, são <b>não processados</b> (A). B usa a liquidação como critério e classifica como processado um empenho ainda não liquidado. C atribui à lei o regime de caixa também para a despesa. D atribui à lei a competência integral, que é o enfoque <b>patrimonial</b> (MCASP), não o orçamentário, e ainda deturpa a equação patrimonial, que é Ativo = Passivo + Patrimônio Líquido.",
+"ag": 4
+},
+{
+"n": 38,
+"d": "ADM",
+"p": 2,
+"it": "Anexo I · Administrador Hospitalar · item 6 — Administração contábil hospitalar",
+"e": "Um hospital filantrópico contratualizado com o SUS no Tocantins, que também atende operadoras de planos de saúde, apresentou no exercício: receita bruta de serviços hospitalares de R$ 2.000.000; glosas definitivas, já sem possibilidade de recurso, de R$ 80.000; custo dos serviços prestados de R$ 1.300.000; despesas administrativas de R$ 400.000; e expectativa de perda de R$ 20.000 sobre contas a receber de convênios com glosas em recurso de recuperação improvável.<br><br>Assinale a opção que apresenta corretamente a receita líquida, o resultado bruto e o resultado do período antes de outras receitas e despesas.",
+"o": [
+"Receita líquida de R$ 2.000.000, resultado bruto de R$ 700.000 e superávit de R$ 200.000, com as glosas definitivas lançadas como despesa administrativa.",
+"Receita líquida de R$ 1.900.000, resultado bruto de R$ 600.000 e superávit de R$ 200.000, com a perda estimada deduzida diretamente da receita bruta.",
+"Receita líquida de R$ 1.920.000, resultado bruto de R$ 620.000 e superávit de R$ 200.000, com a perda estimada registrada em conta redutora de contas a receber.",
+"Receita líquida de R$ 1.920.000, resultado bruto de R$ 620.000 e superávit de R$ 220.000, pois a perda estimada só é reconhecida quando a glosa se torna definitiva."
+],
+"g": 2,
+"c": "As glosas definitivas reduzem a receita efetivamente realizada e são apresentadas como <b>dedução da receita bruta</b>: 2.000.000 − 80.000 = 1.920.000. Descontado o custo dos serviços (1.300.000), o resultado bruto é 620.000. Deduzidas as despesas administrativas (400.000) e a perda estimada em créditos (20.000), chega-se a <b>superávit de 200.000</b>, termo usado por entidades sem finalidade de lucros (ITG 2002). A perda estimada é despesa do período e tem como contrapartida conta retificadora do ativo (contas a receber de convênios), daí C. A erra ao tratar a glosa como despesa administrativa, o que infla a receita líquida e o resultado bruto. B mistura a perda estimada, que incide sobre crédito ainda em discussão, com as deduções da receita. D viola o regime de competência e a prudência, porque a perda provável deve ser reconhecida quando estimada, e não apenas quando se confirma.",
+"ag": 4
+},
+{
+"n": 39,
+"d": "ADM",
+"p": 2,
+"it": "Anexo I · Administrador Hospitalar · item 7 — Análise e gestão de custos hospitalares",
+"e": "A gerência de custos do Hospital Regional de Araguaína discute qual método de custeio adotar para subsidiar decisões sobre a ampliação do serviço de hemodiálise. Foram levantados: insumos do kit de diálise consumidos por sessão, honorários por sessão, depreciação das máquinas, salário da coordenação do setor e rateio da administração geral.<br><br>Assinale a afirmativa correta.",
+"o": [
+"No custeio por absorção, apenas os custos variáveis, como os kits de diálise, são apropriados às sessões, sendo a depreciação das máquinas lançada diretamente no resultado.",
+"No custeio variável, somente os custos variáveis, como os kits por sessão, compõem o custo do serviço, e os custos fixos são tratados como despesas do período, o que favorece a análise da margem de contribuição.",
+"No custeio baseado em atividades (ABC), os custos indiretos são distribuídos aos serviços por um único critério de volume, como o número de sessões, dispensando a identificação de direcionadores.",
+"Os kits de diálise consumidos por sessão são custos indiretos e fixos, pois seu valor total independe do número de sessões realizadas no mês."
+],
+"g": 1,
+"c": "O <b>custeio variável</b> (direto) apropria aos serviços apenas os custos variáveis e trata os fixos como despesas do período; por isso é o mais útil para decisões de curto prazo via margem de contribuição, embora não seja aceito para a contabilidade societária e fiscal (B). No <b>custeio por absorção</b>, todos os custos de produção, fixos e variáveis, inclusive a depreciação das máquinas, são absorvidos pelos serviços; A descreve o contrário. O <b>ABC</b> rastreia os custos indiretos às atividades e destas aos serviços por múltiplos <b>direcionadores</b> (C erra). Os kits são custos <b>diretos e variáveis</b>, porque são identificáveis por sessão e o seu total cresce com o volume (D erra).",
+"ag": 4
+},
+{
+"n": 40,
+"d": "ADM",
+"p": 2,
+"it": "Anexo I · Administrador Hospitalar · item 7 — Análise e gestão de custos hospitalares",
+"e": "No Hospital Regional de Porto Nacional, a Clínica Cirúrgica (centro de custo produtivo, com 40 leitos operacionais) apresentou em um mês de 30 dias custos diretos de R$ 300.000 e 900 pacientes-dia. Os centros de custo auxiliares e administrativos devem ser rateados diretamente aos centros produtivos, sem rateio recíproco, conforme as bases abaixo:<br><br>• Lavanderia: custo total de R$ 60.000; 12.000 kg de roupa processados, dos quais 3.000 kg para a Clínica Cirúrgica.<br>• Nutrição e Dietética: custo total de R$ 90.000; 9.000 refeições, das quais 2.400 para a Clínica Cirúrgica.<br>• Administração: custo total de R$ 120.000; 400 servidores no hospital, dos quais 70 lotados na Clínica Cirúrgica.<br><br>O custo do paciente-dia da Clínica Cirúrgica é de",
+"o": [
+"R$ 300,00.",
+"R$ 333,33.",
+"R$ 400,00.",
+"R$ 376,67."
+],
+"g": 2,
+"c": "Rateios: lavanderia 60.000 × 3.000/12.000 = 15.000; nutrição 90.000 × 2.400/9.000 = 24.000; administração 120.000 × 70/400 = 21.000. O custo total da Clínica Cirúrgica é 300.000 + 15.000 + 24.000 + 21.000 = 360.000, e o custo do paciente-dia é 360.000 ÷ 900 = <b>R$ 400,00</b> (C). A (R$ 300,00) divide o custo total pelos leitos-dia (40 × 30 = 1.200), confundindo capacidade com produção. B (R$ 333,33) considera só os custos diretos, como se não houvesse rateio. D (R$ 376,67) omite o rateio do centro administrativo (339.000 ÷ 900), erro comum de quem rateia apenas os centros auxiliares.",
+"ag": 4
+},
+{
+"n": 41,
+"d": "ADM",
+"p": 2,
+"it": "Anexo I · Administrador Hospitalar · item 8 — Administração financeira aplicada",
+"e": "O Hospital Geral de Palmas estuda adquirir uma lavadora extratora de barreira para internalizar o processamento de roupas, hoje terceirizado. O investimento inicial é de R$ 500.000, a economia líquida estimada é de R$ 150.000 ao ano durante 5 anos, sem valor residual, e a taxa mínima de atratividade é de 10% ao ano. Os fatores de valor presente a 10% são: ano 1 = 0,9091; ano 2 = 0,8264; ano 3 = 0,7513; ano 4 = 0,6830; ano 5 = 0,6209 (soma = 3,7907).<br><br>Assinale a afirmativa correta.",
+"o": [
+"O VPL é de R$ 250.000 e o payback é de cerca de 3,3 anos, porque a economia total de cinco anos supera o investimento em R$ 250.000.",
+"O VPL é negativo, de cerca de R$ 34,3 mil, pois a economia total de R$ 750.000, trazida a valor presente pelo fator do 5º ano, não cobre o investimento.",
+"O VPL é de cerca de R$ 68,6 mil e o payback descontado é de cerca de 3,3 anos, igual ao simples, já que as economias anuais são constantes.",
+"O VPL é de cerca de R$ 68,6 mil, o payback simples é de cerca de 3,3 anos e o descontado fica entre o 4º e o 5º ano, sendo o projeto viável pelo critério do VPL."
+],
+"g": 3,
+"c": "Valor presente das economias: 150.000 × 3,7907 = 568.605; VPL = 568.605 − 500.000 = <b>R$ 68.605</b>, positivo, portanto viável (D). O payback simples é 500.000 ÷ 150.000 ≈ 3,33 anos. No payback descontado, os valores presentes acumulados são 136.365, 260.325, 373.020 e 475.470 até o 4º ano; faltam 24.530 do valor presente do 5º ano (93.135), o que dá cerca de 4,26 anos. A ignora o valor do dinheiro no tempo e soma fluxos nominais. B aplica o fator do último ano a todo o fluxo, quando cada parcela tem o seu próprio fator. C erra porque o payback descontado é sempre maior que o simples quando a taxa é positiva, mesmo com fluxos constantes.",
+"ag": 4
+},
+{
+"n": 42,
+"d": "ADM",
+"p": 2,
+"it": "Anexo I · Administrador Hospitalar · item 10 — Administração de serviços hospitalares",
+"e": "O Hospital Regional de Dianópolis possui 40 leitos operacionais de internação (sem leitos extras nem bloqueados). Em um mês de 30 dias, o hospital como um todo registrou 960 pacientes-dia e a seguinte movimentação: 150 altas, 6 óbitos, 4 transferências externas para o hospital de referência e 10 transferências internas entre as suas próprias unidades de internação.<br><br>Com base na Padronização da Nomenclatura do Censo Hospitalar do Ministério da Saúde, a média de permanência, o índice de renovação (giro de rotatividade) e o índice de intervalo de substituição do hospital são, respectivamente,",
+"o": [
+"6,0 dias; 4,0 pacientes por leito; 1,5 dia.",
+"6,0 dias; 4,0 pacientes por leito; 0,25 dia.",
+"6,4 dias; 3,75 pacientes por leito; 1,6 dia.",
+"5,6 dias; 4,25 pacientes por leito; 1,4 dia."
+],
+"g": 0,
+"c": "Saídas = altas + óbitos + transferências externas = 150 + 6 + 4 = 160; as transferências internas <b>não</b> são saídas para as estatísticas hospitalares. Leitos-dia = 40 × 30 = 1.200, e a taxa de ocupação é 960/1.200 = 80%. Média de permanência = pacientes-dia ÷ saídas = 960/160 = 6,0 dias. Giro = saídas ÷ leitos = 160/40 = 4,0. Intervalo de substituição = (% desocupação × média de permanência) ÷ % ocupação = (20 × 6)/80 = 1,5 dia, o mesmo que (1.200 − 960)/160 (A). B (0,25) divide a desocupação pela ocupação e esquece a média de permanência. C conta apenas as altas (150 saídas), omitindo óbitos e transferências externas. D inclui as transferências internas (170 saídas).",
+"ag": 4
+},
+{
+"n": 43,
+"d": "ADM",
+"p": 2,
+"it": "Anexo I · Administrador Hospitalar · item 9 — Administração hospitalar e planejamento físico-funcional do hospital",
+"e": "A SES/TO prepara a reforma e ampliação de um hospital regional, incluindo nova Central de Material e Esterilização (CME), nova área de processamento de roupa e ampliação do pronto-socorro. O projeto deverá observar a RDC Anvisa nº 50/2002, que organiza os estabelecimentos assistenciais de saúde em oito atribuições, quatro de atividades-fim e quatro de apoio.<br><br>Assinale a afirmativa correta.",
+"o": [
+"O pronto-socorro integra a atribuição de apoio ao diagnóstico e terapia, e a avaliação do projeto pela vigilância sanitária é dispensada em reformas de estabelecimentos já licenciados.",
+"A análise do projeto físico é feita pela Anvisa sobre o projeto executivo, e a CME integra a atribuição de apoio ao diagnóstico e terapia, por ser atividade-fim.",
+"A CME e o processamento de roupa integram a atribuição de apoio logístico, e o projeto básico só é exigido para construções novas, não para ampliações.",
+"O processamento de roupa integra a atribuição de apoio logístico, a CME integra a de apoio técnico, e a avaliação do projeto pela vigilância sanitária se faz sobre o projeto básico de arquitetura."
+],
+"g": 3,
+"c": "A RDC nº 50/2002 aplica-se a construções novas, ampliações e reformas (art. 1º). Pelas atribuições do regulamento, a esterilização de material (CME), assim como nutrição e farmácia, integra o <b>apoio técnico</b>, e o processamento de roupa integra o <b>apoio logístico</b>. A avaliação do projeto pelas vigilâncias sanitárias estaduais ou municipais se faz sobre o <b>Projeto Básico de Arquitetura (PBA)</b>, daí D. A erra porque o pronto-socorro é atendimento imediato, uma atividade-fim própria, e porque reformas também se submetem à norma. B erra quanto ao órgão e à etapa: a análise é da vigilância local e recai sobre o PBA, não sobre o projeto executivo; além disso, a CME não é atividade-fim. C erra ao incluir a CME no apoio logístico e ao excluir as ampliações.",
+"ag": 4
+},
+{
+"n": 44,
+"d": "ADM",
+"p": 2,
+"it": "Anexo I · Administrador Hospitalar · item 23 — Lei nº 14.133/2021 (Lei de Licitações e Contratos Administrativos)",
+"e": "O Hospital Regional de Araguaína tem quatro demandas para 2027: (I) aquisição de luvas e seringas descartáveis de especificação usual de mercado; (II) alienação de ambulâncias inservíveis; (III) obra de reforma e ampliação do centro cirúrgico; (IV) solução tecnológica inovadora de rastreabilidade de instrumentais cujas especificações a Administração não consegue definir com precisão suficiente.<br><br>À luz da Lei nº 14.133/2021, as modalidades adequadas a (I), (II), (III) e (IV) são, respectivamente,",
+"o": [
+"pregão, leilão, tomada de preços e diálogo competitivo.",
+"pregão, leilão, concorrência e diálogo competitivo.",
+"pregão, concurso, pregão e concorrência.",
+"concorrência, leilão, convite e concurso."
+],
+"g": 1,
+"c": "Para bens comuns (I), o <b>pregão</b> é obrigatório (art. 6º, XLI, e art. 29). A alienação de bens móveis inservíveis (II) se faz por <b>leilão</b>, a quem oferecer o maior lance (art. 6º, XL). Obras (III) seguem a <b>concorrência</b> (art. 6º, XXXVIII), pois o pregão não se aplica a obras (art. 29, parágrafo único). O <b>diálogo competitivo</b> (IV) destina-se a objetos com inovação tecnológica ou cujas especificações não possam ser definidas com precisão suficiente (arts. 6º, XLII, e 32), daí B. A e D citam a tomada de preços e o convite, que não constam do rol taxativo do art. 28; o § 2º ainda veda criar outras modalidades ou combinar as existentes. C usa o concurso para alienação, quando ele se destina à escolha de trabalho técnico, científico ou artístico, e o pregão para obra, o que é vedado.",
+"ag": 4
+},
+{
+"n": 45,
+"d": "ADM",
+"p": 2,
+"it": "Anexo I · Administrador Hospitalar · item 23 — Lei nº 14.133/2021 (Lei de Licitações e Contratos Administrativos)",
+"e": "No Hospital Geral de Palmas, ocorreram duas situações: (I) pane súbita e total do sistema de climatização da UTI adulto, com risco imediato à segurança dos pacientes; (II) necessidade de adquirir reagentes de um analisador laboratorial que, comprovadamente, só são fornecidos por um representante comercial exclusivo no país. O setor de licitações optou pela contratação direta nos dois casos.<br><br>Considerando a Lei nº 14.133/2021 e a interpretação dada pelo STF na ADI 6.890, assinale a afirmativa correta.",
+"o": [
+"Em (I), cabe dispensa por emergência, com contrato de até 1 ano admitida uma prorrogação por igual período se a emergência persistir; em (II), cabe dispensa por exclusividade de fornecedor.",
+"Em (I), cabe inexigibilidade por urgência, com contrato de até 1 ano contado da sua assinatura; em (II), cabe inexigibilidade, demonstrada a exclusividade por atestado ou documento idôneo.",
+"Em (I), cabe dispensa por emergência, com parcelas concluídas em até 1 ano da ocorrência e vedada a prorrogação; em (II), cabe inexigibilidade, vedada a preferência por marca.",
+"Em (I), cabe dispensa por emergência, ficando a empresa contratada impedida de participar da licitação que vier a substituir a contratação emergencial; em (II), cabe inexigibilidade."
+],
+"g": 2,
+"c": "A hipótese (I) é de <b>dispensa</b> (art. 75, VIII), restrita aos bens e às parcelas de obras e serviços que possam ser concluídas no prazo máximo de 1 ano <b>contado da data de ocorrência da emergência</b>, vedadas a prorrogação dos contratos e a recontratação da empresa. A hipótese (II) é de <b>inexigibilidade</b> por fornecedor exclusivo (art. 74, I), com exclusividade comprovada por atestado, contrato, declaração do fabricante ou outro documento idôneo, vedada a preferência por marca (art. 74, § 1º); por isso C está correta. A erra ao admitir a prorrogação e ao tratar a exclusividade como dispensa. B erra ao classificar a emergência como inexigibilidade e ao contar o prazo da assinatura. D contraria a ADI 6.890 (Plenário, 2024): a vedação de recontratação alcança a mesma situação emergencial que extrapole 1 ano, mas não impede a empresa de participar da licitação substitutiva nem de ser contratada por outro fundamento.",
+"ag": 4
+},
+{
+"n": 46,
+"d": "ADM",
+"it": "Anexo I · Administrador Hospitalar · item 11 — Serviços de enfermagem",
+"e": "O diretor-geral do Hospital Regional de Gurupi, para reorganizar o pronto-socorro, cogita duas medidas: (1) nomear para a chefia da unidade de enfermagem um técnico de enfermagem com 15 anos de casa, “por conhecer a rotina melhor que ninguém”; e (2) recalcular o quadro de enfermagem “com base na Resolução Cofen nº 543/2017”. A assessoria jurídica da SES/TO foi consultada.<br><br>Assinale a afirmativa que expressa corretamente a orientação a ser dada ao gestor.",
+"o": [
+"A chefia de unidade de enfermagem é atividade privativa do enfermeiro, e as atividades de técnicos e auxiliares em instituições de saúde só podem ser exercidas sob orientação e supervisão de enfermeiro; quanto ao dimensionamento, a Resolução Cofen nº 543/2017 foi revogada em 2024, e os parâmetros passaram a constar do Parecer Normativo Cofen nº 1/2024.",
+"A chefia de unidade de enfermagem pode ser atribuída a técnico de enfermagem com especialização e experiência comprovada, desde que haja anotação de responsabilidade técnica no Coren; quanto ao dimensionamento, a Resolução Cofen nº 543/2017 permanece como referência vigente para o cálculo do quadro.",
+"A supervisão dos técnicos de enfermagem no plantão pode ser exercida pelo médico plantonista, por ser o profissional responsável pela assistência no pronto-socorro; quanto ao dimensionamento, ele é atribuição exclusiva da direção administrativa, sem participação do enfermeiro.",
+"A chefia de unidade de enfermagem é cargo de livre nomeação do dirigente, cabendo ao Coren apenas o registro do profissional escolhido; quanto ao dimensionamento, os parâmetros são fixados por portaria do Ministério da Saúde, vinculante para hospitais estaduais."
+],
+"g": 0,
+"c": "A Lei nº 7.498/1986 reserva privativamente ao enfermeiro a direção do órgão de enfermagem e a chefia de serviço e de unidade de enfermagem (art. 11, I, “a”), além do planejamento, organização, coordenação, execução e avaliação dos serviços de assistência de enfermagem (art. 11, I, “c”); o art. 15 determina que técnicos e auxiliares, em instituições de saúde, atuem sob orientação e supervisão de enfermeiro. Quanto ao dimensionamento, após decisões judiciais o Cofen revogou a Resolução nº 543/2017 e aprovou, em 12/3/2024, o Parecer Normativo nº 1/2024 com os parâmetros de planejamento da força de trabalho de enfermagem, por isso (A) está correta. (B) erra duas vezes: a chefia não pode ser de técnico e a 543/2017 não está vigente. (C) erra porque a supervisão da equipe de enfermagem é do enfermeiro, não do médico, e o planejamento da força de trabalho de enfermagem é atribuição do enfermeiro. (D) ignora a exigência legal de habilitação para a chefia e atribui ao MS uma competência que não é dele.",
+"ag": 5
+},
+{
+"n": 47,
+"d": "ADM",
+"it": "Anexo I · Administrador Hospitalar · item 12 — Centro cirúrgico",
+"e": "No último trimestre, o centro cirúrgico do Hospital Regional de Araguaína programou 800 cirurgias eletivas, das quais 60 foram suspensas. A análise das suspensões apontou como principais causas a falta de instrumental processado pela Central de Material e Esterilização (CME) e a indisponibilidade de leito de UTI para o pós-operatório; parte menor decorreu de condições clínicas do paciente.<br><br>Considerando a gestão do centro cirúrgico, é correto afirmar que",
+"o": [
+"a taxa de suspensão do período foi de aproximadamente 8,1%, pois o indicador relaciona as cirurgias suspensas às cirurgias efetivamente realizadas.",
+"as suspensões motivadas por condições clínicas do paciente devem ser excluídas do indicador, que mede apenas falhas imputáveis à instituição.",
+"a sala de operações integra a área semirrestrita do centro cirúrgico, ao passo que os corredores internos e a sala de guarda de materiais compõem a área restrita.",
+"a taxa de suspensão foi de 7,5%, e a predominância de causas institucionais indica necessidade de integrar o planejamento do mapa cirúrgico com a CME e com a regulação de leitos."
+],
+"g": 3,
+"c": "A taxa de suspensão de cirurgias relaciona as cirurgias suspensas às programadas (agendadas): 60 ÷ 800 × 100 = 7,5%. Falta de instrumental e de leito de UTI são causas organizacionais, evitáveis por gestão integrada do mapa cirúrgico com a CME e com a gestão/regulação de leitos, por isso (D) está correta. (A) usa o denominador errado (60 ÷ 740 ≈ 8,1%), confusão clássica entre programadas e realizadas. (B) erra porque todas as suspensões entram no indicador; o que se faz é estratificar por causa (paciente, equipe, estrutura/administrativa) para orientar as ações. (C) inverte a classificação: a sala de operações é a área restrita (uso de uniforme privativo, gorro e máscara), enquanto corredores internos e salas de apoio compõem a área semirrestrita.",
+"ag": 5
+},
+{
+"n": 48,
+"d": "ADM",
+"it": "Anexo I · Administrador Hospitalar · item 13 — Serviço de prontuário do paciente",
+"e": "O Hospital Geral de Palmas pretende digitalizar todo o acervo físico do Serviço de Arquivo Médico e Estatística (SAME) para liberar espaço e reduzir custos de guarda. O projeto deve observar a Lei nº 13.787/2018, as resoluções do Conselho Federal de Medicina e a Lei Geral de Proteção de Dados (LGPD).<br><br>Assinale a afirmativa correta.",
+"o": [
+"Concluída a digitalização com certificado digital, os originais em papel podem ser imediatamente destruídos pelo setor de arquivo, sem necessidade de análise por comissão, já que o documento digital os substitui integralmente.",
+"Os prontuários, em papel ou digitalizados, devem ser guardados por, no mínimo, 10 anos contados da alta do paciente, prazo após o qual podem ser eliminados sem qualquer registro.",
+"O documento digitalizado conforme a lei tem o mesmo valor probatório do original, devendo o processo assegurar integridade, autenticidade e confidencialidade, e os dados de saúde neles contidos são dados pessoais sensíveis segundo a LGPD.",
+"A Comissão de Revisão de Prontuários é facultativa nos hospitais públicos, e o prontuário pertence ao médico assistente, de modo que o acesso do paciente às suas informações depende de autorização judicial."
+],
+"g": 2,
+"c": "A Lei nº 13.787/2018 exige que a digitalização assegure integridade, autenticidade e confidencialidade (art. 2º), com certificado ICP-Brasil ou outro padrão legalmente aceito, e confere ao documento digitalizado o mesmo valor probatório do original (art. 5º); a LGPD classifica o dado referente à saúde como dado pessoal sensível (art. 5º, II), por isso (C) está correta. (A) erra porque a destruição dos originais exige análise obrigatória de comissão permanente de revisão de prontuários e avaliação documental (art. 3º). (B) erra o prazo e o marco: são 20 anos a partir do último registro (art. 6º), e a eliminação deve ser registrada e resguardar o sigilo. (D) erra porque a Resolução CFM nº 1.638/2002 torna obrigatória a Comissão de Revisão de Prontuários onde há assistência médica, e as informações do prontuário pertencem ao paciente, que a elas tem acesso.",
+"ag": 5
+},
+{
+"n": 49,
+"d": "ADM",
+"it": "Anexo I · Administrador Hospitalar · item 14 — Gestão de materiais hospitalares",
+"e": "No almoxarifado do Hospital Regional de Porto Nacional, a análise de 1.200 itens mostrou que cerca de 10% deles respondem por aproximadamente 70% do valor anual consumido. O gestor observou ainda que o fio de sutura absorvível, de baixo valor de consumo, provoca suspensão de cirurgias quando falta e não tem substituto padronizado.<br><br>Sobre as ferramentas de classificação de materiais, é correto afirmar que",
+"o": [
+"a classe A da curva ABC reúne a maior quantidade de itens do almoxarifado, motivo pelo qual concentra o maior esforço de controle e negociação.",
+"a curva ABC ordena os itens pelo valor de consumo (quantidade × preço), enquanto a classificação XYZ avalia a criticidade; assim, o fio de sutura pode ser classe C e, ao mesmo tempo, Z, exigindo estoque de segurança.",
+"a curva ABC classifica os itens apenas pelo preço unitário, de modo que um material caro e de baixo giro será sempre classe A, independentemente da quantidade consumida.",
+"o critério PEPS (primeiro que entra, primeiro que sai) é o mais indicado para medicamentos com validades distintas, pois prioriza a data de recebimento sobre a data de vencimento."
+],
+"g": 1,
+"c": "A curva ABC (princípio de Pareto) ordena os itens pelo valor de consumo no período (quantidade consumida × custo unitário): a classe A tem poucos itens e grande parcela do valor; a classe C, muitos itens e pequena parcela. A classificação XYZ mede a criticidade: X (baixa), Y (média) e Z (máxima, imprescindível e sem substituto). Um item barato pode ser C e Z ao mesmo tempo, como o fio de sutura do caso, por isso (B) está correta. (A) inverte a lógica: a classe A tem poucos itens. (C) erra ao ignorar a quantidade, pois o critério é o valor de consumo, não o preço unitário. (D) confunde critérios: para itens com validade, o indicado é o PVPS (primeiro que vence, primeiro que sai).",
+"ag": 5
+},
+{
+"n": 50,
+"d": "ADM",
+"it": "Anexo I · Administrador Hospitalar · item 14 — Gestão de materiais hospitalares",
+"e": "O Hospital Regional de Araguaína consome, em média, 3.000 frascos de soro fisiológico 0,9% (500 mL) por mês (30 dias), com consumo regular. O tempo de reposição, do pedido à entrega, é de 15 dias. A política da unidade fixa estoque de segurança equivalente a 5 dias de consumo, e cada pedido de compra (lote) é de 3.000 frascos.<br><br>O ponto de pedido e o estoque máximo desse item são, respectivamente,",
+"o": [
+"1.500 frascos e 3.000 frascos.",
+"2.000 frascos e 3.000 frascos.",
+"1.500 frascos e 3.500 frascos.",
+"2.000 frascos e 3.500 frascos."
+],
+"g": 3,
+"c": "Consumo médio diário: 3.000 ÷ 30 = 100 frascos/dia. Estoque de segurança: 5 × 100 = 500 frascos. Ponto de pedido = consumo médio × tempo de reposição + estoque de segurança = 100 × 15 + 500 = 2.000 frascos. Estoque máximo = estoque de segurança + lote de compra = 500 + 3.000 = 3.500 frascos, por isso (D) está correta. (A) esquece o estoque de segurança nos dois cálculos (1.500 e 3.000). (B) acerta o ponto de pedido, mas omite o estoque de segurança no estoque máximo. (C) acerta o estoque máximo, mas calcula o ponto de pedido sem o estoque de segurança.",
+"ag": 5
+},
+{
+"n": 51,
+"d": "ADM",
+"it": "Anexo I · Administrador Hospitalar · item 15 — Serviços de nutrição e dietética",
+"e": "A SES/TO estuda ampliar a rede de leite humano no Hospital e Maternidade Dona Regina, em Palmas, e instalar postos em hospitais regionais. Na reunião técnica, o Serviço de Nutrição e Dietética (SND) apresentou as regras sanitárias aplicáveis.<br><br>Assinale a afirmativa correta.",
+"o": [
+"A matéria é hoje regida pela RDC Anvisa nº 918/2024, que revogou a RDC nº 171/2006: o Posto de Coleta de Leite Humano coleta e armazena o leite e o repassa ao Banco de Leite a que se vincula, cabendo a este o processamento, inclusive a pasteurização.",
+"A matéria continua regida pela RDC Anvisa nº 171/2006, segundo a qual o Posto de Coleta de Leite Humano pode pasteurizar o leite coletado, desde que disponha de pasteurizador e de responsável técnico de nível superior.",
+"O leite humano ordenhado cru pode ser oferecido a qualquer recém-nascido internado na unidade neonatal, desde que consumido em até 12 horas e mantido sob refrigeração.",
+"O Banco de Leite Humano pode funcionar sem licença sanitária própria quando instalado dentro de hospital público, pois é abrangido pelo alvará da unidade hospitalar."
+],
+"g": 0,
+"c": "A RDC Anvisa nº 918/2024 estabelece os requisitos sanitários para Bancos de Leite Humano (BLH) e Postos de Coleta (PCLH) e revogou expressamente a RDC nº 171/2006 (art. 102). O PCLH, vinculado tecnicamente a um BLH, coleta, armazena e repassa o leite (art. 11), e o processamento, inclusive a pasteurização a 62,5 °C por 30 minutos, cabe ao BLH (arts. 10 e 62), por isso (A) está correta. (B) cita norma revogada e atribui ao posto uma etapa exclusiva do banco. (C) erra porque o leite cru só pode ser administrado exclusivamente da mãe para o próprio filho, nas condições do art. 66; a distribuição a outros bebês exige leite pasteurizado. (D) erra porque BLH e PCLH devem ter licença ou alvará sanitário em vigor (art. 4º).",
+"ag": 5
+},
+{
+"n": 52,
+"d": "ADM",
+"it": "Anexo I · Administrador Hospitalar · item 16 — Serviços de lavanderia hospitalar",
+"e": "Ao elaborar o termo de referência para reforma da lavanderia do Hospital Regional de Gurupi, a equipe de engenharia consultou a RDC Anvisa nº 6/2012, que dispõe sobre as boas práticas de funcionamento das unidades de processamento de roupas de serviços de saúde.<br><br>Assinale a opção que está de acordo com essa norma.",
+"o": [
+"A barreira física entre as áreas suja e limpa pode ser dispensada quando o processamento das roupas sujas e o das limpas ocorrerem em turnos distintos.",
+"A roupa limpa e a roupa suja podem ser transportadas no mesmo carro, desde que acondicionadas em sacos fechados e de cores diferentes.",
+"As lavadoras devem ser do tipo com barreira, com porta de entrada na sala de recebimento da roupa suja e porta de saída na sala de processamento da roupa limpa, em fluxo direcionado da área suja para a limpa.",
+"A unidade intra-hospitalar pode processar roupas de hotéis e restaurantes da região para gerar receita, desde que em ciclos separados dos das roupas hospitalares."
+],
+"g": 2,
+"c": "A RDC nº 6/2012 define a lavadora com barreira como equipamento encaixado em barreira física que separa os ambientes sujo e limpo, com uma porta voltada para a sala de recebimento da roupa suja e outra para a sala de processamento da roupa limpa (art. 3º, I); exige que as lavadoras sejam desse tipo (art. 15) e que o processamento siga fluxo direcionado da sala suja para a limpa (art. 17), por isso (C) está correta. (A) contraria a exigência de barreira física, que não é substituída por separação de horários. (B) contraria o art. 20, que exige o transporte da roupa limpa separado da suja. (D) erra porque a unidade intra-serviço só pode processar roupas de serviços de saúde (art. 5º); roupas de outras atividades só podem ser processadas em unidades terceirizadas, em ciclos separados (art. 6º).",
+"ag": 5
+},
+{
+"n": 53,
+"d": "ADM",
+"it": "Anexo I · Administrador Hospitalar · item 17 — Farmácia hospitalar",
+"e": "A farmácia do Hospital Geral de Palmas usa hoje o sistema coletivo de distribuição: as unidades de internação requisitam medicamentos por setor e mantêm estoques próprios nos postos de enfermagem. A direção avalia migrar para o sistema de dose unitária, com apoio da Comissão de Farmácia e Terapêutica (CFT).<br><br>Sobre o tema, é correto afirmar que",
+"o": [
+"o sistema coletivo é o que mais reduz os estoques descentralizados nas unidades e facilita a cobrança por paciente, sendo por isso o recomendado para hospitais de grande porte.",
+"o sistema de dose unitária, em que o medicamento é dispensado ao paciente em dose pronta para administração, tende a reduzir erros de medicação, perdas e desvios, embora exija maior investimento inicial em pessoal e estrutura.",
+"a CFT é instância administrativa composta exclusivamente por farmacêuticos, cuja atribuição principal é escolher fornecedores e homologar o resultado das licitações de medicamentos.",
+"a padronização de medicamentos obriga a farmácia a adquirir qualquer medicamento prescrito pelo corpo clínico, ainda que não conste da relação padronizada."
+],
+"g": 1,
+"c": "Na dose unitária, o medicamento é distribuído ordenadamente, em dose pronta para administração, por paciente e por horário, o que reduz erros de medicação, perdas, desvios e estoques nas unidades e permite o custeio por paciente; a desvantagem é o maior custo de implantação (pessoal, embalagem, estrutura e informatização), por isso (B) está correta. (A) descreve o oposto: o sistema coletivo gera estoques nas unidades, dificulta o controle e a cobrança por paciente e é o mais vulnerável a erros. (C) erra porque a CFT é multiprofissional (médicos, farmacêuticos, enfermeiros e outros) e atua na seleção e padronização de medicamentos e na promoção do uso racional, não no julgamento de licitações. (D) erra porque a padronização restringe a aquisição à relação aprovada, sendo excepcional e justificada a compra de itens não padronizados.",
+"ag": 5
+},
+{
+"n": 54,
+"d": "ADM",
+"it": "Anexo I · Administrador Hospitalar · item 18 — Sistemas de gestão hospitalar",
+"e": "A SES/TO pretende contratar um sistema de gestão hospitalar para os hospitais regionais, integrando prontuário eletrônico, farmácia, almoxarifado, faturamento SUS e custos. O termo de referência exige que o sistema seja “interoperável” e capaz de enviar dados à Rede Nacional de Dados em Saúde (RNDS).<br><br>Assinale a afirmativa correta.",
+"o": [
+"Interoperabilidade é a capacidade de sistemas distintos trocarem informações e utilizarem os dados recebidos com o mesmo significado, o que depende da adoção de padrões, como o HL7 FHIR utilizado pela RNDS, e evita redigitação e retrabalho entre os módulos.",
+"Um sistema integrado de gestão (ERP) hospitalar restringe-se ao registro clínico do paciente, cabendo a sistemas isolados e independentes as funções de estoque, faturamento e custos.",
+"Interoperabilidade exige, necessariamente, que todas as unidades da rede utilizem o mesmo software e o mesmo banco de dados, fornecidos por um único fabricante.",
+"A LGPD veda o compartilhamento de dados de saúde entre unidades públicas da rede estadual, o que torna juridicamente inviável a integração do prontuário entre hospitais da SES/TO."
+],
+"g": 0,
+"c": "Interoperabilidade é a capacidade de sistemas diferentes trocarem dados e interpretá-los com o mesmo significado (interoperabilidade técnica e semântica), o que se obtém com padrões de troca e terminologias; a RNDS adota o padrão HL7 FHIR, por isso (A) está correta. (B) descreve o contrário de um ERP, cuja razão de ser é integrar, em base comum, os processos assistenciais, logísticos e financeiros. (C) confunde interoperabilidade com padronização de fornecedor: sistemas de fabricantes diferentes podem interoperar se seguirem os mesmos padrões. (D) erra porque a LGPD admite o tratamento de dados sensíveis sem consentimento para a execução de políticas públicas e para a tutela da saúde (art. 11, II, “b” e “f”), exigindo segurança e finalidade, não vedação.",
+"ag": 5
+},
+{
+"n": 55,
+"d": "ADM",
+"it": "Anexo I · Administrador Hospitalar · item 19 — Sistemas de informação em saúde e faturamento",
+"e": "O Núcleo de Informação do Hospital Regional de Araguaína prepara um treinamento para novos servidores sobre os sistemas de informação em saúde do SUS e seus documentos de entrada.<br><br>Assinale a opção que associa corretamente o sistema ao seu instrumento ou finalidade.",
+"o": [
+"CNES: sistema que processa a produção ambulatorial dos estabelecimentos, alimentado pelo Boletim de Produção Ambulatorial (BPA).",
+"SINAN: sistema alimentado pela Autorização de Internação Hospitalar (AIH), utilizado para o pagamento das internações.",
+"SIH/SUS: sistema que processa o Boletim de Produção Ambulatorial e a APAC dos procedimentos de alta complexidade.",
+"SINASC e SIM: sistemas que têm como documentos-base, respectivamente, a Declaração de Nascido Vivo e a Declaração de Óbito."
+],
+"g": 3,
+"c": "O SINASC tem como documento-base a Declaração de Nascido Vivo (DNV), e o SIM, a Declaração de Óbito (DO), por isso (D) está correta. (A) erra porque o CNES é o cadastro dos estabelecimentos (estrutura, leitos, equipamentos, profissionais e habilitações); a produção ambulatorial (BPA e APAC) é processada pelo SIA/SUS. (B) erra porque o SINAN é alimentado pelas fichas de notificação e investigação de agravos de notificação compulsória; a AIH alimenta o SIH/SUS. (C) atribui ao SIH/SUS instrumentos do SIA/SUS: o SIH processa a AIH, enquanto BPA e APAC são ambulatoriais.",
+"ag": 5
+},
+{
+"n": 56,
+"d": "ADM",
+"it": "Anexo I · Administrador Hospitalar · item 19 — Sistemas de informação em saúde e faturamento",
+"e": "O setor de faturamento do Hospital Regional de Gurupi registrou aumento de rejeições na produção enviada ao gestor. Entre as ocorrências, houve sessões de hemodiálise ambulatorial lançadas em AIH, procedimentos informados com CBO incompatível com a Tabela SUS e cobranças de serviço não habilitado no CNES.<br><br>Sobre o faturamento hospitalar, é correto afirmar que",
+"o": [
+"as sessões de hemodiálise ambulatorial devem ser faturadas por AIH, instrumento próprio para todos os procedimentos de alta complexidade, sejam ambulatoriais ou hospitalares.",
+"a APAC é o instrumento dos procedimentos ambulatoriais de alta complexidade/custo, como terapia renal substitutiva, e as glosas decorrem, entre outras causas, de incompatibilidades com as regras do SIGTAP, como CBO, CID e habilitação no CNES.",
+"o padrão TISS, definido pela ANS, é o padrão obrigatório para o envio da produção hospitalar SUS ao SIH, substituindo a AIH nos hospitais públicos.",
+"a glosa é a sanção aplicada pelo Tribunal de Contas ao hospital após a auditoria anual das contas, não guardando relação com o processamento da produção."
+],
+"g": 1,
+"c": "A APAC (Autorização de Procedimentos Ambulatoriais) é usada para procedimentos ambulatoriais de alta complexidade/custo que exigem autorização, como terapia renal substitutiva, quimioterapia e radioterapia; a produção é validada contra as regras do SIGTAP (compatibilidade de CBO, CID, idade, habilitação do estabelecimento no CNES), e as inconsistências geram glosas (rejeição total ou parcial), por isso (B) está correta. (A) erra porque a AIH é o instrumento das internações; procedimento ambulatorial não se fatura por AIH. (C) erra porque o padrão TISS (Troca de Informações na Saúde Suplementar) é da ANS e rege a relação entre prestadores e operadoras de planos de saúde, não o faturamento SUS. (D) erra porque glosa é a recusa de pagamento de itens da conta pela auditoria ou pelo processamento do gestor/pagador, não sanção do Tribunal de Contas.",
+"ag": 5
+},
+{
+"n": 57,
+"d": "ADM",
+"it": "Anexo I · Administrador Hospitalar · item 20 — Saúde digital",
+"e": "A SES/TO pretende implantar teleconsultorias e teleatendimentos especializados a partir do Hospital Geral de Palmas para pacientes dos hospitais regionais do interior. A minuta do protocolo deve observar a Lei nº 14.510/2022, que incluiu a telessaúde na Lei nº 8.080/1990.<br><br>Assinale a afirmativa correta.",
+"o": [
+"A telessaúde regulada pela lei abrange apenas a telemedicina, sendo vedada a atuação remota de enfermeiros, nutricionistas, psicólogos e demais profissionais de saúde.",
+"A primeira consulta deve ser obrigatoriamente presencial, admitindo-se a telessaúde apenas para o acompanhamento de pacientes já atendidos pessoalmente.",
+"A prática da telessaúde exige consentimento livre e esclarecido do paciente ou de seu representante legal, e o profissional tem liberdade para decidir sobre seu uso, podendo indicar o atendimento presencial sempre que entender necessário.",
+"O profissional que atender pacientes de outro estado exclusivamente por telessaúde deve obter inscrição secundária no conselho regional da unidade da Federação onde reside o paciente."
+],
+"g": 2,
+"c": "A Lei nº 14.510/2022 inseriu o Título III-A (arts. 26-A a 26-H) na Lei nº 8.080/1990: o art. 26-G exige consentimento livre e esclarecido do paciente ou de seu representante legal, e o art. 26-C assegura ao profissional liberdade e completa independência para decidir sobre o uso da telessaúde, inclusive na primeira consulta, podendo indicar o atendimento presencial sempre que necessário, por isso (C) está correta. (A) erra porque a telessaúde abrange todas as profissões da área da saúde regulamentadas (art. 26-A). (B) erra porque não há obrigatoriedade de primeira consulta presencial: a decisão cabe ao profissional (art. 26-C). (D) erra porque o art. 26-H dispensa a inscrição secundária ou complementar do profissional que atue em outra jurisdição exclusivamente por telessaúde.",
+"ag": 5
+},
+{
+"n": 58,
+"d": "ADM",
+"it": "Anexo I · Administrador Hospitalar · item 21 — Gestão de resíduos hospitalares",
+"e": "O Hospital Regional de Porto Nacional, que abriga em seu prédio serviços com licenças sanitárias individualizadas (laboratório e serviço de imagem terceirizados), contratou empresa especializada para coleta, tratamento e destinação final dos resíduos e estuda contratar consultoria para revisar seu Plano de Gerenciamento de Resíduos de Serviços de Saúde (PGRSS).<br><br>À luz da RDC Anvisa nº 222/2018 e da Política Nacional de Resíduos Sólidos, assinale a afirmativa correta.",
+"o": [
+"O serviço gerador é responsável pela elaboração, implantação, implementação e monitoramento do PGRSS, podendo terceirizar essas atividades, e deve manter cópia do plano disponível para consulta da vigilância sanitária ou ambiental, dos funcionários, dos pacientes e do público em geral.",
+"Uma vez aprovado pela vigilância sanitária, o PGRSS dispensa revisões e atualizações até a renovação da licença ambiental do hospital, salvo determinação judicial.",
+"A contratação de empresa licenciada para coleta, tratamento e destinação final transfere a ela, integralmente, a responsabilidade pelos resíduos, isentando o hospital gerador.",
+"Cada serviço com licença sanitária individualizada instalado no prédio deve elaborar PGRSS próprio e independente, vedada a adoção de plano único para a edificação."
+],
+"g": 0,
+"c": "Pela RDC nº 222/2018, o serviço gerador é responsável pela elaboração, implantação, implementação e monitoramento do PGRSS, que pode ser terceirizado (art. 10 e parágrafo único), e deve manter cópia disponível para consulta dos órgãos de vigilância sanitária ou ambientais, dos funcionários, dos pacientes e do público em geral (art. 9º), por isso (A) está correta. (B) erra porque o PGRSS deve ser monitorado e mantido atualizado, conforme periodicidade definida pelo responsável (art. 7º). (C) erra porque a contratação de serviços de coleta, transporte, tratamento ou destinação não isenta o gerador da responsabilidade por danos (Lei nº 12.305/2010, art. 27, § 1º). (D) inverte o art. 8º, segundo o qual, havendo serviços com licenças sanitárias individualizadas no mesmo estabelecimento, o PGRSS deve ser único e contemplar todos eles.",
+"ag": 5
+},
+{
+"n": 59,
+"d": "ADM",
+"it": "Anexo I · Administrador Hospitalar · item 22 — Qualidade e segurança do paciente",
+"e": "O Hospital Regional de Araguaína, já certificado no primeiro nível da Organização Nacional de Acreditação (ONA), traçou como meta para o próximo ciclo avançar ao nível seguinte da metodologia.<br><br>Sobre o sistema de acreditação da ONA, é correto afirmar que",
+"o": [
+"o nível 1, “Acreditado com Excelência”, exige maturidade institucional e melhoria contínua, ao passo que o nível 3, “Acreditado”, avalia apenas requisitos mínimos de estrutura.",
+"a acreditação ONA é obrigatória para hospitais públicos estaduais e é concedida diretamente pela Anvisa após inspeção sanitária.",
+"o nível 2, “Acreditado Pleno”, tem como foco a gestão integrada, com processos interligados e comunicação entre as áreas, pressupondo o atendimento aos requisitos de segurança do nível 1.",
+"a avaliação é realizada diretamente pela própria ONA, em caráter fiscalizatório e punitivo, e seu resultado é publicado com a lista das não conformidades do hospital."
+],
+"g": 2,
+"c": "Na metodologia ONA, os níveis são cumulativos: nível 1 (“Acreditado”) tem foco na segurança; nível 2 (“Acreditado Pleno”), na gestão integrada, com processos que interagem e se comunicam; nível 3 (“Acreditado com Excelência”), na excelência em gestão e na maturidade institucional, por isso (C) está correta. (A) inverte as denominações e os focos dos níveis 1 e 3. (B) erra porque a acreditação é voluntária e não se confunde com o licenciamento sanitário da Anvisa/Visa. (D) erra porque as avaliações são conduzidas por Instituições Acreditadoras credenciadas pela ONA, com caráter educativo e reservado, sem finalidade fiscalizatória ou punitiva.",
+"ag": 5
+},
+{
+"n": 60,
+"d": "ADM",
+"it": "Anexo I · Administrador Hospitalar · item 22 — Qualidade e segurança do paciente",
+"e": "Após uma sequência de quedas de pacientes, a diretoria do Hospital Regional de Gurupi decidiu reforçar a cultura de segurança, em consonância com o Programa Nacional de Segurança do Paciente (PNSP), instituído pela Portaria GM/MS nº 529/2013.<br><br>Assinale a afirmativa correta.",
+"o": [
+"O PNSP destina-se apenas aos hospitais privados acreditados, cabendo aos hospitais públicos aderir voluntariamente às suas estratégias, mediante convênio com o Ministério da Saúde.",
+"Segundo a Portaria, a cultura de segurança pressupõe, entre outros elementos, que a segurança seja priorizada acima de metas financeiras e operacionais e que os incidentes sejam utilizados para promover o aprendizado organizacional.",
+"A cultura de segurança tem como eixo central a identificação e a punição individual do profissional responsável por cada incidente, como forma de prevenir a reincidência.",
+"O Comitê de Implementação do PNSP é instância deliberativa vinculada à SES de cada estado, composta exclusivamente por representantes dos hospitais estaduais."
+],
+"g": 1,
+"c": "O art. 4º, V, da Portaria GM/MS nº 529/2013 define cultura de segurança por cinco características, entre elas a prioridade da segurança acima de metas financeiras e operacionais, o encorajamento e a recompensa à identificação, notificação e resolução de problemas e a promoção do aprendizado organizacional a partir dos incidentes, por isso (B) está correta. (A) erra porque o PNSP tem como objetivo geral qualificar o cuidado em todos os estabelecimentos de saúde do território nacional (art. 2º). (C) contraria a lógica do programa, que adota abordagem sistêmica e não punitiva, voltada a aprender com os incidentes. (D) erra porque o Comitê de Implementação (CIPNSP) é instituído no âmbito do Ministério da Saúde, tem caráter consultivo e composição ampla (MS, Anvisa, Fiocruz, ANS, Conass, Conasems, conselhos profissionais, Opas e instituições de ensino), arts. 6º e 8º.",
+"ag": 5
+}
+];
+
+/* ===================== CONFIGURAÇÃO ===================== */
+const AGENTES = {
+  1:{nome:"Agente 1 · Língua Portuguesa",cor:"#24497a",desc:"Textos sobre gestão hospitalar pública; acentuação, ortografia, concordância nominal, crase, colocação, reescrita, pontuação e Redação Oficial."},
+  2:{nome:"Agente 2 · Raciocínio Lógico-Matemático",cor:"#6a3d9a",desc:"Divisão proporcional, regra de três inversa, porcentagens sucessivas, juros, sistemas, probabilidade condicional, permutação e equivalências."},
+  3:{nome:"Agente 3 · Tocantins e Legislação do SUS",cor:"#9a6b0e",desc:"Movimento autonomista, relevo, vegetação, economia, energia e símbolos; Lei 8.080, PNH, PNSTT, Decreto 7.508 e CF."},
+  4:{nome:"Agente 4 · Gestão, Finanças e Licitações",cor:"#b3362f",desc:"Administração geral, teorias, RH, planejamento e controle, contabilidade, custos, finanças, indicadores, RDC 50 e Lei 14.133/2021."},
+  5:{nome:"Agente 5 · Serviços Hospitalares e Qualidade",cor:"#1d7a4c",desc:"Enfermagem, centro cirúrgico, prontuário, materiais, nutrição, lavanderia, farmácia, sistemas, faturamento, saúde digital, resíduos e qualidade."}
+};
+const DISC = {
+  LP:{nome:"Língua Portuguesa",mod:1,peso:1,ag:1},
+  RLM:{nome:"Raciocínio Lógico e Matemático",mod:1,peso:1,ag:2},
+  HGTO:{nome:"História e Geografia do Tocantins",mod:1,peso:1,ag:3},
+  SUS:{nome:"Legislação do SUS",mod:1,peso:1,ag:3},
+  ADM:{nome:"Conhecimentos Específicos – Administrador Hospitalar",mod:2,peso:2,ag:5,agLabel:"Agentes 4 e 5 · Administração Hospitalar"}
+};
+const DISC_ORDER = ["LP","RLM","HGTO","SUS","ADM"];
+const LET = ["A","B","C","D"];
+const DURACAO = 4*3600;
+const KEY = "simulado_sesto_admhosp_v1";
+
+/* ===================== ESTADO ===================== */
+let S = null; // {name, local, mode, answers[60], flags[60], cur, startedAt, remaining, finished, elapsed}
+let tick = null;
+
+const $ = id => document.getElementById(id);
+const store = {
+  get(){ try{ const r = localStorage.getItem(KEY); return r ? JSON.parse(r) : null; }catch(e){ return null; } },
+  set(v){ try{ localStorage.setItem(KEY, JSON.stringify(v)); }catch(e){} },
+  del(){ try{ localStorage.removeItem(KEY); }catch(e){} }
+};
+function save(){ if(S) store.set(S); }
+function esc(s){ return String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
+function fmt(sec){ sec=Math.max(0,Math.round(sec)); const h=Math.floor(sec/3600), m=Math.floor(sec%3600/60), s=sec%60; return [h,m,s].map(x=>String(x).padStart(2,"0")).join(":"); }
+function num(n){ return String(n).padStart(2,"0"); }
+function ptsBR(n){ return n.toLocaleString("pt-BR",{minimumFractionDigits:0,maximumFractionDigits:1}); }
+
+/* ===================== TELA 1 ===================== */
+function renderAgents(){
+  $("agentsList").innerHTML = Object.entries(AGENTES).map(([k,a]) => {
+    const qs = QUESTOES.filter(q=>(q.ag||DISC[q.d].ag)==k);
+    return `<div class="agent"><div class="av" style="background:${a.cor}">${k}</div><div><b>${esc(a.nome)} <span style="color:var(--muted);font-weight:500">· Q${num(qs[0].n)}–${num(qs[qs.length-1].n)}</span></b><small>${esc(a.desc)}</small></div></div>`;
+  }).join("");
+}
+document.querySelectorAll('#modes input').forEach(r => r.addEventListener('change', () => {
+  document.querySelectorAll('#modes .mode').forEach(m => m.classList.toggle('on', m.querySelector('input').checked));
+}));
+function checkResume(){
+  const prev = store.get();
+  if(prev && !prev.finished){
+    $("resumeBox").classList.remove("hidden");
+    $("btnResume").onclick = () => { S = prev; startExam(true); };
+    $("btnDiscard").onclick = () => { store.del(); $("resumeBox").classList.add("hidden"); };
+  }
+}
+$("btnStart").onclick = () => {
+  const name = $("inName").value.trim() || "Candidato(a)";
+  S = {
+    name, local: $("inLocal").value,
+    mode: document.querySelector('#modes input:checked').value,
+    answers: Array(60).fill(null), flags: Array(60).fill(false),
+    cur: 0, remaining: DURACAO, finished: false, elapsed: 0
+  };
+  save(); startExam(false);
+};
+
+/* ===================== TELA 2 ===================== */
+function show(id){
+  ["screen-setup","screen-exam","screen-result"].forEach(s => $(s).classList.toggle("hidden", s!==id));
+  $("brand").classList.toggle("hidden", id==="screen-exam");
+  window.scrollTo(0,0);
+}
+function startExam(){
+  show("screen-exam");
+  $("hdName").textContent = S.name;
+  $("hdLocal").textContent = "Lotação: " + S.local;
+  $("hdMode").textContent = S.mode==="treino" ? "Treino Comentado" : "Prova Real";
+  // seletor de disciplina
+  $("jump").innerHTML = DISC_ORDER.map(k => {
+    const qs = QUESTOES.filter(q=>q.d===k);
+    return `<option value="${qs[0].n-1}">${DISC[k].nome} (${num(qs[0].n)}–${num(qs[qs.length-1].n)})</option>`;
+  }).join("");
+  $("jump").onchange = e => go(+e.target.value);
+  buildSheet();
+  render();
+  startTimer();
+}
+function startTimer(){
+  clearInterval(tick);
+  let last = Date.now();
+  const paint = () => {
+    const t = $("timer");
+    t.textContent = fmt(S.remaining);
+    t.classList.toggle("warn", S.remaining<=1800 && S.remaining>600);
+    t.classList.toggle("crit", S.remaining<=600);
+  };
+  paint();
+  tick = setInterval(() => {
+    const now = Date.now(); const dt = (now-last)/1000; last = now;
+    S.remaining -= dt; S.elapsed += dt;
+    if(S.remaining <= 0){ S.remaining = 0; paint(); finish(true); return; }
+    paint();
+    if(Math.floor(S.elapsed)%5===0) save();
+  }, 1000);
+}
+function buildSheet(){
+  let html = "", lastMod = 0;
+  QUESTOES.forEach((q,i) => {
+    const m = DISC[q.d].mod;
+    if(m!==lastMod){ html += `<div class="sep">Módulo ${m===1?"I":"II"}</div>`; lastMod = m; }
+    html += `<button class="cell" data-i="${i}" title="Questão ${num(q.n)} · ${DISC[q.d].nome}">${num(q.n)}</button>`;
+  });
+  $("sheet").innerHTML = html;
+  $("sheet").onclick = e => { const b = e.target.closest(".cell"); if(b) go(+b.dataset.i); };
+}
+function paintSheet(){
+  const treino = S.mode==="treino";
+  document.querySelectorAll("#sheet .cell").forEach(c => {
+    const i = +c.dataset.i, a = S.answers[i];
+    c.className = "cell";
+    if(a!==null){
+      if(treino) c.classList.add(a===QUESTOES[i].g ? "r-ok" : "r-bad");
+      else c.classList.add("ans");
+    }
+    if(S.flags[i]) c.classList.add("flag");
+    if(i===S.cur) c.classList.add("cur");
+  });
+  const done = S.answers.filter(a=>a!==null).length, p = Math.round(done/60*100);
+  $("progBar").style.width = p+"%";
+  $("progTxt").textContent = `${done} de 60 respondidas`;
+  $("progPct").textContent = p+"%";
+}
+function render(){
+  const q = QUESTOES[S.cur], d = DISC[q.d], ag = AGENTES[q.ag||d.ag];
+  const a = S.answers[S.cur], treino = S.mode==="treino", locked = treino && a!==null;
+  $("qtop").innerHTML =
+    `<span class="qnum">Questão ${num(q.n)} de 60</span>`+
+    `<span class="badge ${d.mod===1?"b-mod1":"b-mod2"}">Módulo ${d.mod===1?"I":"II"} · Peso ${d.peso},0</span>`+
+    `<span class="badge b-disc">${esc(d.nome)}</span>`+
+    `<span class="badge b-agent" style="background:${ag.cor}">${esc(ag.nome)}</span>`+
+    (S.flags[S.cur] ? `<span class="flagmark">⚑ Revisar</span>` : "");
+  $("qbase").innerHTML = q.t ? `<div class="basetext"><h4>${TEXTOS[q.t].titulo}</h4>${TEXTOS[q.t].corpo}</div>` : "";
+  $("qenun").innerHTML = (q.it?`<div class="edital-it">📋 ${q.it}</div>`:"") + q.e;
+  $("qalts").innerHTML = q.o.map((txt,i) => {
+    let cls = "alt";
+    if(locked){ if(i===q.g) cls+=" ok"; else if(i===a) cls+=" bad"; }
+    else if(i===a) cls+=" sel";
+    return `<button class="${cls}" data-i="${i}" ${locked?"disabled":""}><span class="L">${LET[i]}</span><span>${txt}</span></button>`;
+  }).join("");
+  $("qalts").onclick = e => { const b = e.target.closest(".alt"); if(b && !b.disabled) answer(+b.dataset.i); };
+  $("qfeed").innerHTML = locked ?
+    `<div class="feedback ${a===q.g?"ok":"bad"}"><h5>${a===q.g?"✓ Correto!":"✗ Incorreto. Gabarito: "+LET[q.g]}</h5>${q.c}<div class="by">Comentário · ${esc(ag.nome)}</div></div>` : "";
+  $("btnPrev").disabled = S.cur===0;
+  $("btnNext").textContent = S.cur===59 ? "Revisar e encerrar" : "Próxima →";
+  $("btnFlag").textContent = S.flags[S.cur] ? "⚑ Desmarcar revisão" : "⚑ Marcar p/ revisão";
+  $("btnClear").disabled = a===null || locked;
+  $("jump").value = String(QUESTOES.findIndex(x=>x.d===q.d));
+  paintSheet();
+}
+function answer(i){ S.answers[S.cur] = i; save(); render(); }
+function go(i){ if(i<0||i>59) return; S.cur = i; save(); render(); window.scrollTo({top:0,behavior:"smooth"}); }
+$("btnPrev").onclick = () => go(S.cur-1);
+$("btnNext").onclick = () => S.cur===59 ? askFinish() : go(S.cur+1);
+$("btnFlag").onclick = () => { S.flags[S.cur] = !S.flags[S.cur]; save(); render(); };
+$("btnClear").onclick = () => { S.answers[S.cur] = null; save(); render(); };
+$("btnFinish").onclick = askFinish;
+document.addEventListener("keydown", e => {
+  if($("screen-exam").classList.contains("hidden") || !$("modal").classList.contains("hidden")) return;
+  if(e.target.matches("input,select,textarea")) return;
+  const k = e.key.toUpperCase();
+  if(["A","B","C","D"].includes(k)){
+    const locked = S.mode==="treino" && S.answers[S.cur]!==null;
+    if(!locked) answer(LET.indexOf(k));
+  } else if(e.key==="ArrowRight") go(S.cur+1);
+  else if(e.key==="ArrowLeft") go(S.cur-1);
+  else if(k==="F"){ S.flags[S.cur] = !S.flags[S.cur]; save(); render(); }
+});
+
+/* ===================== MODAL ===================== */
+function modal(title, body, buttons){
+  $("mTitle").textContent = title; $("mBody").innerHTML = body;
+  $("mRow").innerHTML = "";
+  buttons.forEach(b => { const el = document.createElement("button"); el.className = "btn "+b.cls; el.textContent = b.t; el.onclick = () => { $("modal").classList.add("hidden"); b.fn && b.fn(); }; $("mRow").appendChild(el); });
+  $("modal").classList.remove("hidden");
+}
+function askFinish(){
+  const blank = S.answers.filter(a=>a===null).length, fl = S.flags.filter(Boolean).length;
+  modal("Encerrar a prova?",
+    `<p>Você deixou <b>${blank}</b> questão(ões) em branco${fl?` e há <b>${fl}</b> marcada(s) para revisão`:""}.</p><p>Tempo restante: <b>${fmt(S.remaining)}</b>. Depois de encerrar, não será possível alterar respostas.</p>`,
+    [{t:"Voltar à prova",cls:"btn-ghost"},{t:"Encerrar e corrigir",cls:"btn-danger",fn:()=>finish(false)}]);
+}
+
+/* ===================== TELA 3 ===================== */
+function score(){
+  const by = {}; DISC_ORDER.forEach(k => by[k] = {q:0,ok:0,pts:0,max:0});
+  let m1=0, m2=0, ok=0, blank=0;
+  QUESTOES.forEach((q,i) => {
+    const d = DISC[q.d], a = S.answers[i], hit = a===q.g;
+    by[q.d].q++; by[q.d].max += d.peso;
+    if(a===null) blank++;
+    if(hit){ ok++; by[q.d].ok++; by[q.d].pts += d.peso; if(d.mod===1) m1 += d.peso; else m2 += d.peso; }
+  });
+  return {by, m1, m2, total:m1+m2, ok, blank, wrong:60-ok-blank};
+}
+function finish(timeout){
+  clearInterval(tick);
+  S.finished = true; save();
+  const r = score();
+  const pass = r.m2>=24 && r.total>=36;
+  show("screen-result");
+  $("printHead").innerHTML = `<b>Simulado 3 · SES/TO 2026 · Administrador Hospitalar</b> · ${esc(S.name)} · Lotação: ${esc(S.local)} · ${new Date().toLocaleString("pt-BR")}`;
+
+  const motivos = [];
+  if(r.m2<24) motivos.push(`Módulo II com ${r.m2} pts (mínimo 24)`);
+  if(r.total<36) motivos.push(`total de ${r.total} pts (mínimo 36)`);
+  $("verdict").className = "verdict " + (pass?"pass":"fail");
+  $("verdict").innerHTML = `<div class="ico">${pass?"✓":"✗"}</div><div><h2>${pass?"APROVADO NOS CRITÉRIOS DO EDITAL":"ELIMINADO PELO CORTE MÍNIMO"}</h2><p>${esc(S.name)} · ${esc(S.local)} · ${S.mode==="treino"?"Modo Treino Comentado":"Modo Prova Real"}${timeout?" · tempo esgotado":""}</p><p>${pass?"Item 11.14 atendido: Módulo II ≥ 24 pts e total ≥ 36 pts.":"Item 11.14 não atendido: "+motivos.join(" e ")+"."}</p></div>`;
+
+  const bar = (v,max,cut,color) => `<div class="bar"><i style="width:${v/max*100}%;background:${color}"></i>${cut!=null?`<span class="cut" style="left:${cut/max*100}%" title="Corte"></span>`:""}</div>`;
+  $("kpis").innerHTML =
+    `<div class="kpi"><small>Nota final</small><b>${ptsBR(r.total)} <em>/ 90</em></b>${bar(r.total,90,36,pass?"var(--green)":"var(--red)")}<div class="note">Corte: 36 pts · ${Math.round(r.total/90*100)}%</div></div>`+
+    `<div class="kpi"><small>Módulo I · Gerais</small><b>${ptsBR(r.m1)} <em>/ 30</em></b>${bar(r.m1,30,null,"var(--navy-3)")}<div class="note">${r.m1} acertos de 30 · peso 1,0</div></div>`+
+    `<div class="kpi"><small>Módulo II · Específicos</small><b>${ptsBR(r.m2)} <em>/ 60</em></b>${bar(r.m2,60,24,r.m2>=24?"var(--green)":"var(--red)")}<div class="note">${r.m2/2} acertos de 30 · corte 24 pts</div></div>`+
+    `<div class="kpi"><small>Acertos · Tempo</small><b>${r.ok} <em>/ 60</em></b><div class="note" style="margin-top:12px">${r.wrong} erro(s) · ${r.blank} em branco<br>Tempo gasto: <b>${fmt(S.elapsed)}</b></div></div>`;
+
+  const pctCell = (p) => { const c = p>=70?"var(--green)":p>=40?"var(--amber)":"var(--red)"; return `<span class="pct"><i><s style="width:${p}%;background:${c}"></s></i>${p}%</span>`; };
+  let rows = "";
+  [1,2].forEach(m => {
+    const ks = DISC_ORDER.filter(k=>DISC[k].mod===m);
+    let tq=0,tok=0,tp=0,tm=0;
+    ks.forEach(k => { const b = r.by[k], d = DISC[k]; tq+=b.q; tok+=b.ok; tp+=b.pts; tm+=b.max;
+      rows += `<tr><td>${esc(d.nome)}</td><td>${esc(d.agLabel||AGENTES[d.ag].nome)}</td><td class="n">${b.q}</td><td class="n">${b.ok}</td><td class="n">${ptsBR(b.pts)} / ${b.max}</td><td class="n">${pctCell(Math.round(b.ok/b.q*100))}</td></tr>`; });
+    rows += `<tr class="sub"><td colspan="2">Subtotal Módulo ${m===1?"I":"II"}</td><td class="n">${tq}</td><td class="n">${tok}</td><td class="n">${ptsBR(tp)} / ${tm}</td><td class="n">${pctCell(Math.round(tok/tq*100))}</td></tr>`;
+  });
+  $("perfTbl").innerHTML = `<thead><tr><th>Disciplina</th><th>Agente especialista</th><th style="text-align:right">Questões</th><th style="text-align:right">Acertos</th><th style="text-align:right">Pontos</th><th style="text-align:right">Aproveitamento</th></tr></thead><tbody>${rows}<tr class="sub"><td colspan="2">TOTAL GERAL</td><td class="n">60</td><td class="n">${r.ok}</td><td class="n">${ptsBR(r.total)} / 90</td><td class="n">${pctCell(Math.round(r.total/90*100))}</td></tr></tbody>`;
+
+  const F = [["all","Todas (60)"],["bad",`Erradas (${r.wrong})`],["blank",`Em branco (${r.blank})`],["ok",`Certas (${r.ok})`],["flag","Marcadas p/ revisão"]]
+    .concat(DISC_ORDER.map(k=>[k,DISC[k].nome]));
+  $("filters").innerHTML = F.map(([k,t],i)=>`<button class="chip ${i===0?"on":""}" data-f="${k}">${t}</button>`).join("");
+  $("filters").onclick = e => { const b = e.target.closest(".chip"); if(!b) return;
+    document.querySelectorAll("#filters .chip").forEach(c=>c.classList.toggle("on",c===b)); renderReview(b.dataset.f); };
+  renderReview("all");
+}
+function renderReview(f){
+  $("review").innerHTML = QUESTOES.map((q,i) => {
+    const a = S.answers[i], st = a===null?"blank":(a===q.g?"ok":"bad"), d = DISC[q.d], ag = AGENTES[q.ag||d.ag];
+    if(f==="ok"||f==="bad"||f==="blank"){ if(st!==f) return ""; }
+    else if(f==="flag"){ if(!S.flags[i]) return ""; }
+    else if(f!=="all" && q.d!==f) return "";
+    const lis = q.o.map((t,j)=>`<li class="${j===q.g?"g":(j===a?"x":"")}"><b>${LET[j]}</b>${t}</li>`).join("");
+    const base = q.t ? `<details style="margin-bottom:8px"><summary style="cursor:pointer;font-size:13px;color:var(--navy-3);font-weight:600">${TEXTOS[q.t].titulo}</summary><div class="basetext" style="margin-top:8px">${TEXTOS[q.t].corpo}</div></details>` : "";
+    return `<div class="ritem ${st}"><div class="rh"><span class="qnum">Questão ${num(q.n)}</span><span class="badge ${d.mod===1?"b-mod1":"b-mod2"}">Módulo ${d.mod===1?"I":"II"} · Peso ${d.peso},0</span><span class="badge b-disc">${esc(d.nome)}</span>${S.flags[i]?'<span class="badge" style="background:var(--amber-soft);color:#7a4a05">⚑ Revisão</span>':""}<span class="st">${st==="ok"?"✓ ACERTOU · +"+d.peso+" pt"+(d.peso>1?"s":""):st==="bad"?"✗ ERROU":"— EM BRANCO"}</span></div>
+      ${base}${q.it?`<div class="edital-it">📋 ${q.it}</div>`:""}<div class="en">${q.e}</div><ol>${lis}</ol>
+      <div style="font-size:13px;margin-bottom:8px">Sua resposta: <b>${a===null?"—":LET[a]}</b> · Gabarito oficial: <b style="color:var(--green)">${LET[q.g]}</b></div>
+      <div class="com"><b>${esc(ag.nome)}:</b> ${q.c}</div></div>`;
+  }).join("") || `<p style="color:var(--muted)">Nenhuma questão neste filtro.</p>`;
+}
+$("btnPrint").onclick = () => window.print();
+$("btnRestart").onclick = () => modal("Reiniciar simulado?","<p>O resultado atual será descartado deste navegador.</p>",
+  [{t:"Cancelar",cls:"btn-ghost"},{t:"Reiniciar",cls:"btn-primary",fn:()=>{ store.del(); S=null; $("resumeBox").classList.add("hidden"); show("screen-setup"); }}]);
+
+/* ===================== INICIALIZAÇÃO ===================== */
+(function init(){
+  if(QUESTOES.length!==60) console.error("Esperadas 60 questões, encontradas", QUESTOES.length);
+  renderAgents();
+  const prev = store.get();
+  if(prev && prev.finished){ S = prev; finish(false); }
+  else checkResume();
+})();
+</script>
+</body>
+</html>
